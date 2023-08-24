@@ -1,0 +1,15 @@
+[
+    {"id": 1, "nombre": "Laptop HP", "descripcion": "Laptop HP con procesador Intel Core i7, 16GB RAM y 512GB SSD", "precio": 262496.5, "stock": 10, "thumbnail": ""},
+    {"id": 2, "nombre": "Smartphone Samsung", "descripcion": "Smartphone Samsung Galaxy S21 con pantalla de 6.2 pulgadas, cámara de 64MP y batería de 4000mAh", "precio": 279965, "stock": 15, "thumbnail": ""},
+    {"id": 3, "nombre": "Smartwatch Apple", "descripcion": "Smartwatch Apple Watch Series 7 con pantalla Retina siempre activa, GPS integrado y resistencia al agua", "precio": 139982.5, "stock": 20, "thumbnail": ""},
+    {"id": 4, "nombre": "Tablet Lenovo", "descripcion": "Tablet Lenovo Tab P11 Pro con pantalla OLED de 11.5 pulgadas, procesador Snapdragon y batería de larga duración", "precio": 209973.75, "stock": 8, "thumbnail": ""},
+    {"id": 5, "nombre": "Cámara Sony", "descripcion": "Cámara Sony Alpha a7 III con sensor CMOS de fotograma completo de 24.2 MP, grabación de video en resolución Ultra HD y estabilización de imagen en el cuerpo", "precio": 699912.5, "stock": 5, "thumbnail": ""},
+    {"id": 6, "nombre": "Auriculares Bose", "descripcion": "Auriculares Bose QuietComfort con cancelación de ruido, micrófono integrado y batería de larga duración", "precio": 419947.5, "stock": 12, "thumbnail": ""},
+    {"id": 7, "nombre": "Impresora HP", "descripcion": "Impresora HP LaserJet Pro MFP M428fdw con impresión a doble cara automática, escaneo a doble cara automático y fax incorporado.", "precio": 122482.5, "stock": 15, "thumbnail": ""},
+    {"id": 8, "nombre": "Disco duro externo Seagate", "descripcion": "Disco duro externo Seagate Backup Plus Slim con capacidad de almacenamiento de hasta 2TB, conexión USB-C y software de copia de seguridad automática.", "precio": 34992.5, "stock": 20, "thumbnail": ""},
+    {"id": 9, "nombre": "Altavoz inteligente Amazon Echo Dot", "descripcion": "Altavoz inteligente Amazon Echo Dot (4.ª generación) con Alexa, sonido mejorado y diseño esférico.", "precio": 26249.65, "stock": 30, "thumbnail": ""},
+    {"id": 10, "nombre": "Router ASUS RT-AX86U", "descripcion": "Router ASUS RT-AX86U AX5700 WiFi Gaming Router con procesador de cuatro núcleos, tecnología WiFi6 y soporte para juegos en línea.", "precio": 20998.2, "stock": 10, "thumbnail": ""},
+    {"id": 11, "nombre": "Teclado mecánico Razer BlackWidow V3 Pro", "descripcion": "Teclado mecánico Razer BlackWidow V3 Pro inalámbrico con interruptores mecánicos verdes, retroiluminación RGB y batería de larga duración.", "precio": 13998.25, "stock": 18, "thumbnail": ""},
+    {"id": 12, "nombre": "Mouse Logitech MX Master Wireless Mouse", "descripcion": "Mouse Logitech MX Master Wireless Mouse con seguimiento Darkfield, desplazamiento horizontal y vertical y batería recargable.", "precio": 6999.125, "stock": 25, "thumbnail": ""},
+    {"id": 13, "nombre": "Monitor gaming Alienware AW3420DW", "descripcion": "Monitor gaming Alienware AW3420DW curvo ultrapanorámico WQHD (3440 x1440) de 34 pulgadas con tasa de refresco de 120Hz.", "precio": 262496.5, "stock": 5, "thumbnail": ""}
+]

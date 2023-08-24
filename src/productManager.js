@@ -1,27 +1,34 @@
-const fs = require('fs');
+
+
+import fs from 'fs/promises'; // fs.promises para utilizar promesas en lugar de callbacks
 
 class ProductManager {
     constructor(filePath) {
         this.products = [];
         this.productId = 1;
         this.filePath = filePath;
+        this.loadProducts();
     }
 
-    loadProducts() {
+    async loadProducts() {
         try {
-            const data = fs.readFileSync(this.filePath, 'utf8');
-            this.products = JSON.parse(data);
+            const data = await fs.readFile(this.filePath, 'utf8');
+            if (data) {
+                this.products = JSON.parse(data);
+            } else {
+                this.products = [];
+            }
         } catch (error) {
             this.products = [];
         }
     }
 
-    saveProducts() {
+    async saveProducts() {
         const data = JSON.stringify(this.products);
-        fs.writeFileSync(this.filePath, data);
+        await fs.writeFile(this.filePath, data);
     }
 
-    addProduct(title, description, price, thumbnail, code, stock) {
+    async addProduct(title, description, price, thumbnail, code, stock) {
         if (!title || !description || !price || !thumbnail || !code || !stock) {
             console.log('Todos los campos son obligatorios');
             return;
@@ -48,13 +55,14 @@ class ProductManager {
         this.products.push(newProduct);
         this.productId++;
 
-        this.saveProducts();
+        await this.saveProducts(); //Async para esperar que termine la lectura
     }
 
-    getProducts() {
-        this.loadProducts();
+    async getProducts() {
         return this.products;
     }
+
+    ///resto de los metodos:
 
     getProductById(id) {
         this.loadProducts();
@@ -98,58 +106,4 @@ class ProductManager {
     }
 }
 
-// Pruebas
-const productCatalog = new ProductManager('products.json');
-
-console.log(productCatalog.getProducts());
-
-productCatalog.addProduct(
-    'producto prueba',
-    'Este es un producto prueba',
-    200,
-    'Sin imagen',
-    'abc123',
-    25
-);
-console.log(productCatalog.getProducts());
-
-// Testing agregar prod con mismo código:
-productCatalog.addProduct(
-    'producto prueba',
-    'Este es un producto prueba',
-    200,
-    'Sin imagen',
-    'abc123',
-    25
-);
-
-// Testing agregar un producto nuevo
-productCatalog.addProduct(
-    'lentes de sol',
-    'gafas de sol super trendy',
-    2500,
-    'sunglasses.jpg',
-    'SGL0001',
-    4
-);
-
-// Testing omitir un valor (precio)
-productCatalog.addProduct(
-    'lentes con aumento',
-    'armazón dorado',
-    'sunglasses.jpg',
-    'SGL0001',
-    4
-);
-
-console.log(productCatalog.getProductById(1));
-console.log(productCatalog.getProductById(2));
-console.log(productCatalog.getProductById(3));
-
-//Testing updateProduct
-productCatalog.updateProduct(2, { price: 1200, stock: 15 });
-console.log(productCatalog.getProductById(2))
-
-//Testing deleteProduct
-productCatalog.deleteProduct(3)
-console.log(productCatalog.getProductById(3))
+export default ProductManager;  
