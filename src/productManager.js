@@ -1,6 +1,4 @@
-
-
-import fs from 'fs/promises'; // fs.promises para utilizar promesas en lugar de callbacks
+import fs from 'fs/promises'; // fs.promises para utilizar promesas en lugar de callbacks.
 
 class ProductManager {
     constructor(filePath) {
@@ -47,9 +45,9 @@ class ProductManager {
             title,
             description,
             price,
-            thumbnail,
-            code,
             stock,
+            thumbnail,
+            code
         };
 
         this.products.push(newProduct);
@@ -106,4 +104,4 @@ class ProductManager {
     }
 }
 
-export default ProductManager;  
+export default ProductManager;
