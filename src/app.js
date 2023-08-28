@@ -2,7 +2,7 @@ import express from 'express';
 import ProductManager from './productManager.js';
 
 const app = express();
-const PORT = 8080;
+const PORT = 3030;
 
 const productCatalog = new ProductManager('products.json');
 
@@ -24,6 +24,11 @@ app.get('/products', async (req, res) => {
 
 app.get('/products/:pid', async (req, res) => {
   const productId = parseInt(req.params.pid);
+  
+  if(!productId || isNaN(productId)){
+    res.status(400).json({ error: 'ID inválido, debe ser un valor numérico' });
+    return;
+  }
 
   try {
     const product = await productCatalog.getProductById(productId);
