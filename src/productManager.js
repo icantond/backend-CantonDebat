@@ -3,7 +3,6 @@ import fs from 'fs/promises'; // fs.promises para utilizar promesas en lugar de 
 class ProductManager {
     constructor(filePath) {
         this.products = [];
-        this.productId = 1;
         this.filePath = filePath;
         this.loadProducts();
     }
@@ -26,81 +25,66 @@ class ProductManager {
         await fs.writeFile(this.filePath, data);
     }
 
-    async addProduct(title, description, price, thumbnail, code, stock) {
+    async addProduct(productData) {
+        console.log(productData)
+        const { title, description, code, price, stock, category, thumbnail } = productData;
+
         if (!title || !description || !price || !thumbnail || !code || !stock) {
             console.log('Todos los campos son obligatorios');
             return;
         }
 
-        const existingProduct = this.products.find(
-            (product) => product.code === code
-        );
+        const existingProduct = this.products.find((product) => product.code === code);
         if (existingProduct) {
-            console.log('Ya existe un producto con el mismo código');
-            return;
+            throw new Error('Ya existe un producto con el mismo código');
         }
+        const newProductId = this.calculateNextProductId();
 
         const newProduct = {
-            id: this.productId,
+            id: newProductId,
             title,
             description,
             price,
             stock,
             thumbnail,
-            code
+            code,
+            status: true
         };
-
         this.products.push(newProduct);
-        this.productId++;
-
-        await this.saveProducts(); //Async para esperar que termine la lectura
+        
+        await this.saveProducts();
+        return newProduct; //Async para esperar que termine la lectura
     }
 
+    calculateNextProductId() {
+        const lastProduct = this.products[this.products.length - 1];
+        return lastProduct ? lastProduct.id + 1 : 1;
+    }
     async getProducts() {
         return this.products;
     }
 
-    ///resto de los metodos:
-
-    getProductById(id) {
-        this.loadProducts();
+    async getProductById(id) {
         const product = this.products.find((product) => product.id === id);
-
-        if (!product) {
-            console.log('Producto no encontrado');
-            return;
-        }
         return product;
     }
 
-    updateProduct(id, updatedFields) {
-        this.loadProducts();
+    async updateProduct(id, updatedFields) {
         const productIndex = this.products.findIndex((product) => product.id === id);
-
         if (productIndex === -1) {
-            console.log('Producto no encontrado');
-            return;
+            throw new Error('Producto no encontrado');
         }
-
-        this.products[productIndex] = {
-            ...this.products[productIndex],
-            ...updatedFields,
-        };
-
-        this.saveProducts();
+        Object.assign(this.products[productIndex], updatedFields);
+        await this.saveProducts();
     }
 
-    deleteProduct(id) {
-        this.loadProducts();
+    async deleteProduct(id) {
         const productIndex = this.products.findIndex((product) => product.id === id);
-
         if (productIndex === -1) {
-            console.log('Producto no encontrado');
-            return;
+            throw new Error('Producto no encontrado');
         }
-
         this.products.splice(productIndex, 1);
-        this.saveProducts();
+        await this.saveProducts();
     }
 }
 
