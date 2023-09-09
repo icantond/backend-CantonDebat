@@ -1,8 +1,9 @@
 import express from 'express';
 import ProductManager from '../productManager.js'
+import upload from '../../utils.js';
 
 const router = express.Router();
-const productCatalog = new ProductManager('products.json');
+const productCatalog = new ProductManager('../db/products.json');
 
 // Rutas para productos
 router.get('/', async (req, res) => { //Consulta todos los productos
@@ -42,7 +43,7 @@ router.get('/:pid', async (req, res) => {//Consulta productos por ID
     }
 });
 
-router.post('/', async (req, res) => {//Agregar producto
+router.post('/', upload.array('thumbnail'), async (req, res) => {//Agregar producto
     const {
         title,
         description,
@@ -52,7 +53,7 @@ router.post('/', async (req, res) => {//Agregar producto
         category,
         thumbnail,
     } = req.body;
-    console.log(req.body)
+    console.log(req.body);
 
     if (!title || !description || !code || !price || !stock || !category) {
         res.status(400).json({ error: 'Todos los campos son obligatorios' });
@@ -60,6 +61,8 @@ router.post('/', async (req, res) => {//Agregar producto
     }
 
     try {
+        const imageUrls = req.files ? req.files.map((file) => file.filename) : [];
+
         const product = await productCatalog.addProduct({
             title,
             description,
@@ -67,7 +70,7 @@ router.post('/', async (req, res) => {//Agregar producto
             price,
             stock,
             category,
-            thumbnail,
+            thumbnail: imageUrls,
         });
         res.status(201).json(product);
     } catch (error) {

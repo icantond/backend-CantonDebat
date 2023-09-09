@@ -1,10 +1,11 @@
 import fs from 'fs/promises';
 
+
 class CartManager {
     constructor(filePath) {
         this.carts = [];
         this.nextCartId = 0;
-        this.filePath = filePath;
+        this.filePath = `./db/${filePath}`;
         this.loadCarts();
     }
     async generateUniqueCartId() {
@@ -48,6 +49,9 @@ class CartManager {
         const cart = this.carts.find((cart) => cart.id === id);
         return cart;
     }
+    //Cargo los productos que viven en el JSON para asegurarme que no se intente cargar un producto inexistente
+    async loadProducts(){
+    };
 
     async addProductToCart(cartId, productId, quantity) {
         const cart = this.carts.find((cart) => cart.id === cartId);

@@ -3,7 +3,7 @@ import fs from 'fs/promises'; // fs.promises para utilizar promesas en lugar de 
 class ProductManager {
     constructor(filePath) {
         this.products = [];
-        this.filePath = filePath;
+        this.filePath = `./db/${filePath}`; //llevo el filePath a la carpeta /src/filepath
         this.loadProducts();
     }
 

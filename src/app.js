@@ -4,7 +4,7 @@ import cartsRouter from './routes/carts.js'
 
 const router = express.Router();
 const app = express();
-const PORT = 8080;
+const PORT = 8070;
 
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
