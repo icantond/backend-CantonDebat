@@ -1,11 +1,14 @@
 import fs from 'fs/promises';
+import { fileURLToPath } from 'url';
+import path from 'path';
 
 
 class CartManager {
     constructor(filePath) {
         this.carts = [];
         this.nextCartId = 0;
-        this.filePath = `./db/${filePath}`;
+        const __filename = fileURLToPath(import.meta.url);
+        this.filePath = path.join(path.dirname(__filename), 'db', filePath);
         this.loadCarts();
     }
     async generateUniqueCartId() {

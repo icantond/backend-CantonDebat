@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Lista de Productos</title>
+</head>
+
+<body>
+    <h1>Productos</h1>
+    <ul>
+        {{#each products}}
+        <div class="product">
+            <h2>{{title}}</h2>
+            <p>{{description}}</p>
+            <p>Precio: ${{price}}</p>
+            <img src="public/img/{{thumbnail}}" alt="{{title}}" width="200">
+        </div>
+        {{/each}}
+    </ul>
+</body>
+
+</html>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="js/index.js"></script>

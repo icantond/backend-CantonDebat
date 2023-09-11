@@ -1,9 +1,9 @@
 import express from 'express';
 import ProductManager from '../productManager.js'
-import upload from '../../utils.js';
+import upload from '../utils.js';
 
 const router = express.Router();
-const productCatalog = new ProductManager('../db/products.json');
+const productCatalog = new ProductManager('products.json');
 
 // Rutas para productos
 router.get('/', async (req, res) => { //Consulta todos los productos
@@ -11,14 +11,22 @@ router.get('/', async (req, res) => { //Consulta todos los productos
 
     try {
         const products = await productCatalog.getProducts();
-
-        if (limit) {
-            res.json(products.slice(0, parseInt(limit))); // Establecer el límite de productos a mostrar
+        console.log('Productos obtenidos:', products);//para depuracion
+        if (req.accepts('html')) {
+            res.render('home', { products });
         } else {
-            res.json(products);
+
+            if (limit) {
+                res.json(products.slice(0, parseInt(limit))); // Establecer el límite de productos a mostrar
+            } else {
+                res.json(products);
+            }
         }
     } catch (error) {
+        console.error('Error al obtener productos:', error);// para depuracion
         res.status(500).json({ error: 'Error al obtener productos' });
+
+
     }
 });
 
@@ -51,7 +59,7 @@ router.post('/', upload.array('thumbnail'), async (req, res) => {//Agregar produ
         price,
         stock,
         category,
-        thumbnail,
+        thumbnail: imageUrls
     } = req.body;
     console.log(req.body);
 
@@ -92,7 +100,7 @@ router.delete('/:pid', async (req, res) => {//Borrar prod por ID
     }
 });
 
-router.put('/:pid', async (req, res) => {//Modificar un producto
+router.put('/:pid', upload.array('thumbnail'), async (req, res) => {//Modificar un producto
     const productId = parseInt(req.params.pid);
 
     if (!productId || isNaN(productId)) {
@@ -101,6 +109,15 @@ router.put('/:pid', async (req, res) => {//Modificar un producto
     }
 
     const updatedFields = req.body;
+
+    if (req.files && req.files.length > 0) {
+        const imageUrls = req.files.map((file) => {
+            return file.filename; // Solo guarda el nombre del archivo
+        });
+
+        updatedFields.thumbnail = imageUrls; // Asigna los nombres de archivo de las imágenes
+        console.log(`image url; ${imageUrls}`)
+    }
 
     try {
         await productCatalog.updateProduct(productId, updatedFields);

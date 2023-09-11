@@ -1,9 +1,15 @@
 import fs from 'fs/promises'; // fs.promises para utilizar promesas en lugar de callbacks.
+import { fileURLToPath } from 'url';
+import path from 'path';
+
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 class ProductManager {
     constructor(filePath) {
         this.products = [];
-        this.filePath = `./db/${filePath}`; //llevo el filePath a la carpeta /src/filepath
+        this.filePath = path.join(__dirname, 'db', filePath);
         this.loadProducts();
     }
 
@@ -12,11 +18,16 @@ class ProductManager {
             const data = await fs.readFile(this.filePath, 'utf8');
             if (data) {
                 this.products = JSON.parse(data);
+                console.log('Productos cargados correctamente' ,this.products); //para depuracion
+
             } else {
                 this.products = [];
+                console.log('No se encontraron productos en el archivo.');//para depuracion
+
             }
         } catch (error) {
             this.products = [];
+            console.error('Error al cargar productos:', error); //para depuracion
         }
     }
 
