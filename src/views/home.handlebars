@@ -1,14 +1,18 @@
-<h1>HOME-Productos</h1>
-<ul>
+<head>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+
+<h1 class="page-title">HOME-Productos</h1>
+<ul class="product-list-container">
     {{#each products}}
-    <div class="product">
+    <div class="product-list-item">
         <h2>{{title}}</h2>
         <p>{{description}}</p>
         <p>Precio: ${{price}}</p>
-        <img src="/img/{{thumbnail}}" alt="{{title}}" width="200">
+        <img src="static/img/{{thumbnail}}" alt="{{title}}" width="200">
     </div>
     {{/each}}
 </ul>
 
 <script src="/socket.io/socket.io.js"></script>
-<script src="js/index.js"></script>
+<script src="static/js/index.js"></script>

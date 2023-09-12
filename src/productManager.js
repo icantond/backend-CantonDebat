@@ -18,7 +18,6 @@ class ProductManager {
             const data = await fs.readFile(this.filePath, 'utf8');
             if (data) {
                 this.products = JSON.parse(data);
-                console.log('Productos cargados correctamente' ,this.products); //para depuracion
 
             } else {
                 this.products = [];
