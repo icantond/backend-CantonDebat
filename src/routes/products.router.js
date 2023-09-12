@@ -1,6 +1,6 @@
 import express from 'express';
 import ProductManager from '../productManager.js'
-import upload from '../utils.js';
+import {upload} from '../utils.js';
 
 const router = express.Router();
 const productCatalog = new ProductManager('products.json');
