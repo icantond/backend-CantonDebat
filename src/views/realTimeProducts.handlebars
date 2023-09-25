@@ -1,0 +1,56 @@
+<head>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<h2 class="section-title">Agregar Nuevo Producto</h2>
+
+<form id="add-product-form" enctype="multipart/form-data" method="POST">
+    <form id="add-product-form">
+        <label for="title">Título:</label>
+        <input type="text" id="title" name="title" placeholder="Ingresa título">
+
+        <label for="description">Descripción:</label>
+        <input type="text" id="description" name="description" placeholder="Ingresa descripcion">
+
+        <label for="price">Precio:</label>
+        <input type="number" id="price" name="price" placeholder="Ingresa el precio" required>
+
+        <label for="stock">Stock:</label>
+        <input type="number" id="stock" name="stock" placeholder="Ingresa el stock">
+
+        <label for="code">Código:</label>
+        <input type="text" id="code" name="code" placeholder="Ingresa el código">
+
+        <label for="category">Categoría:</label>
+        <input type="text" id="category" name="category" placeholder="Ingresa la categoría">
+
+        <label for="thumbnail">Imágenes:</label>
+        <input type="file" id="thumbnail" name="thumbnail" accept=".png, .jpeg, .jpg, .webp, .tiff" required>
+
+        <button type="submit">Agregar Producto</button>
+    </form>
+
+    <h2 class="section-title">Eliminar Producto</h2>
+    <form id="delete-product-form">
+        <input type="text" id="productId" placeholder="ID del producto a eliminar" required>
+        <button type="submit">Eliminar Producto</button>
+    </form>
+
+    <h1 class="page-title">Lista de Productos en Tiempo Real</h1>
+    <div class="product-list-container">
+        <ul id="product-list">
+            {{#each products}}
+            <li class="product-list-item">
+                <h3 class="product-list-item-title">{{this.title}}</h3>
+                <p class="product-list-item-description">{{this.description}}</p>
+                <p class="product-list-item-price">Precio: ${{this.price}}</p>
+                <p class="product-list-item-stock">Stock: {{this.stock}}</p>
+                <p class="product-list-item-code">Código: {{this.code}}</p>
+                <p class="product-list-item-code">ID: {{this.id}}</p>
+                <img class="product-list-item-img" src="/static/img/{{thumbnail}}" alt="{{title}}" width="150px">
+            </li>
+            {{/each}}
+        </ul>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="static/js/index.js"></script>

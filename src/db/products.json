@@ -1,0 +1,155 @@
+[
+    {
+        "id": 1,
+        "title": "Laptop HP",
+        "description": "Laptop HP con procesador Intel Core i7, 16GB RAM y 512GB SSD",
+        "price": 262496.5,
+        "stock": 10,
+        "thumbnail": "1.jpeg",
+        "code": "ABC123",
+        "status": true,
+        "category": "Laptops"
+    },
+    {
+        "id": 2,
+        "title": "Smartphone Samsung",
+        "description": "Smartphone Samsung Galaxy S21 con pantalla de 6.2 pulgadas, cámara de 64MP y batería de 4000mAh",
+        "price": 279965,
+        "stock": 15,
+        "thumbnail": "2.jpeg",
+        "code": "DEF456",
+        "status": true,
+        "category": "Smartphones"
+    },
+    {
+        "id": 3,
+        "title": "Smartwatch Apple",
+        "description": "Smartwatch Apple Watch Series 7 con pantalla Retina siempre activa, GPS integrado y resistencia al agua",
+        "price": 139982.5,
+        "stock": 20,
+        "thumbnail": "3.jpg",
+        "code": "GHI789",
+        "status": true,
+        "category": "Smartwatches"
+    },
+    {
+        "id": 4,
+        "title": "Tablet Lenovo",
+        "description": "Tablet Lenovo Tab P11 Pro con pantalla OLED de 11.5 pulgadas, procesador Snapdragon y batería de larga duración",
+        "price": 209973.75,
+        "stock": 8,
+        "thumbnail": "images.jpeg",
+        "code": "JKL012",
+        "status": true,
+        "category": "Tablets"
+    },
+    {
+        "id": 5,
+        "title": "Cámara Sony",
+        "description": "Cámara Sony Alpha a7 III con sensor CMOS de fotograma completo de 24.2 MP, grabación de video en resolución Ultra HD y estabilización de imagen en el cuerpo",
+        "price": 699912.5,
+        "stock": 5,
+        "thumbnail": "images.jpeg",
+        "code": "MNO345",
+        "status": true,
+        "category": "Cámaras"
+    },
+    {
+        "id": 6,
+        "title": "Auriculares Bose",
+        "description": "Auriculares Bose QuietComfort con cancelación de ruido, micrófono integrado y batería de larga duración",
+        "price": 419947.5,
+        "stock": 12,
+        "thumbnail": "images.jpeg",
+        "code": "PQR678",
+        "status": true,
+        "category": "Auriculares"
+    },
+    {
+        "id": 7,
+        "title": "Impresora HP",
+        "description": "Impresora HP LaserJet Pro MFP M428fdw con impresión a doble cara automática, escaneo a doble cara automático y fax incorporado.",
+        "price": 122482.5,
+        "stock": 15,
+        "thumbnail": "images.jpeg",
+        "code": "STU901",
+        "status": true,
+        "category": "Impresoras"
+    },
+    {
+        "id": 8,
+        "title": "Disco duro externo Seagate",
+        "description": "Disco duro externo Seagate Backup Plus Slim con capacidad de almacenamiento de hasta 2TB, conexión USB-C y software de copia de seguridad automática.",
+        "price": 34992.5,
+        "stock": 20,
+        "thumbnail": "images.jpeg",
+        "code": "VWX234",
+        "status": true,
+        "category": "Almacenamiento"
+    },
+    {
+        "id": 9,
+        "title": "Altavoz inteligente Amazon Echo Dot",
+        "description": "Altavoz inteligente Amazon Echo Dot (4.ª generación) con Alexa, sonido mejorado y diseño esférico.",
+        "price": 26249.65,
+        "stock": 30,
+        "thumbnail": "images.jpeg",
+        "code": "YZA567",
+        "status": true,
+        "category": "Altavoces"
+    },
+    {
+        "id": 10,
+        "title": "Router ASUS RT-AX86U",
+        "description": "Router ASUS RT-AX86U AX5700 WiFi Gaming Router con procesador de cuatro núcleos, tecnología WiFi6 y soporte para juegos en línea.",
+        "price": 20998.2,
+        "stock": 10,
+        "thumbnail": "images.jpeg",
+        "code": "BCD890",
+        "status": true,
+        "category": "Redes"
+    },
+    {
+        "id": 11,
+        "title": "Teclado mecánico Razer BlackWidow V3 Pro",
+        "description": "Teclado mecánico Razer BlackWidow V3 Pro inalámbrico con interruptores mecánicos verdes, retroiluminación RGB y batería de larga duración.",
+        "price": 13998.25,
+        "stock": 18,
+        "thumbnail": "images.jpeg",
+        "code": "EFG123",
+        "status": true,
+        "category": "Teclados"
+    },
+    {
+        "id": 12,
+        "title": "Mouse Logitech MX Master Wireless Mouse",
+        "description": "Mouse Logitech MX Master Wireless Mouse con seguimiento Darkfield, desplazamiento horizontal y vertical y batería recargable.",
+        "price": 6999.125,
+        "stock": 25,
+        "thumbnail": "images.jpeg",
+        "code": "HIJ456",
+        "status": true,
+        "category": "Ratones"
+    },
+    {
+        "id": 13,
+        "title": "Monitor gaming Alienware AW3420DW",
+        "description": "Monitor gaming Alienware AW3420DW curvo ultrapanorámico WQHD (3440 x1440) de 34 pulgadas con tasa de refresco de 120Hz.",
+        "price": 262496.5,
+        "stock": 5,
+        "thumbnail": "images.jpeg",
+        "code": "KLM789",
+        "status": true,
+        "category": "Monitores"
+    },
+    {
+        "id": 14,
+        "title": "producto a eliminar",
+        "description": "desc prod a eliminar",
+        "price": "999999",
+        "stock": "555555",
+        "thumbnail": "C:\\fakepath\\Captura de pantalla 2023-03-11 121846.png",
+        "code": "ABCDEFG",
+        "status": true
+    }
+]
