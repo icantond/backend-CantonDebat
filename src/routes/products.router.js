@@ -14,11 +14,11 @@ router.get('/', async (req, res) => { //Consulta todos los productos
         const products = await productCatalog.getAll();
 
 
-            if (limit) {
-                res.json(products.slice(0, parseInt(limit))); // Establecer el límite de productos a mostrar
-            } else {
-                res.json(products);
-            }
+        if (limit) {
+            res.json(products.slice(0, parseInt(limit))); // Establecer el límite de productos a mostrar
+        } else {
+            res.json(products);
+        }
         // }
     } catch (error) {
         console.error('Error al obtener productos:', error);// DEPURACION
@@ -86,42 +86,45 @@ router.post('/', upload.array('thumbnail'), async (req, res) => {//Agregar produ
 });
 
 router.delete('/:pid', async (req, res) => {//Borrar prod por ID
-    const productId = parseInt(req.params.pid);
+    const productId = req.params.pid;
 
-    if (!productId || isNaN(productId)) {
-        res.status(400).send({ error: 'El valor del ID debe ser numérico' });
-        return;
-    } try {
-        await productCatalog.deleteProduct(productId);
+    let result = await productsModel.findByIdAndDelete(productId);
 
-        io.emit('updateProducts', await productCatalog.getProducts());
-
-        res.status(200).send({ message: 'Producto eliminado con éxito' })
-    } catch (error) {
-        res.status(500).send({ error: 'Error al eliminar el producto' });
+    if(result === null){
+        return res.status(404).send({ message: 'Producto no encontrado'});
+    } else {
+        return res.status(202).send({ message: 'Producto eliminado con exito', data: result});
     }
 });
 
 router.put('/:pid', upload.array('thumbnail'), async (req, res) => {//Modificar un producto
-    const productId = parseInt(req.params.pid);
-
-    if (!productId || isNaN(productId)) {
-        res.status(400).send({ error: 'ID del producto invalido' });
+    const productId = req.params.pid;
+    if (!productId) {
+        res.status(400).send({ error: 'Debe actualizar mediante un ID de producto' });
         return;
     }
-
+    
     const updatedFields = req.body;
 
-    if (req.files && req.files.length > 0) {
-        const imageUrls = req.files.map((file) => {
-            return file.filename; // Solo guarda el nombre del archivo
-        });
-
-        updatedFields.thumbnail = imageUrls; // Asigna los nombres de archivo de las imágenes
-    }
-
     try {
-        const updatedProduct = await productsModel.findByIdAndUpdate(productId, updatedFields, { new: true });
+        const existingProduct = await productsModel.findById(productId);
+        if (!existingProduct) {
+            res.status(404).send({ error: 'Producto no encontrado' });
+            return;
+        }
+        for (const key in updatedFields) {
+            if (updatedFields.hasOwnProperty(key)) {
+                existingProduct[key] = updatedFields[key];
+            }
+        }
+
+        if (req.files && req.files.length > 0) {
+            const imageUrls = req.files.map((file) => {
+                return file.filename;
+            });
+            existingProduct.thumbnail = imageUrls;
+        }
+        const updatedProduct = await existingProduct.save();
         res.status(200).send({ message: 'Producto actualizado con éxito', product: updatedProduct });
     } catch (error) {
         res.status(500).send({ error: 'Error al actualizar el producto' });
