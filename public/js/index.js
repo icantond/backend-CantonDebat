@@ -4,16 +4,28 @@ socket.on('connect', () => {
     console.log('Conectado al servidor WebSocket');
 });
 
+//ACTUALIZACION DE VISTA PRODUCTOS
 socket.on('updateProducts', (updatedProducts) => {
-
     console.log('Actualización de productos recibida:', updatedProducts);
 
-    const productList = document.getElementById('product-list');
-    productList.innerHTML = updatedProducts.map((product) => `<li>${product.title}</li>`).join('');
+    const productListContainer = document.getElementById('product-list-container');
+    productListContainer.innerHTML = `
+        <ul id="product-list">
+            ${updatedProducts.map((product) => `
+                <li class="product-list-item">
+                    <h3 class="product-list-item-title">Producto: ${product.title}</h3>
+                    <p class="product-list-item-code">ID: ${product._id}</p>
+                    <img src="${product.thumbnail}" width="50px">
+                </li>
+            `).join('')}
+        </ul>
+    `;
 });
+
 
 const addProductForm = document.getElementById('add-product-form');
 
+//AGREGAR PRODUCTOS:
 addProductForm.addEventListener('submit', (event) => {
     event.preventDefault();
 
@@ -30,25 +42,24 @@ addProductForm.addEventListener('submit', (event) => {
     socket.emit('addProduct', productData);
 
     addProductForm.reset();
-
 });
+
+//ELIMINAR PRODUCTOS:
 
 document.getElementById('delete-product-form').addEventListener('submit', async (e) => {
     e.preventDefault();
 
     const productId = document.getElementById('productId').value;
-
-    // Emitir un evento al servidor para solicitar la eliminación del producto
     socket.emit('eliminar_producto', { productId });
 
 });
-
 socket.on('producto_eliminado', (data) => {
     const productId = data.productId;
-
-    // Actualiza la vista eliminando el elemento con el ID productId
-    const productElement = document.getElementById(productId);
-    if (productElement) {
-        productElement.remove();
+    
+    const productListContainer = document.getElementById('product-list-container');
+    const productToRemove = document.getElementById(productId);
+    
+    if (productToRemove) {
+        productListContainer.removeChild(productToRemove);
     }
 });

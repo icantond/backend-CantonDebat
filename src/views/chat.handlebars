@@ -1,0 +1,31 @@
+<head>
+    <link rel="stylesheet" href="/static/css/chat.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+</head>
+
+<h1 class="page-title">Chat en Tiempo Real</h1>
+
+<div id="chat-container">
+    
+    <div id="messages">
+        {{#each messages}}
+        <div class="message">
+            <p class="message-user">{{this.user}}:</p>
+            <p class="message-message"> {{this.message}}</p>
+        </div>
+        {{/each}}
+    </div>
+
+    <form id="chat-form">
+        {{!-- <input type="text" id="user" placeholder="Nombre de usuario"> --}}
+        <input type="text" id="message" placeholder="Escribe un mensaje">
+        <button type="submit" id="send-button">
+            <i class="bi bi-send"></i>
+        </button>
+    </form>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="/socket.io/socket.io.js"></script>
+<script src="/static/js/chat.js"></script>

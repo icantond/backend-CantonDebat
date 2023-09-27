@@ -15,7 +15,7 @@ router.get('/', async (req, res) => {
 
 router.get('/realtimeproducts', async (req, res) => {
     try {
-        const products = await productCatalog.getProducts();
+        const products = await productCatalog.getAll();
         res.render('realTimeProducts', { products });
     } catch (error) {
         res.status(500).json({ error: 'Error al obtener productos en tiempo real' });
@@ -28,11 +28,11 @@ router.post('/realtimeproducts', async (req, res) => {
     try {
         const newProduct = await productCatalog.addProduct(productData);
 
-        io.emit('updateProducts', await productCatalog.getProducts());
+        socket.emit('updateProducts', await productCatalog.getAll());
 
-        res.status(201).json(newProduct);
+        res.status(201).send(newProduct);
     } catch (error) {
-        res.status(500).json({ error: 'Error al agregar el producto en tiempo real' });
+        res.status(500).send({ error: 'Error al agregar el producto en tiempo real' });
     }
 });
 
@@ -48,10 +48,8 @@ router.delete('/realtimeproducts', async (req, res) => {
     }
 
     try {
-        // Elimina el producto del catálogo
         await productCatalog.deleteProduct(deleteProductId);
 
-        // Emitir evento para actualizar la vista en tiempo real
         io.emit('updateProducts', await productCatalog.getProducts());
 
         res.status(200).json({ message: 'Producto eliminado con éxito' });
@@ -62,7 +60,5 @@ router.delete('/realtimeproducts', async (req, res) => {
 
     }
 });
-
-
 
 export default router;

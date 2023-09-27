@@ -3,14 +3,16 @@ import mongoose from 'mongoose';
 const messageCollection = 'messages';
 
 const messageSchema = new mongoose.Schema({
-    user_email: {
+    user: {
         type: String,
-        required : true
+        required: true,
     },
-    message:{
-        type:String,
-        required:true
-    }
+    message: {
+        type: String,
+        required: true,
+    },
 });
 
-export default messagesModel = mongoose.model(messageCollection, messageSchema);
+const messagesModel = mongoose.model(messageCollection, messageSchema);
+
+export default messagesModel;

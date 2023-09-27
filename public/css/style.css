@@ -1,71 +1,108 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Roboto:ital,wght@0,300;0,400;0,500;0,700;0,900;1,400;1,500;1,700&display=swap');
-
-* {
+body {
+    font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
-    box-sizing: border-box;
+}
+ul li{
+    list-style: none;
+}
+.page-title {
+    text-align: center;
+    background-color: #007BFF;
+    color: #fff;
+    padding: 20px;
+    margin: 0;
 }
 
-html {
+.section-title {
+    font-size: 24px;
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
+
+
+#product-list-container {
+    padding: 20px;
+    max-width: 800px;
+    margin: auto;
+    overflow-y: auto;
+    max-height: 400px;
+}
+
+#product-list {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap; 
+    justify-content: space-between; 
+}
+
+.product-list-item {
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: calc(30% - 10px); 
+    margin-bottom: 20px;
+    padding: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+
+.product-list-item h2 {
+    font-size: 18px;
+    margin: 0;
+}
+
+.product-list-item p {
+    margin: 5px 0;
+}
+
+.product-list-item img {
+    max-width: 100%;
+    margin: auto;
+    height: auto;
+}
+
+
+form {
+    margin: auto;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: calc(45% - 20px)
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+input[type="text"],
+input[type="number"] {
+    width: 90%;
+    padding: 5px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+input[type="file"] {
+    width: 100%;
+    margin-top: 5px;
+}
+
+button[type="submit"] {
+    background-color: #007BFF;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
     font-size: 16px;
 }
 
-ul,
-ol {
-    list-style: none;
-    margin: 0;
-    padding: 0;
+button[type="submit"]:hover {
+    background-color: #0056b3;
 }
 
-a {
-    text-decoration: none;
-}
-
-
-.page-title {
-    margin: auto;
-    padding: 0.5rem;
-    font-family: 'Poppins', sans-serif;
-    color: blue;
-    font-weight: 400;
-    font-size: 1.5rem;
-}
-
-.product-list-container{
-    display: flex;
-    flex-wrap: wrap;
-    justify-items: center;
-    gap: 1rem;
-    flex-direction: row;
-    margin: auto;
-    padding: 1rem;
-    font-family: 'Roboto', sans-serif;
-}
-
-.product-list-item{
-    padding: 1rem;
-    width: 30%;
-}
-
-.product-list-item-description{
-    font-size: 1.2rem;
-}
-.product-list-item-price{
-    font-size: 1rem;
-    font-weight: 600;
-}
-
-.section-title{
-    font-family: 'Poppins', sans-serif;
-    margin: auto;
-}
-
-#add-product-form{
-    margin:auto ;
-    max-width: 60vw;
-    padding: 2rem;
-}
-label{
-    font-family: 'Roboto', sans-serif;
-    display: block;
-}

@@ -1,5 +1,3 @@
-// import { productsModel } from '../models/products.model.js';
-// import ProductManager from '../../productManager.js';
 import productsModel from '../models/products.model.js';
 
 export default class Products {

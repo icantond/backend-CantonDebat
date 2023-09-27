@@ -48,8 +48,7 @@ router.get('/:pid', async (req, res) => {//Consulta productos por ID
         res.status(500).send({ error: 'Error al obtener producto' });
     }
 });
-
-router.post('/', upload.array('thumbnail'), async (req, res) => {//Agregar producto
+router.post('/', upload.single('thumbnail'), async (req, res) => {
     const {
         title,
         description,
@@ -65,8 +64,9 @@ router.post('/', upload.array('thumbnail'), async (req, res) => {//Agregar produ
     }
 
     try {
-        const imageUrls = req.files ? req.files.map((file) => file.filename) : [];
+        // const imageUrl = req.file ? `/static/img/${req.file.filename}` : '';
 
+        const imageUrl = req.file ? `/public/img/${req.file.filename}` : ''; // Ruta de la imagen
         const product = await productCatalog.addProduct({
             title,
             description,
@@ -74,7 +74,7 @@ router.post('/', upload.array('thumbnail'), async (req, res) => {//Agregar produ
             price,
             stock,
             category,
-            thumbnail: imageUrls,
+            thumbnail: imageUrl,
         });
 
         io.emit('updateProducts', await productCatalog.getProducts());
@@ -84,7 +84,6 @@ router.post('/', upload.array('thumbnail'), async (req, res) => {//Agregar produ
         res.status(500).send({ error: 'Error al agregar el producto' });
     }
 });
-
 router.delete('/:pid', async (req, res) => {//Borrar prod por ID
     const productId = req.params.pid;
 

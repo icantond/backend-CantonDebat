@@ -9,6 +9,8 @@ import path from 'path';
 import productsRouter from './routes/products.router.js';
 import cartsRouter from './routes/carts.router.js';
 import viewsRouter from './routes/views.router.js';
+import chatRouter from './routes/chat.router.js';
+import messagesModel from './dao/models/messages.model.js';
 // import ProductManager from './productManager.js';
 import Products from './dao/dbManagers/products.manager.js';
 
@@ -36,6 +38,7 @@ app.use('/', viewsRouter);
 app.use('/realtimeproducts', viewsRouter);
 app.use('/api/products', productsRouter);
 app.use('/api/carts', cartsRouter);
+app.use('/chat', chatRouter);
 
 mongoose.connect('mongodb://127.0.0.1:27017/ecommerce', { useNewUrlParser: true, useUnifiedTopology: true })
     .then(() => {
@@ -45,39 +48,50 @@ mongoose.connect('mongodb://127.0.0.1:27017/ecommerce', { useNewUrlParser: true,
         console.error('Error al conectar a MongoDB:', error);
     });
 
+
+//CONFIGURACION DE SOCKETS
 const io = socketServer;
+
 socketServer.on('connection', socket => {
     console.log("Nuevo cliente conectado");
-
     const productManager = new Products('products');
 
+    //Socket para agregar productos
     socket.on('addProduct', async (newProduct) => {
         try {
-            const addedProduct = await productManager.addProduct(newProduct);
-            const updateProducts = await productManager.getProducts();
-
-            io.emit('updateProducts', updateProducts);
-            console.log('Producto agregado: ', addedProduct);
-
-        }
-
-        catch (error) {
+            const addedProduct = await productManager.save(newProduct);
+            const updatedProducts = await productManager.getAll();
+    
+            io.emit('updateProducts', updatedProducts); // Envía la lista actualizada al cliente
+            console.log('Producto agregado:', addedProduct);
+        } catch (error) {
             console.error('Error al agregar el producto:', error);
-        };
+        }
     });
-
+    
+    //Socket para eliminar productos
     socket.on('eliminar_producto', async (data) => {
         const productId = data.productId;
 
         try {
-            // Eliminar el producto utilizando ProductManager.deleteProduct
-            await productManager.deleteProduct(productId);
 
-            // Emitir un evento para actualizar la vista en tiempo real
+            await productManager.delete(productId);
             io.emit('producto_eliminado', { productId });
+
+            const updatedProducts = await productManager.getAll();
+            io.emit('updateProducts', updatedProducts);
+
         } catch (error) {
-            // Manejar errores, si es necesario
             console.error('Error al eliminar el producto:', error);
         }
+    });
+
+    //Socket para chat:
+    socket.on('chatMessage', (data) => {
+        const { user, message } = data;
+        const newMessage = new messagesModel({ user, message });
+        newMessage.save();
+
+        io.emit('message', data);
     });
 });

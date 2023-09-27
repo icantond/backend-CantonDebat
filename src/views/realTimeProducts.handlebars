@@ -36,17 +36,18 @@
     </form>
 
     <h1 class="page-title">Lista de Productos en Tiempo Real</h1>
-    <div class="product-list-container">
+    <div class="product-list-container" id="product-list-container">
         <ul id="product-list">
             {{#each products}}
             <li class="product-list-item">
-                <h3 class="product-list-item-title">{{this.title}}</h3>
-                <p class="product-list-item-description">{{this.description}}</p>
+                <h3 class="product-list-item-title">Producto: {{this.title}}</h3>
+                {{!-- <p class="product-list-item-description">{{this.description}}</p>
                 <p class="product-list-item-price">Precio: ${{this.price}}</p>
                 <p class="product-list-item-stock">Stock: {{this.stock}}</p>
-                <p class="product-list-item-code">Código: {{this.code}}</p>
-                <p class="product-list-item-code">ID: {{this.id}}</p>
-                <img class="product-list-item-img" src="/static/img/{{thumbnail}}" alt="{{title}}" width="150px">
+                <p class="product-list-item-code">Código: {{this.code}}</p> --}}
+                <p class="product-list-item-code">ID: {{this._id}}</p>
+                <img src="{{this.thumbnail}}" width="50px">
+                {{!-- <img class="product-list-item-img" src="/static/img/{{thumbnail}}" alt="{{title}}" width="150px"> --}}
             </li>
             {{/each}}
         </ul>
