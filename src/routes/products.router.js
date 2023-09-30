@@ -2,6 +2,7 @@ import express from 'express';
 import Products from '../dao/dbManagers/products.manager.js'
 import { upload } from '../utils.js';
 import productsModel from '../dao/models/products.model.js';
+import path from 'path';
 
 const router = express.Router();
 const productCatalog = new Products();
@@ -66,11 +67,18 @@ router.post('/', upload.array('thumbnail', 1), async (req, res) => {
     }
 
     try {
-        const thumbnailFiles = req.files; // Obtener la lista de archivos de imagen
-        console.log('thumbnailFiles:', thumbnailFiles); // Verifica que thumbnailFiles tenga los archivos correctamente
-
-        const thumbnailPaths = thumbnailFiles.map((file) => `/static/img/${file.filename}`); // Crear la lista de rutas de imágenes
-        console.log('thumbnailPaths:', thumbnailPaths); // Verifica que thumbnailPaths esté configurado correctamente
+        const thumbnailFiles = req.files;
+        console.log('thumbnailFiles:', thumbnailFiles);
+        const thumbnailData = thumbnailFiles[0]; // Tomar la primera imagen si es un solo archivo
+        const thumbnail = {
+            filename: thumbnailData.filename,
+            extension: path.extname(thumbnailData.originalname).toLowerCase(),
+        };
+        console.log('thumbnail:', thumbnail);
+        // const thumbnailFiles = req.files;
+        // console.log('thumbnailFiles:', thumbnailFiles);
+        // const thumbnailPaths = thumbnailFiles.map((file) => `/static/img/${file.filename}`); 
+        // console.log('thumbnailPaths:', thumbnailPaths); 
 
         const product = await productCatalog.addProduct({
             title,
@@ -79,17 +87,18 @@ router.post('/', upload.array('thumbnail', 1), async (req, res) => {
             price,
             stock,
             category,
-            thumbnail: thumbnailPaths,
+            thumbnail,
         });
 
-        // socket.emit('updateProducts', await productCatalog.getProducts());
-
         res.status(201).send(product);
+
     } catch (error) {
         console.error('Error en la ruta POST:', error);
         res.status(500).send({ error: 'Error al agregar el producto' });
     }
 });
+
+
 router.delete('/:pid', async (req, res) => {//Borrar prod por ID
     const productId = req.params.pid;
 

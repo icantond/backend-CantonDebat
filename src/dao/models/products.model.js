@@ -32,8 +32,10 @@ const productSchema = new mongoose.Schema({
         type: String, 
         required: true
     },
-    thumbnail: String,
-    // thumbnail:{
+thumbnail: {
+        filename: String,
+        extension: String,
+    },    // thumbnail:{
     //     type: Array,
     //     default: [],
     // },

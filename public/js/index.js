@@ -45,7 +45,6 @@ addProductForm.addEventListener('submit', (e) => {
             category: document.getElementById('category').value,
             thumbnail: thumbnail
         };
-
         socket.emit('addProduct', productData);
 
         addProductForm.reset();
