@@ -51,7 +51,7 @@ router.get('/:pid', async (req, res) => {//Consulta productos por ID
 });
 
 router.post('/', upload.array('thumbnail', 1), async (req, res) => {
-    console.log('req.file:', req.file); // Verifica que req.file contenga la información del archivo
+    console.log('req.file:', req.file); 
     console.log('req.body:', req.body);
     const {
         title,
@@ -69,16 +69,13 @@ router.post('/', upload.array('thumbnail', 1), async (req, res) => {
     try {
         const thumbnailFiles = req.files;
         console.log('thumbnailFiles:', thumbnailFiles);
-        const thumbnailData = thumbnailFiles[0]; // Tomar la primera imagen si es un solo archivo
+        const thumbnailData = thumbnailFiles[0]; 
         const thumbnail = {
             filename: thumbnailData.filename,
             extension: path.extname(thumbnailData.originalname).toLowerCase(),
         };
         console.log('thumbnail:', thumbnail);
-        // const thumbnailFiles = req.files;
-        // console.log('thumbnailFiles:', thumbnailFiles);
-        // const thumbnailPaths = thumbnailFiles.map((file) => `/static/img/${file.filename}`); 
-        // console.log('thumbnailPaths:', thumbnailPaths); 
+
 
         const product = await productCatalog.addProduct({
             title,

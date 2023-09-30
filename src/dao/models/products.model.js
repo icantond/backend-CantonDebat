@@ -35,10 +35,7 @@ const productSchema = new mongoose.Schema({
 thumbnail: {
         filename: String,
         extension: String,
-    },    // thumbnail:{
-    //     type: Array,
-    //     default: [],
-    // },
+    },   
 });
 const productsModel = mongoose.model(productCollection, productSchema);
 

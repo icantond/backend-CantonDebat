@@ -41,18 +41,8 @@
             {{#each products}}
             <li class="product-list-item">
                 <h3 class="product-list-item-title">Producto: {{this.title}}</h3>
-                {{!-- <p class="product-list-item-description">{{this.description}}</p>
-                <p class="product-list-item-price">Precio: ${{this.price}}</p>
-                <p class="product-list-item-stock">Stock: {{this.stock}}</p>
-                <p class="product-list-item-code">Código: {{this.code}}</p> --}}
                 <p class="product-list-item-code">ID: {{this._id}}</p>
-                
                 <img src="static/img/{{this.thumbnail}}" width="50px">
-
-                {{!-- <img src="{{this.thumbnail}}" width="50px"> --}}
-                {{!-- <img class="product-list-item-img" src="/static/img/{{thumbnail}}" alt="{{title}}" width="150px">
-                --}}
-
             </li>
             {{/each}}
         </ul>
