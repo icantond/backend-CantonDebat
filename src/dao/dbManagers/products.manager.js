@@ -11,6 +11,7 @@ export default class Products {
             await product.save();
             return product;
         } catch (error) {
+            console.error('Error al agregar el producto a la base de datos:', error);
             throw new Error('Error al agregar el producto a la base de datos');
         }
     }

@@ -22,30 +22,38 @@ socket.on('updateProducts', (updatedProducts) => {
     `;
 });
 
-
 const addProductForm = document.getElementById('add-product-form');
 
-//AGREGAR PRODUCTOS:
-addProductForm.addEventListener('submit', (event) => {
-    event.preventDefault();
+addProductForm.addEventListener('submit', (e) => {
+    e.preventDefault();
 
-    const productData = {
-        title: document.getElementById('title').value,
-        description: document.getElementById('description').value,
-        price: document.getElementById('price').value,
-        stock: document.getElementById('stock').value,
-        code: document.getElementById('code').value,
-        category: document.getElementById('category').value,
-        thumbnail: document.getElementById('thumbnail').value,
-    };
+    const formData = new FormData(addProductForm);
 
-    socket.emit('addProduct', productData);
+    fetch('/api/products', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
 
-    addProductForm.reset();
+        const productData = {
+            title: document.getElementById('title').value,
+            description: document.getElementById('description').value,
+            price: document.getElementById('price').value,
+            stock: document.getElementById('stock').value,
+            code: document.getElementById('code').value,
+            category: document.getElementById('category').value,
+            thumbnail: thumbnail
+        };
+
+        socket.emit('addProduct', productData);
+
+        addProductForm.reset();
+    })
+    .catch(error => console.error(error));
 });
 
 //ELIMINAR PRODUCTOS:
-
 document.getElementById('delete-product-form').addEventListener('submit', async (e) => {
     e.preventDefault();
 

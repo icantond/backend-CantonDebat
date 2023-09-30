@@ -32,10 +32,11 @@ const productSchema = new mongoose.Schema({
         type: String, 
         required: true
     },
-    thumbnail: {
-        type: Array,
-        default: []
-    } 
+    thumbnail: String,
+    // thumbnail:{
+    //     type: Array,
+    //     default: [],
+    // },
 });
 const productsModel = mongoose.model(productCollection, productSchema);
 

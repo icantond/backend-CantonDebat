@@ -48,7 +48,10 @@ router.get('/:pid', async (req, res) => {//Consulta productos por ID
         res.status(500).send({ error: 'Error al obtener producto' });
     }
 });
-router.post('/', upload.single('thumbnail'), async (req, res) => {
+
+router.post('/', upload.array('thumbnail', 1), async (req, res) => {
+    console.log('req.file:', req.file); // Verifica que req.file contenga la información del archivo
+    console.log('req.body:', req.body);
     const {
         title,
         description,
@@ -57,16 +60,18 @@ router.post('/', upload.single('thumbnail'), async (req, res) => {
         stock,
         category,
     } = req.body;
-
     if (!title || !description || !code || !price || !stock || !category) {
         res.status(400).send({ error: 'Todos los campos son obligatorios' });
         return;
     }
 
     try {
-        // const imageUrl = req.file ? `/static/img/${req.file.filename}` : '';
+        const thumbnailFiles = req.files; // Obtener la lista de archivos de imagen
+        console.log('thumbnailFiles:', thumbnailFiles); // Verifica que thumbnailFiles tenga los archivos correctamente
 
-        const imageUrl = req.file ? `/public/img/${req.file.filename}` : ''; // Ruta de la imagen
+        const thumbnailPaths = thumbnailFiles.map((file) => `/static/img/${file.filename}`); // Crear la lista de rutas de imágenes
+        console.log('thumbnailPaths:', thumbnailPaths); // Verifica que thumbnailPaths esté configurado correctamente
+
         const product = await productCatalog.addProduct({
             title,
             description,
@@ -74,13 +79,14 @@ router.post('/', upload.single('thumbnail'), async (req, res) => {
             price,
             stock,
             category,
-            thumbnail: imageUrl,
+            thumbnail: thumbnailPaths,
         });
 
-        io.emit('updateProducts', await productCatalog.getProducts());
+        // socket.emit('updateProducts', await productCatalog.getProducts());
 
         res.status(201).send(product);
     } catch (error) {
+        console.error('Error en la ruta POST:', error);
         res.status(500).send({ error: 'Error al agregar el producto' });
     }
 });
@@ -89,10 +95,10 @@ router.delete('/:pid', async (req, res) => {//Borrar prod por ID
 
     let result = await productsModel.findByIdAndDelete(productId);
 
-    if(result === null){
-        return res.status(404).send({ message: 'Producto no encontrado'});
+    if (result === null) {
+        return res.status(404).send({ message: 'Producto no encontrado' });
     } else {
-        return res.status(202).send({ message: 'Producto eliminado con exito', data: result});
+        return res.status(202).send({ message: 'Producto eliminado con exito', data: result });
     }
 });
 
@@ -102,7 +108,7 @@ router.put('/:pid', upload.array('thumbnail'), async (req, res) => {//Modificar 
         res.status(400).send({ error: 'Debe actualizar mediante un ID de producto' });
         return;
     }
-    
+
     const updatedFields = req.body;
 
     try {

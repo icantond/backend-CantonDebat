@@ -1,9 +1,9 @@
 <head>
-    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="static/css/style.css">
 </head>
 <h2 class="section-title">Agregar Nuevo Producto</h2>
 
-<form id="add-product-form" enctype="multipart/form-data" method="POST">
+<form id="add-product-form" enctype="multipart/form-data">
     <form id="add-product-form">
         <label for="title">Título:</label>
         <input type="text" id="title" name="title" placeholder="Ingresa título">
@@ -24,7 +24,7 @@
         <input type="text" id="category" name="category" placeholder="Ingresa la categoría">
 
         <label for="thumbnail">Imágenes:</label>
-        <input type="file" id="thumbnail" name="thumbnail" accept=".png, .jpeg, .jpg, .webp, .tiff" required>
+        <input type="file" id="thumbnail" name="thumbnail" accept=".png, .jpeg, .jpg, .webp, .tiff" multiple>
 
         <button type="submit">Agregar Producto</button>
     </form>
@@ -46,8 +46,13 @@
                 <p class="product-list-item-stock">Stock: {{this.stock}}</p>
                 <p class="product-list-item-code">Código: {{this.code}}</p> --}}
                 <p class="product-list-item-code">ID: {{this._id}}</p>
-                <img src="{{this.thumbnail}}" width="50px">
-                {{!-- <img class="product-list-item-img" src="/static/img/{{thumbnail}}" alt="{{title}}" width="150px"> --}}
+                
+                <img src="{{this.thumbnail}}" alt="{{this.title}}" width="50px">
+
+                {{!-- <img src="{{this.thumbnail}}" width="50px"> --}}
+                {{!-- <img class="product-list-item-img" src="/static/img/{{thumbnail}}" alt="{{title}}" width="150px">
+                --}}
+
             </li>
             {{/each}}
         </ul>

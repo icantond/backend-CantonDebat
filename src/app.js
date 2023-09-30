@@ -4,32 +4,24 @@ import handlebars from 'express-handlebars';
 import mongoose from 'mongoose';
 import { Server } from 'socket.io';
 import path from 'path';
-// import productManager from './dao/dbManagers/products.manager.js'
-
 import productsRouter from './routes/products.router.js';
 import cartsRouter from './routes/carts.router.js';
 import viewsRouter from './routes/views.router.js';
 import chatRouter from './routes/chat.router.js';
 import messagesModel from './dao/models/messages.model.js';
-// import ProductManager from './productManager.js';
 import Products from './dao/dbManagers/products.manager.js';
 
 const app = express();
 const PORT = 8080;
 const httpServer = app.listen(PORT, () => console.log(`Listening on PORT ${PORT}`));
 const socketServer = new Server(httpServer);
-// const productManager = new productManager();
 
 //Settings de Handlebars
 app.engine('handlebars', handlebars.engine());
 app.set('views', __dirname + '/views');
 app.set('view engine', 'handlebars')
-
-//Route de static folder
-const staticFolderPath = path.join(__dirname, '..', 'public');
-console.log('Ruta de la carpeta estática:', staticFolderPath);
-app.use('/static', express.static(staticFolderPath));
-
+//Settings de Static Folder y URLs:
+app.use('/static', express.static(path.join(__dirname, '../public')))
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -40,7 +32,8 @@ app.use('/api/products', productsRouter);
 app.use('/api/carts', cartsRouter);
 app.use('/chat', chatRouter);
 
-mongoose.connect('mongodb://127.0.0.1:27017/ecommerce', { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose.connect('mongodb+srv://nachoman4:T5Cq5qd7DDKrfOYp@cluster47300icd.5tk8odk.mongodb.net/ecommerce?retryWrites=true&w=majority') //ATLAS
+// mongoose.connect('mongodb://127.0.0.1:27017/ecommerce', { useNewUrlParser: true, useUnifiedTopology: true }) //LOCAL
     .then(() => {
         console.log('Conexión a MongoDB exitosa');
     })
