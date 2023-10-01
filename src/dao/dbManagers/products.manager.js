@@ -15,13 +15,41 @@ export default class Products {
             throw new Error('Error al agregar el producto a la base de datos');
         }
     }
+    async getAll() {
+        try {
+            const products = await productsModel.find().lean();
+            return products;
+        } catch (error) {
+            throw error; // Maneja el error adecuadamente o regresa una respuesta de error HTTP en lugar de lanzar una excepción.
+        }
+    }
+    async getQueries({ limit, skip, sort, query }) {
+        const filter = {}; // Aquí puedes construir el filtro de búsqueda según tus necesidades
+        const options = {
+            limit: parseInt(limit),
+            skip: parseInt(skip),
+            sort,
+        };
 
-    getAll = async () => {
-        const products = await productsModel.find().lean();
+        if (query) {
+            // Puedes agregar condiciones de búsqueda aquí según tu lógica
+            filter.title = { $regex: query, $options: 'i' }; // Búsqueda insensible a mayúsculas y minúsculas en el título
+        }
+
+        const products = await productsModel.find(filter, null, options).lean();
         return products;
     }
-    getProductById = async(id) => {
-        const result = await productsModel.findById(id); 
+    async count() {
+        const count = await productsModel.countDocuments({});
+        return count;
+    }
+    getRealTimeProducts = async () => {
+        const products = await productsModel.find().lean();
+        return products;
+
+    }
+    getProductById = async (id) => {
+        const result = await productsModel.findById(id);
         return result;
     }
     save = async (product) => {
@@ -33,7 +61,7 @@ export default class Products {
         const result = await productsModel.updateOne({ _id: id }, product);
         return result;
     }
-    
+
     delete = async (id, product) => {
         const result = await productsModel.deleteOne({ _id: id }, product);
         return result;

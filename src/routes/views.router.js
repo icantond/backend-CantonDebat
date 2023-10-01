@@ -1,34 +1,211 @@
 import express from 'express';
 import Products from '../dao/dbManagers/products.manager.js';
+import productsModel from '../dao/models/products.model.js';
+import { upload } from '../utils.js';
 
 const router = express.Router();
 const productCatalog = new Products('products')
 
+// router.get('/', async (req, res) => {
+//     try {
+//         const products = await productCatalog.getAll();
+//         res.render('home', { products });
+//     } catch (error) {
+//         res.status(500).json({ error: 'Error al obtener productos' });
+//     }
+// });
+// router.get('/', async (req, res) => {
+//     let page = parseInt(req.query.page);
+//     if (!page) page = 1;
+
+//     // Utiliza lean() para obtener resultados como objetos simples en lugar de documentos de Mongoose
+//     const limit = 5;
+//     const skip = (page - 1) * limit;
+
+//     try {
+//         const sortOptions = {}; // Define tus opciones de ordenamiento aquí
+//         const query = req.query.query || ''; // Ajusta el nombre del parámetro de búsqueda según tu modelo
+
+//         // Crea la consulta para buscar productos con filtrado y paginación
+//         const queryObj = {
+//             title: { $regex: new RegExp(query, 'i') } // Realiza una búsqueda insensible a mayúsculas y minúsculas en el título
+//         };
+
+//         const products = await productsModel.find(queryObj)
+//             .sort(sortOptions)
+//             .skip(skip)
+//             .limit(limit)
+//             .lean();
+
+//         const totalItems = await productsModel.countDocuments(queryObj);
+
+//         const totalPages = Math.ceil(totalItems / limit);
+
+//         const hasNextPage = page < totalPages;
+//         const hasPrevPage = page > 1;
+
+//         // Construye los enlaces de paginación
+//         const prevPage = page - 1;
+//         const nextPage = page + 1;
+
+//         const paginationLinks = {
+//             prevLink: hasPrevPage ? `/products?page=${prevPage}&query=${query}` : '',
+//             nextLink: hasNextPage ? `/products?page=${nextPage}&query=${query}` : '',
+//         };
+
+//         const result = {
+//             products,
+//             currentPage: page,
+//             totalPages,
+//             totalItems,
+//             hasPrevPage,
+//             hasNextPage,
+//             startIdx: skip + 1,
+//             endIdx: Math.min(skip + limit, totalItems),
+//             isValid: !(page <= 0 || page > totalPages),
+//             query,
+//             ...paginationLinks
+//         };
+
+//         res.render('home', result); // Ajusta el nombre de la vista según tu configuración
+//     } catch (error) {
+//         console.error(error);
+//         res.status(500).send('Error interno del servidor');
+//     }
+// });
 router.get('/', async (req, res) => {
+    let page = parseInt(req.query.page) || 1;
+    let limit = parseInt(req.query.limit) || 15; // Cambiamos el valor predeterminado a 15
+    let sort = req.query.sort || '';
+    let query = req.query.query || '';
+    let category = req.query.category || '';
+    let available = req.query.available || '';
+
+    const skip = (page - 1) * limit;
+
     try {
-        const products = await productCatalog.getAll();
-        res.render('home', { products });
+        const sortOptions = {};
+        if (sort === 'asc' || sort === 'desc') {
+            sortOptions.price = sort; // Ordenar por precio ascendente o descendente
+        }
+
+        const queryObj = {};
+        if (query) {
+            queryObj.title = { $regex: new RegExp(query, 'i') };
+        }
+        if (category) {
+            queryObj.category = category; // Filtrar por categoría
+        }
+        if (available) {
+            queryObj.available = available; // Filtrar por disponibilidad
+        }
+
+        const products = await productsModel
+            .find(queryObj)
+            .sort(sortOptions)
+            .skip(skip)
+            .limit(limit)
+            .lean();
+
+        const totalItems = await productsModel.countDocuments(queryObj);
+
+        const totalPages = Math.ceil(totalItems / limit);
+
+        const hasNextPage = page < totalPages;
+        const hasPrevPage = page > 1;
+
+        const prevPage = hasPrevPage ? page - 1 : null;
+        const nextPage = hasNextPage ? page + 1 : null;
+        const currentPage = page; // Obtén la página actual
+        // const totalPages = result.totalPages; // Obtén el total de páginas
+        
+        // Crea un arreglo de números de página con enlaces
+        const pageNumbers = [];
+        for (let i = 1; i <= totalPages; i++) {
+            const isCurrentPage = i === currentPage;
+            const link = isCurrentPage ? null : `http://localhost:8080/?page=${i}&limit=${limit}&sort=${sort}&query=${query}&category=${category}&available=${available}`; // Reemplaza con tu ruta adecuada
+            pageNumbers.push({ page: i, link, isCurrentPage });
+        }
+        
+        res.render('home', {
+            products,
+            totalPages,
+            prevPage,
+            nextPage,
+            page,
+            hasPrevPage,
+            hasNextPage,
+            pageNumbers,
+            prevLink: hasPrevPage ? `http://localhost:8080/?page=${prevPage}&limit=${limit}&sort=${sort}&query=${query}&category=${category}&available=${available}` : null,
+            nextLink: hasNextPage ? `http://localhost:8080/?page=${nextPage}&limit=${limit}&sort=${sort}&query=${query}&category=${category}&available=${available}` : null,
+        });
     } catch (error) {
-        res.status(500).json({ error: 'Error al obtener productos' });
+        console.error(error);
+        res.status(500).json({ status: 'error', message: 'Error interno del servidor' });
     }
 });
 
 router.get('/realtimeproducts', async (req, res) => {
     try {
-        const products = await productCatalog.getAll();
+        const products = await productCatalog.getRealTimeProducts();
         res.render('realTimeProducts', { products });
     } catch (error) {
         res.status(500).json({ error: 'Error al obtener productos en tiempo real' });
     }
 });
 
+// router.post('/realtimeproducts', upload.single('thumbnail'), async (req, res) => {
+//     const productData = req.body;
+//     const uploadedThumbnail = req.file;
+
+//     try {
+//         // Construir la ruta de la imagen como un string (nombre de archivo + extensión)
+//         if (uploadedThumbnail) {
+//             const filename = uploadedThumbnail.filename;
+//             const extension = path.extname(filename); // Obtener la extensión del archivo
+//             productData.thumbnail = filename + extension; // Asignar el nombre de archivo con extensión
+//         }
+
+//         const newProduct = await productCatalog.addProduct(productData);
+
+//         socket.emit('updateProducts', await productCatalog.getRealTimeProducts());
+
+//         res.status(201).send(newProduct);
+//     } catch (error) {
+//         res.status(500).send({ error: 'Error al agregar el producto en tiempo real' });
+//     }
+// });
+
+// router.post('/realtimeproducts', async (req, res) => {
+//     const productData = req.body;
+//     const uploadedThumbnail = req.file;
+
+//     try {
+//         // Construir la ruta de la imagen como una cadena de texto (nombre de archivo + extensión)
+//         if (uploadedThumbnail) {
+//             const filename = uploadedThumbnail.filename;
+//             const extension = path.extname(filename); // Obtener la extensión del archivo
+//             productData.thumbnail = `${filename}${extension}`;
+//         }
+
+//         const newProduct = await productCatalog.addProduct(productData);
+
+//         socket.emit('updateProducts', await productCatalog.getRealTimeProducts());
+
+//         res.status(201).send(newProduct);
+//     } catch (error) {
+//         res.status(500).send({ error: 'Error al agregar el producto en tiempo real' });
+//     }
+// });
+
+
 router.post('/realtimeproducts', async (req, res) => {
     const productData = req.body;
-
+    
     try {
         const newProduct = await productCatalog.addProduct(productData);
 
-        socket.emit('updateProducts', await productCatalog.getAll());
+        socket.emit('updateProducts', await productCatalog.getRealTimeProducts());
 
         res.status(201).send(newProduct);
     } catch (error) {
@@ -58,6 +235,23 @@ router.delete('/realtimeproducts', async (req, res) => {
         res.status(500).json({ error: 'Error al eliminar el producto' });
         console.error('Error al eliminar el producto:', error);
 
+    }
+});
+
+router.get('/products', async (req, res) => {
+    try {
+        // Agrega lógica para obtener la lista de productos con paginación
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 15;
+
+        // Obtener los productos desde la base de datos
+        const products = await productsModel.paginate({}, { page, limit });
+
+        // Renderizar la vista 'products' y pasar los productos como datos
+        res.render('products', { products });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ status: 'error', message: 'Error al obtener la lista de productos' });
     }
 });
 

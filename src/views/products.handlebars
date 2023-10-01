@@ -1,0 +1,20 @@
+<!-- views/products.handlebars -->
+
+{{#each products.docs}}
+<div class="product-item">
+    <h2>{{ this.name }}</h2>
+    <p>Categoría: {{ this.category }}</p>
+    <p>Precio: ${{ this.price }}</p>
+
+    <!-- Opción 1: Enlace para ver detalles y agregar al carrito -->
+    <a href="/products/{{ this._id }}">Ver detalles</a>
+
+    <!-- Opción 2: Botón para agregar al carrito directamente -->
+    <form action="/carts/{{ cartId }}/products/{{ this._id }}" method="POST">
+        <input type="number" name="quantity" value="1" min="1">
+        <button type="submit">Agregar al carrito</button>
+    </form>
+</div>
+{{/each}}
+
+<!-- Agregar la paginación aquí si es necesario -->

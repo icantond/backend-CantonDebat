@@ -20,7 +20,6 @@ router.get('/', async (req, res) => { //Consulta todos los productos
         } else {
             res.json(products);
         }
-        // }
     } catch (error) {
         console.error('Error al obtener productos:', error);// DEPURACION
         res.status(500).send({ error: 'Error al obtener productos' });

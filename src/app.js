@@ -53,7 +53,7 @@ socketServer.on('connection', socket => {
     socket.on('addProduct', async (newProduct) => {
         try {
             const addedProduct = await productManager.save(newProduct);
-            const updatedProducts = await productManager.getAll();
+            const updatedProducts = await productManager.getRealTimeProducts();
     
             io.emit('updateProducts', updatedProducts); // Envía la lista actualizada al cliente
             console.log('Producto agregado:', addedProduct);
@@ -71,7 +71,7 @@ socketServer.on('connection', socket => {
             await productManager.delete(productId);
             io.emit('producto_eliminado', { productId });
 
-            const updatedProducts = await productManager.getAll();
+            const updatedProducts = await productManager.getRealTimeProducts();
             io.emit('updateProducts', updatedProducts);
 
         } catch (error) {

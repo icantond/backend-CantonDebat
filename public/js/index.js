@@ -16,6 +16,7 @@ socket.on('updateProducts', (updatedProducts) => {
                     <h3 class="product-list-item-title">Producto: ${product.title}</h3>
                     <p class="product-list-item-code">ID: ${product._id}</p>
                     <img src="${product.thumbnail}" width="50px">
+                    
                 </li>
             `).join('')}
         </ul>
