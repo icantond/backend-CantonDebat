@@ -52,11 +52,13 @@ socketServer.on('connection', socket => {
     //Socket para agregar productos
     socket.on('addProduct', async (newProduct) => {
         try {
-            const addedProduct = await productManager.save(newProduct);
+            // const addedProduct = await productManager.save(newProduct);
             const updatedProducts = await productManager.getRealTimeProducts();
     
-            io.emit('updateProducts', updatedProducts); // Envía la lista actualizada al cliente
-            console.log('Producto agregado:', addedProduct);
+            // const updatedProducts = await productManager.getRealTimeProducts();
+
+            socket.emit('updateProducts', updatedProducts); // Envía la lista actualizada al cliente
+            console.log('Producto agregado:', newProduct);
         } catch (error) {
             console.error('Error al agregar el producto:', error);
         }

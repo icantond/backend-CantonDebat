@@ -2,7 +2,7 @@ import express from 'express';
 import Products from '../dao/dbManagers/products.manager.js'
 import { upload } from '../utils.js';
 import productsModel from '../dao/models/products.model.js';
-import path from 'path';
+// import path from 'path';
 
 const router = express.Router();
 const productCatalog = new Products();
@@ -49,47 +49,22 @@ router.get('/:pid', async (req, res) => {//Consulta productos por ID
     }
 });
 
-router.post('/', upload.array('thumbnail', 1), async (req, res) => {
-    console.log('req.file:', req.file); 
-    console.log('req.body:', req.body);
-    const {
-        title,
-        description,
-        code,
-        price,
-        stock,
-        category,
-    } = req.body;
-    if (!title || !description || !code || !price || !stock || !category) {
-        res.status(400).send({ error: 'Todos los campos son obligatorios' });
-        return;
-    }
+// Ruta para agregar un nuevo producto
+router.post('/', upload.single('thumbnail'), async (req, res) => {
+    const productData = req.body;
+    const thumbnailFile = req.file;
 
     try {
-        const thumbnailFiles = req.files;
-        console.log('thumbnailFiles:', thumbnailFiles);
-        const thumbnailData = thumbnailFiles[0]; 
-        const thumbnail = {
-            filename: thumbnailData.filename,
-            extension: path.extname(thumbnailData.originalname).toLowerCase(),
-        };
-        console.log('thumbnail:', thumbnail);
+        if (thumbnailFile) {
+            productData.thumbnail = thumbnailFile.filename;
+        } else {
+            productData.thumbnail = ''; // o productData.thumbnail = '';
+        }
 
+        const newProduct = await productCatalog.addProduct(productData);
 
-        const product = await productCatalog.addProduct({
-            title,
-            description,
-            code,
-            price,
-            stock,
-            category,
-            thumbnail,
-        });
-
-        res.status(201).send(product);
-
+        res.status(201).send(newProduct);
     } catch (error) {
-        console.error('Error en la ruta POST:', error);
         res.status(500).send({ error: 'Error al agregar el producto' });
     }
 });

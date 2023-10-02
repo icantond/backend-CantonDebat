@@ -11,10 +11,16 @@ export default class Products {
             await product.save();
             return product;
         } catch (error) {
-            console.error('Error al agregar el producto a la base de datos:', error);
-            throw new Error('Error al agregar el producto a la base de datos');
+            if (error.code === 11000) {
+                // Este código de error (11000) indica una clave duplicada
+                throw new Error('El código del producto ya existe en la base de datos.');
+            } else {
+                console.error('Error al agregar el producto a la base de datos:', error);
+                throw new Error('Error al agregar el producto a la base de datos');
+            }
         }
     }
+    
     async getAll() {
         try {
             const products = await productsModel.find().lean();
@@ -46,8 +52,8 @@ export default class Products {
     getRealTimeProducts = async () => {
         const products = await productsModel.find().lean();
         return products;
-
     }
+    
     getProductById = async (id) => {
         const result = await productsModel.findById(id);
         return result;
@@ -66,4 +72,10 @@ export default class Products {
         const result = await productsModel.deleteOne({ _id: id }, product);
         return result;
     }
+
+    getCategories = async (id, product) => {
+        const result = await productsModel.distinct('category');
+        return result;
+    }
 };
+   

@@ -40,14 +40,22 @@
         <option value="15">15</option>
         <option value="20">20</option>
     </select>
-    <label for="category">Categoría:</label>
+    {{!-- <label for="category">Categoría:</label>
     <select id="category" name="category">
         <option value="">Todas</option>
         <option value="Electrónica">Electrónica</option>
         <option value="Laptops">Laptops</option>
-                <option value="Smartphones">Smartphones</option>
+        <option value="Smartphones">Smartphones</option>
 
         <!-- Agrega más opciones de categoría según tu base de datos -->
+    </select> --}}
+    <label for="category">Categoría:</label>
+    <select id="category" name="category">
+        <option value="">Todas</option>
+        {{#each categories}}
+        <option value="{{this}}">{{this}}</option>
+        {{/each}}
+    </select>
     </select>
 
     <label for="available">Disponibilidad:</label>
@@ -65,10 +73,10 @@
     </select>
 
     <button type="submit">Aplicar Filtros</button>
-    {{!-- 
+    {{!--
     <div class="filter-controls">
-    <button id="clear-filters-btn" class="btn btn-clear-filters">Limpiar Filtros</button> --}}
-</div>
+        <button id="clear-filters-btn" class="btn btn-clear-filters">Limpiar Filtros</button> --}}
+    </div>
 </form>
 
 <ul class="product-list-container">
