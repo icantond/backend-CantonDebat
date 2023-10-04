@@ -178,28 +178,121 @@ router.delete('/:cid', async (req, res) => {
     }
 });
 
+// router.post("/:cid/products/:pid", async (req, res) => {
+//     const { cid, pid } = req.params;
+//     const { quantity } = req.body;
 
-router.post("/:cid/products/:pid", async (req, res) => {
-    const { cid, pid, quantity } = req.params;
-    let cart = await Cart.findOne({ _id: cid });
+//     try {
+//         const cart = await Cart.findOne({ _id: cid });
 
-    if (cart) {
-        const productInCart = cart.products.find(product => product.product._id === pid);
+//         if (!cart) {
+//             return res.status(404).json({ message: "Carrito no encontrado" });
+//         }
 
-        if (productInCart) {
-            productInCart + quantity;
-        } else {
-            const product = await Product.findById(pid);
-            cart.products.push({
-                product: product._id,
-                quantity: quantity,
-            });
-        }
+//         const existingProduct = cart.products.find(
+//             (product) => product.product.toString() === pid
+//         );
 
-        const result = await cart.save();
-        return res.json({ message: "Producto agregado", data: result });
-    } else {
-        return res.status(404).json({ message: "Carrito no encontrado" });
+//         if (existingProduct) {
+//             // Si el producto ya existe en el carrito, actualiza la cantidad
+//             const updatedCart = await cartsManager.modifyQuantity(
+//                 cid,
+//                 pid,
+//                 existingProduct.quantity + parseInt(quantity)
+//             );
+//             return res.json({ message: "Cantidad de producto actualizada", data: updatedCart });
+//         } else {
+//             // Si el producto no existe en el carrito, agrégalo
+//             const product = await Product.findById(pid);
+//             const savedCart = await cartsManager.addProductToCart(cid, pid, parseInt(quantity));
+//             return res.json({ message: "Producto agregado", data: savedCart });
+//         }
+//     } catch (error) {
+//         return res.status(500).json({ message: "Error interno del servidor", error });
+//     }
+// });
+
+router.post('/:cid/products/:pid', async (req, res) => {
+    const cartId = req.params.cid;
+    const productId = req.params.pid;
+    const quantity = req.body.quantity;
+
+    try {
+        const updatedCart = await cartsManager.addProductToCart(cartId, productId, quantity);
+        res.status(200).json(updatedCart);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
     }
-})
+});
+
+
+
+
+// router.post("/:cid/products/:pid", async (req, res) => {
+//     const { cid, pid, quantity } = req.params;
+//     let cart = await Cart.findOne({ _id: cid });
+
+//     if (cart) {
+//         const productInCart = cart.products.find(product => product.product._id === pid);
+
+//         if (productInCart) {
+//             productInCart.quantity += parseInt(quantity);
+//         } else {
+//             const product = await Product.findById(pid);
+//             cart.products.push({
+//                 product: product._id,
+//                 quantity: quantity,
+//             });
+//         }
+
+//         const result = await cart.save();
+//         return res.json({ message: "Producto agregado", data: result });
+//     } else {
+//         return res.status(404).json({ message: "Carrito no encontrado" });
+//     }
+// })
+
+// router.post("/:cid/products/:pid", async (req, res) => {
+//     const { cid, pid } = req.params;
+//     const { quantity } = req.body; // Obtén la cantidad del cuerpo de la solicitud
+
+//     try {
+//         let cart = await Cart.findOne({ _id: cid });
+
+//         if (cart) {
+//             const productInCart = cart.products.find(product => product.product.toString() === pid);
+
+//             if (productInCart) {
+//                 // Si el producto ya existe en el carrito, suma la cantidad proporcionada
+//                 productInCart.quantity += parseInt(quantity); 
+//             } else {
+//                 const product = await Product.findById(pid);
+//                 cart.products.push({
+//                     product: product._id,
+//                     quantity: parseInt(quantity),
+//                 });
+//             }
+
+//             const result = await cart.save();
+//             return res.json({ message: "Producto agregado", data: result });
+//         } else {
+//             return res.status(404).json({ message: "Carrito no encontrado" });
+//         }
+//     } catch (error) {
+//         return res.status(500).json({ message: "Error interno del servidor", error });
+//     }
+// });
+
+// router.post("/:cid/products/:pid", async (req, res) => {
+//     const { cid, pid } = req.params;
+//     const { quantity } = req.body; // Obtén la cantidad del cuerpo de la solicitud
+
+//     try {
+//         const updatedCart = await cartsManager.addProductToCart(cid, pid, parseInt(quantity));
+
+//         return res.json({ message: "Producto agregado", data: updatedCart });
+//     } catch (error) {
+//         return res.status(500).json({ message: "Error interno del servidor", error: error.message });
+//     }
+// });
 export default router;
