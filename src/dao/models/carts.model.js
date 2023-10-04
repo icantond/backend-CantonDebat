@@ -1,15 +1,13 @@
 import mongoose from 'mongoose';
-import  productCollection from './products.model.js';
 
 const cartCollection = 'carts';
-// const productCollection = 'products';
 
 const cartSchema = new mongoose.Schema({
     products: [
         {
             product: {
                 type: mongoose.Schema.Types.ObjectId,
-                ref: 'Product',
+                ref: 'products',
                 required: true
             },
             quantity: {
@@ -21,6 +19,10 @@ const cartSchema = new mongoose.Schema({
         }
     ]
 });
+cartSchema.pre('findOne', function(){
+    this.populate('products.product');
+});
+
 const cartsModel = mongoose.model(cartCollection, cartSchema);
 
 export default cartsModel;

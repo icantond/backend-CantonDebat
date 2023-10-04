@@ -2,9 +2,11 @@ import express from 'express';
 import Products from '../dao/dbManagers/products.manager.js';
 import productsModel from '../dao/models/products.model.js';
 import { upload } from '../utils.js';
+import Carts from '../dao/dbManagers/carts.manager.js';
 
 const router = express.Router();
 const productCatalog = new Products('products')
+const cartManager = new Carts('carts');
 
 router.get('/', async (req, res) => {
     let page = parseInt(req.query.page) || 1;
@@ -141,15 +143,10 @@ router.delete('/realtimeproducts', async (req, res) => {
 
 router.get('/products', async (req, res) => {
     try {
-        // Agrega lógica para obtener la lista de productos con paginación
-        const page = parseInt(req.query.page) || 1;
-        const limit = parseInt(req.query.limit) || 15;
-
-        // Obtener los productos desde la base de datos
-        const products = await productsModel.paginate({}, { page, limit });
-
+        const products = await productCatalog.getAll();
+        const carts = await cartManager.getAll();
         // Renderizar la vista 'products' y pasar los productos como datos
-        res.render('products', { products });
+        res.render('products', { products, carts});
     } catch (error) {
         console.error(error);
         res.status(500).json({ status: 'error', message: 'Error al obtener la lista de productos' });

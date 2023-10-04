@@ -48,4 +48,16 @@ export default class Carts{
             throw error;
         }
         }
+
+        async createCart(cartData) {
+            try {
+                const cart = new cartsModel(cartData);
+                await cart.save();
+                return cart;
+            } catch (error) {
+                console.error('Error al crear un nuevo carrito:', error);
+                throw new Error('Error al crear un nuevo carrito');
+            }
+        }
+        
     }

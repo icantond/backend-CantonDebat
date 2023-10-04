@@ -1,0 +1,17 @@
+<div class="product-item">
+    <h2>{{ this.title }}</h2>
+    <p>Categoría: {{ this.category }}</p>
+    <p>Precio: ${{ this.price }}</p>
+
+    <!-- Enlace para ver detalles -->
+    <a href="/products/{{ this._id }}">Ver detalles</a>
+
+    <!-- Formulario para agregar al carrito directamente -->
+    <form action="/carts/{{ cartId }}/products/{{ this._id }}" method="POST">
+        <input type="number" name="quantity" value="1" min="1">
+        <button type="submit" id="add-to-cart-button">Agregar al carrito</button>
+    </form>
+</div>
+
+{{!-- <script src="/socket.io/socket.io.js"></script>
+<script src="static/js/index.js"></script> --}}
