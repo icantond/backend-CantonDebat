@@ -38,7 +38,6 @@ export default class Products {
         };
 
         if (query) {
-            // Puedes agregar condiciones de búsqueda aquí según tu lógica
             filter.title = { $regex: query, $options: 'i' }; // Búsqueda insensible a mayúsculas y minúsculas en el título
         }
 

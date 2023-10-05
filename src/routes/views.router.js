@@ -54,14 +54,14 @@ router.get('/', async (req, res) => {
         const prevPage = hasPrevPage ? page - 1 : null;
         const nextPage = hasNextPage ? page + 1 : null;
         const currentPage = page; // Obtén la página actual
-        
+
         const pageNumbers = [];
         for (let i = 1; i <= totalPages; i++) {
             const isCurrentPage = i === currentPage;
             const link = isCurrentPage ? null : `http://localhost:8080/?page=${i}&limit=${limit}&sort=${sort}&query=${query}&category=${category}&available=${available}`; // Reemplaza con tu ruta adecuada
             pageNumbers.push({ page: i, link, isCurrentPage });
         }
-        
+
         res.render('home', {
             products,
             totalPages,
@@ -71,7 +71,7 @@ router.get('/', async (req, res) => {
             hasPrevPage,
             hasNextPage,
             pageNumbers,
-            categories, 
+            categories,
             prevLink: hasPrevPage ? `http://localhost:8080/?page=${prevPage}&limit=${limit}&sort=${sort}&query=${query}&category=${category}&available=${available}` : null,
             nextLink: hasNextPage ? `http://localhost:8080/?page=${nextPage}&limit=${limit}&sort=${sort}&query=${query}&category=${category}&available=${available}` : null,
         });
@@ -100,9 +100,7 @@ router.post('/realtimeproducts', upload.single('thumbnail'), async (req, res) =>
             // productData.thumbnail = `${thumbnailFile.filename}${path.extname(thumbnailFile.originalname).toLowerCase()}`;
             productData.thumbnail = thumbnailFile.filename;
         } else {
-            // Si no hay archivo adjunto, establece thumbnail en null o una cadena vacía,
-            // dependiendo de cómo esté definido en el modelo de productos.
-            // Puedes usar null o una cadena vacía según tus requisitos.
+
             productData.thumbnail = ''; // o productData.thumbnail = '';
         }
 
@@ -114,7 +112,7 @@ router.post('/realtimeproducts', upload.single('thumbnail'), async (req, res) =>
     } catch (error) {
         res.status(500).send({ error: 'Error al agregar el producto en tiempo real' });
     }
-}); 
+});
 
 router.delete('/realtimeproducts', async (req, res) => {
     const deleteProductId = parseInt(req.body.deleteProductId);
@@ -146,11 +144,12 @@ router.get('/products', async (req, res) => {
         const products = await productCatalog.getAll();
         const carts = await cartManager.getAll();
         // Renderizar la vista 'products' y pasar los productos como datos
-        res.render('products', { products, carts});
+        res.render('products', { products, carts });
     } catch (error) {
         console.error(error);
         res.status(500).json({ status: 'error', message: 'Error al obtener la lista de productos' });
     }
 });
+
 
 export default router;
