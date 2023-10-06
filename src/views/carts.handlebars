@@ -1,6 +1,34 @@
+<head>
+    <link rel="stylesheet" href="static/css/style.css">
+</head>
+<nav class="navigation">
+    <ul class="menu">
+        <li><a href="http://localhost:8080">Home</a></li>
+        <li><a href="http://localhost:8080/products">Products</a></li>
+        <li><a href="http://localhost:8080/realtimeproducts">RealTimeProducts</a></li>
+        <li><a href="http://localhost:8080/carts">Cart</a></li>
+        <li><a href="http://localhost:8080/chat">Chat</a></li>
+    </ul>
+</nav>
 <h1>Carrito de Compras</h1>
 
-<ul>
+<ul class="cart-list">
+    {{#each cartItems.products}}
+    <li class="cart-item">
+        <h2>{{ this.product.title }}</h2>
+        <p>Categoría: {{ this.product.category }}</p>
+        <p>Precio Unitario: ${{ this.product.price }}</p>
+        <p>Cantidad: {{ this.quantity }}</p>
+        <p>Precio Total por Producto:${{ this.totalPrice }}</p>
+    </li>
+    {{/each}}
+</ul>
+
+<div class="cart-total">
+    <p>Total del Carrito: ${{ cartItems.cartTotal }}</p>
+</div>
+
+{{!-- <ul>
   {{#each cartItems.products}}
     <li>
       <h2>{{ this.product.title }}</h2>
@@ -10,7 +38,7 @@
             <td><button class="remove-item-button" data-product-id="{{this.product._id}}">Eliminar</button></td>
     </li>
   {{/each}}
-</ul>
+</ul> --}}
 
 <button id="empty-cart">Vaciar Carrito</button>
 

@@ -39,7 +39,13 @@ router.get('/', async (req, res) => {
         //EL ID DE CARRITO VA HARCODEADO HASTA IMPLEMENTAR USUARIOS
         const cartId = '6518b3030b4bb755731f2cd0';
         const cartItems = await cartsManager.getCartDetails(cartId);
+        cartItems.products.forEach((item) => {
+            item.totalPrice = item.product.price * item.quantity;
+        });
+        const cartTotal = cartItems.products.reduce((total, item) => total + item.totalPrice, 0);
 
+        // Agregar el total del carrito al objeto cartItems
+        cartItems.cartTotal = cartTotal
         res.render('carts', { cartItems });
     } catch (error) {
         console.error(error);

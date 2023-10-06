@@ -1,5 +1,29 @@
+<head>
+    <link rel="stylesheet" href="static/css/style.css">
+</head>
+<nav class="navigation">
+    <ul class="menu">
+        <li><a href="http://localhost:8080">Home</a></li>
+        <li><a href="http://localhost:8080/products">Products</a></li>
+        <li><a href="http://localhost:8080/realtimeproducts">RealTimeProducts</a></li>
+        <li><a href="http://localhost:8080/carts">Cart</a></li>
+        <li><a href="http://localhost:8080/chat">Chat</a></li>
+    </ul>
+</nav>
+<div class="product-card-container">
+    {{#each products}}
+    <div class="product-card">
+        <h2>{{ title }}</h2>
+        <p>Categoría: {{ category }}</p>
+        <p>Precio: ${{ price }}</p>
+        <p>ID: {{ _id }}</p>
+        <a href="http://localhost:8080/products/{{ _id }}"><button class="product-detail-button">Ver detalle</button></a>
+        <button class="add-to-cart-button" data-product-id="{{ _id }}">Agregar al Carrito</button>
+    </div>
+    {{/each}}
+</div>
 {{!-- ESTA VERSION ESTA OK --}}
-<ul id="product-list">
+{{!-- <ul id="product-list">
     {{#each products}}
     <li class="product-item">
         <h2>{{ title }}</h2>
@@ -10,6 +34,7 @@
         <button class="add-to-cart-button" data-product-id="{{ _id }}">Agregar al Carrito</button>
     </li>
     {{/each}}
-</ul>
+</ul> --}}
+
 
 <script src="static/js/carts.js"></script>

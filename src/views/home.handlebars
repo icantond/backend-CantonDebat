@@ -1,32 +1,17 @@
 <head>
     <link rel="stylesheet" href="static/css/style.css">
 </head>
-
+<nav class="navigation">
+    <ul class="menu">
+        <li><a href="http://localhost:8080">Home</a></li>
+        <li><a href="http://localhost:8080/products">Products</a></li>
+        <li><a href="http://localhost:8080/realtimeproducts">RealTimeProducts</a></li>
+        <li><a href="http://localhost:8080/carts">Cart</a></li>
+        <li><a href="http://localhost:8080/chat">Chat</a></li>
+    </ul>
+</nav>
 <h1 class="page-title">HOME-Productos</h1>
 
-{{!-- <form id="query-form">
-    <label for="limit">Resultados por página:</label>
-    <select type="number" id="limit" name="limit" placeholder="Resultados por página">
-        <option value="5">5</option>
-        <option value="10">10</option>
-        <option value="15">15</option>
-        <option value="20">20</option>
-    </select>
-
-    <label for="page">Página:</label>
-    <input type="number" id="page" name="page" placeholder="Página">
-
-    <label for="sort">Ordenar por:</label>
-    <select id="sort" name="sort">
-        <option value="title">Título</option>
-        <option value="price">Precio</option>
-    </select>
-
-    <label for="query">Búsqueda por título:</label>
-    <input type="text" id="query" name="query" placeholder="Búsqueda por título">
-
-    <button type="submit">Aplicar Filtros</button>
-</form> --}}
 <form action="/" method="GET">
 
     <label for="query">Buscar Producto:</label>
@@ -40,15 +25,7 @@
         <option value="15">15</option>
         <option value="20">20</option>
     </select>
-    {{!-- <label for="category">Categoría:</label>
-    <select id="category" name="category">
-        <option value="">Todas</option>
-        <option value="Electrónica">Electrónica</option>
-        <option value="Laptops">Laptops</option>
-        <option value="Smartphones">Smartphones</option>
-
-        <!-- Agrega más opciones de categoría según tu base de datos -->
-    </select> --}}
+    
     <label for="category">Categoría:</label>
     <select id="category" name="category">
         <option value="">Todas</option>
@@ -73,9 +50,7 @@
     </select>
 
     <button type="submit">Aplicar Filtros</button>
-    {{!--
-    <div class="filter-controls">
-        <button id="clear-filters-btn" class="btn btn-clear-filters">Limpiar Filtros</button> --}}
+    
     </div>
 </form>
 
