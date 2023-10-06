@@ -10,7 +10,7 @@ const cartManager = new Carts('carts');
 
 router.get('/', async (req, res) => {
     let page = parseInt(req.query.page) || 1;
-    let limit = parseInt(req.query.limit) || 15; // Cambiamos el valor predeterminado a 15
+    let limit = parseInt(req.query.limit) || 15;
     let sort = req.query.sort || '';
     let query = req.query.query || '';
     let category = req.query.category || '';
@@ -31,10 +31,10 @@ router.get('/', async (req, res) => {
             queryObj.title = { $regex: new RegExp(query, 'i') };
         }
         if (category) {
-            queryObj.category = category; // Filtrar por categoría
+            queryObj.category = category; 
         }
         if (available) {
-            queryObj.available = available; // Filtrar por disponibilidad
+            queryObj.available = available;ad
         }
 
         const products = await productsModel
@@ -53,7 +53,7 @@ router.get('/', async (req, res) => {
 
         const prevPage = hasPrevPage ? page - 1 : null;
         const nextPage = hasNextPage ? page + 1 : null;
-        const currentPage = page; // Obtén la página actual
+        const currentPage = page;
 
         const pageNumbers = [];
         for (let i = 1; i <= totalPages; i++) {
@@ -97,11 +97,10 @@ router.post('/realtimeproducts', upload.single('thumbnail'), async (req, res) =>
 
     try {
         if (thumbnailFile) {
-            // productData.thumbnail = `${thumbnailFile.filename}${path.extname(thumbnailFile.originalname).toLowerCase()}`;
             productData.thumbnail = thumbnailFile.filename;
         } else {
 
-            productData.thumbnail = ''; // o productData.thumbnail = '';
+            productData.thumbnail = '';
         }
 
         const newProduct = await productCatalog.addProduct(productData);
@@ -143,7 +142,6 @@ router.get('/products', async (req, res) => {
     try {
         const products = await productCatalog.getAll();
         const carts = await cartManager.getAll();
-        // Renderizar la vista 'products' y pasar los productos como datos
         res.render('products', { products, carts });
     } catch (error) {
         console.error(error);
@@ -151,5 +149,22 @@ router.get('/products', async (req, res) => {
     }
 });
 
+router.get('/products/:pid', async (req, res) => {
+    try {
+        const pid = await productCatalog.getProductById(req.params.pid);
+        const productData = {
+            title: pid.title,
+            category: pid.category,
+            price: pid.price,
+            _id: pid._id,
+            thumbnail: pid.thumbnail,
+        };
+        console.log('renderizando vista product id: ', productData);
+        res.render('productdetail', { productData });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ status: 'error', message: 'Error al obtener el producto' });
+    }
+});
 
 export default router;

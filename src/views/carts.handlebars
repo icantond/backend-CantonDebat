@@ -1,46 +1,17 @@
-<!-- carts.handlebars -->
-<h2>Carrito de Compras</h2>
+<h1>Carrito de Compras</h1>
+
 <ul>
-    {{#each cart.products}}
+  {{#each cartItems.products}}
     <li>
-        {{this.product.title}} (Cantidad: {{this.quantity}})
-        <button onclick="removeProduct('{{this.product._id}}')">Eliminar</button>
+      <h2>{{ this.product.title }}</h2>
+      <p>Categoría: {{ this.product.category }}</p>
+      <p>Precio: ${{ this.product.price }}</p>
+      <p>Cantidad: {{ this.quantity }}</p>
+            <td><button class="remove-item-button" data-product-id="{{this.product._id}}">Eliminar</button></td>
     </li>
-    {{/each}}
+  {{/each}}
 </ul>
-<button onclick="clearCart()">Vaciar Carrito</button>
 
-<script>
-    const cartId = '6518b3030b4bb755731f2cd0;''
-  function removeProduct(productId) {
-    // Lógica para eliminar un producto del carrito
-    fetch(`/api/carts/${cartId}/products/${productId}`, {
-      method: 'DELETE',
-    })
-    .then(response => response.json())
-    .then(data => {
-      // Actualiza la vista para reflejar el cambio
-      // Esto podría incluir volver a cargar la página o actualizar la lista de productos en el carrito
-      location.reload();
-    })
-    .catch(error => {
-      console.error('Error al eliminar producto:', error);
-    });
-  }
+<button id="empty-cart">Vaciar Carrito</button>
 
-  function clearCart() {
-    // Lógica para vaciar completamente el carrito
-    fetch(`/api/carts/${cartId}`, {
-      method: 'DELETE',
-    })
-    .then(response => response.json())
-    .then(data => {
-      // Actualiza la vista para reflejar el cambio
-      // Esto podría incluir volver a cargar la página o actualizar la lista de productos en el carrito
-      location.reload();
-    })
-    .catch(error => {
-      console.error('Error al vaciar carrito:', error);
-    });
-  }
-</script>
+<script src="static/js/carts.js"></script>

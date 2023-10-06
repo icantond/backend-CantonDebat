@@ -12,7 +12,6 @@ export default class Products {
             return product;
         } catch (error) {
             if (error.code === 11000) {
-                // Este código de error (11000) indica una clave duplicada
                 throw new Error('El código del producto ya existe en la base de datos.');
             } else {
                 console.error('Error al agregar el producto a la base de datos:', error);
@@ -26,11 +25,11 @@ export default class Products {
             const products = await productsModel.find().lean();
             return products;
         } catch (error) {
-            throw error; // Maneja el error adecuadamente o regresa una respuesta de error HTTP en lugar de lanzar una excepción.
+            throw error; 
         }
     }
     async getQueries({ limit, skip, sort, query }) {
-        const filter = {}; // Aquí puedes construir el filtro de búsqueda según tus necesidades
+        const filter = {}; 
         const options = {
             limit: parseInt(limit),
             skip: parseInt(skip),
@@ -38,7 +37,7 @@ export default class Products {
         };
 
         if (query) {
-            filter.title = { $regex: query, $options: 'i' }; // Búsqueda insensible a mayúsculas y minúsculas en el título
+            filter.title = { $regex: query, $options: 'i' }; 
         }
 
         const products = await productsModel.find(filter, null, options).lean();
