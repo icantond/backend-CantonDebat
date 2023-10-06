@@ -150,3 +150,114 @@ button[type="submit"]:hover {
 .btn-clear-filters:hover {
     background-color: #ddd;
 }
+/* Estilos para el Navbar */
+.navigation {
+    background-color: #007BFF; /* Color de fondo del Navbar */
+    padding: 10px 0; /* Espaciado interno del Navbar */
+}
+
+.menu {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    justify-content: center; /* Centrar elementos horizontalmente */
+}
+
+.menu li {
+    margin-right: 20px; /* Espacio entre elementos del menú */
+}
+
+.menu a {
+    text-decoration: none;
+    color: #fff; /* Color del texto en los enlaces */
+    font-weight: 500; /* Grosor de la fuente en los enlaces */
+    font-size: 18px; /* Tamaño de la fuente en los enlaces */
+    transition: color 0.3s; /* Transición de color al pasar el mouse */
+}
+
+.menu a:hover {
+    color: #0056b3; /* Cambio de color al pasar el mouse */
+}
+
+/* Opcional: Estilo para el enlace activo (página actual) */
+.menu a.active {
+    font-weight: 700; /* Puede usar un estilo diferente para la página activa */
+}
+
+/* Estilos para las tarjetas de productos */
+.product-card-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.product-card {
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: calc(30% - 10px);
+    margin-bottom: 20px;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.product-card h2 {
+    font-size: 18px;
+    margin: 0;
+}
+
+.product-card p {
+    margin: 5px 0;
+}
+
+.product-card button {
+    background-color: #007BFF;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 10px;
+}
+
+.product-card button:hover {
+    background-color: #0056b3;
+}
+/* Estilos para la lista de elementos del carrito */
+.cart-list {
+    list-style: none;
+    padding: 0;
+}
+
+.cart-item {
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.cart-item h2 {
+    font-size: 18px;
+    margin: 0;
+}
+
+.cart-item p {
+    margin: 5px 0;
+}
+
+/* Estilos para el total del carrito */
+.cart-total {
+    text-align: right;
+    margin-top: 20px;
+}
+
+.cart-total p {
+    font-weight: 700;
+    font-size: 24px;
+}
