@@ -61,6 +61,10 @@ app.use('/productdetail', viewsRouter);
 app.use('/', viewsRouter);
 app.use('/api/sessions', sessionsRouter);
 app.use('/profile', viewsRouter);
+// app.use('/login', sessionsRouter);
+// app.use('/register', sessionsRouter);
+
+
 //con estas rutas funciona el agregado al carrito:
     // app.use('/', viewsRouter);
     // app.use('/realtimeproducts', viewsRouter);
