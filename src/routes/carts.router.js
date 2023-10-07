@@ -9,22 +9,18 @@ const Cart = cartsModel;
 const Product = productsModel;
 
 router.post('/:cid/products/:pid', async (req, res) => {
+    console.log('Solicitud POST recibida en la ruta /:cid/products/:pid');
+    const cartId = req.params.cid;
+    const productId = req.params.pid;
+    console.log('cartId:', cartId);
+    console.log('productId:', productId);
 
     try {
-        console.log('Solicitud POST recibida en la ruta /:cid/products/:pid');
-
-        const cartId = req.params.cid;
-        const productId = req.params.pid;
-        console.log('cartId:', cartId);
-        console.log('productId:', productId);
-
         const updatedCart = await cartsManager.addProductToCart(cartId, productId);
-
         if (!updatedCart) {
-            return res.status(404).json({ status: 'error', message: 'Producto o carrito no encontrado' });
+            throw new Error('Producto o carrito no encontrado');
         }
-
-        res.json({ status: 'success', message: 'Producto agregado al carrito' });
+        res.status(201).json({ status: 'success', message: 'Producto agregado al carrito' });
     } catch (error) {
         console.error(error);
         res.status(500).send({ status: 'error', message: 'Error al agregar el producto al carrito' });
@@ -39,13 +35,15 @@ router.get('/', async (req, res) => {
         //EL ID DE CARRITO VA HARCODEADO HASTA IMPLEMENTAR USUARIOS
         const cartId = '6518b3030b4bb755731f2cd0';
         const cartItems = await cartsManager.getCartDetails(cartId);
-        cartItems.products.forEach((item) => {
-            item.totalPrice = item.product.price * item.quantity;
-        });
-        const cartTotal = cartItems.products.reduce((total, item) => total + item.totalPrice, 0);
 
-        // Agregar el total del carrito al objeto cartItems
-        cartItems.cartTotal = cartTotal
+        cartItems.products.forEach((item) => {
+            item.totalPrice = item.quantity * item.product.price;
+        });
+
+        cartItems.cartTotal = cartItems.products.reduce((total, item) => {
+            return total + item.totalPrice;
+        }, 0);
+
         res.render('carts', { cartItems });
     } catch (error) {
         console.error(error);

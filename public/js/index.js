@@ -103,7 +103,7 @@ addProductToCartForm.addEventListener('submit', async (e) => {
         const response = await fetch(`api/carts/6518b3030b4bb755731f2cd0/products/${productId}`, {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json',
+                     'Content-Type': 'application/json',
             },
             body: JSON.stringify({ "quantity": quantity, }),
         });

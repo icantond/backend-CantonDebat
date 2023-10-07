@@ -20,6 +20,7 @@
         <p>Precio Unitario: ${{ this.product.price }}</p>
         <p>Cantidad: {{ this.quantity }}</p>
         <p>Precio Total por Producto:${{ this.totalPrice }}</p>
+        <button class="remove-item-button" data-product-id="{{this.product._id}}">Eliminar</button>
     </li>
     {{/each}}
 </ul>
@@ -28,6 +29,9 @@
     <p>Total del Carrito: ${{ cartItems.cartTotal }}</p>
 </div>
 
+<button id="empty-cart">Vaciar Carrito</button>
+
+<script src="static/js/carts.js"></script>
 {{!-- <ul>
   {{#each cartItems.products}}
     <li>
@@ -39,7 +43,3 @@
     </li>
   {{/each}}
 </ul> --}}
-
-<button id="empty-cart">Vaciar Carrito</button>
-
-<script src="static/js/carts.js"></script>

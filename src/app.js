@@ -25,13 +25,31 @@ app.use('/static', express.static(path.join(__dirname, '../public')))
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-//rutas
+//rutas OK
 app.use('/', viewsRouter);
 app.use('/realtimeproducts', viewsRouter);
-app.use('/carts', cartsRouter);
+app.use('/carts', cartsRouter); 
 app.use('/chat', chatRouter);
+app.use('/api/products', productsRouter);
+app.use('/api/carts', cartsRouter); uí
 app.use('/products', viewsRouter);
 app.use('/productdetail', viewsRouter);
+
+//con estas rutas funciona el agregado al carrito:
+    // app.use('/', viewsRouter);
+    // app.use('/realtimeproducts', viewsRouter);
+    // app.use('/api/products', productsRouter);
+    // app.use('/api/carts', cartsRouter);
+    // app.use('/chat', chatRouter);
+    // app.use('/products', viewsRouter);
+
+    //y con estas funciona la vista /carts:
+// app.use('/', viewsRouter);
+// app.use('/realtimeproducts', viewsRouter);
+// app.use('/carts', cartsRouter);
+// app.use('/chat', chatRouter);
+// app.use('/products', viewsRouter);
+// app.use('/productdetail', viewsRouter);
 
 mongoose.connect('mongodb+srv://nachoman4:T5Cq5qd7DDKrfOYp@cluster47300icd.5tk8odk.mongodb.net/ecommerce?retryWrites=true&w=majority') //ATLAS
 // mongoose.connect('mongodb://127.0.0.1:27017/ecommerce', { useNewUrlParser: true, useUnifiedTopology: true }) //LOCAL

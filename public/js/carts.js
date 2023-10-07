@@ -5,9 +5,13 @@ const addToCartButtons = document.querySelectorAll('.add-to-cart-button');
 
 addToCartButtons.forEach((button) => {
     button.addEventListener('click', async () => {
+        console.log('Click para agregar producto al carrito')
         const pid = button.getAttribute('data-product-id');
+        const cid = "6518b3030b4bb755731f2cd0";
+        console.log('Agregando producto con ID:', pid, 'al carrito: ', cid);
 
         try {
+            
             const response = await fetch(`api/carts/6518b3030b4bb755731f2cd0/products/${pid}`, {
                 method: 'POST',
                 headers: {
@@ -47,7 +51,7 @@ removeItemButtons.forEach((button) => {
             if (response.ok) {
                 const result = await response.json();
                 console.log(result.message);
-                location.reload(); 
+                location.reload();
             } else {
                 console.error("Error al eliminar el producto del carrito");
             }
@@ -58,25 +62,27 @@ removeItemButtons.forEach((button) => {
 });
 
 const clearCartButton = document.getElementById('empty-cart');
+if (clearCartButton) {
+    clearCartButton.addEventListener('click', async () => {
+        const currentURL = window.location.href;
+        const parts = currentURL.split('/');
+        const cartId = parts[parts.length - 1];
 
-clearCartButton.addEventListener('click', async () => {
-    const currentURL = window.location.href;
-    const parts = currentURL.split('/');
-    const cartId = parts[parts.length - 1];
+        try {
+            const response = await fetch(`/carts/${cartId}`, {
+                method: "DELETE",
+            });
 
-    try {
-        const response = await fetch(`/carts/${cartId}`, {
-            method: "DELETE",
-        });
-
-        if (response.ok) {
-            const result = await response.json();
-            console.log(result.message);
-            location.reload(); 
-        } else {
-            console.error("Error al vaciar el carrito");
+            if (response.ok) {
+                const result = await response.json();
+                console.log(result.message);
+                location.reload();
+            } else {
+                console.error("Error al vaciar el carrito");
+            }
+        } catch (error) {
+            console.error("Error de red:", error);
         }
-    } catch (error) {
-        console.error("Error de red:", error);
-    }
-});
+    
+})
+};
