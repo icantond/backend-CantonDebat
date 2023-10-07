@@ -8,6 +8,8 @@
         <li><a href="http://localhost:8080/realtimeproducts">RealTimeProducts</a></li>
         <li><a href="http://localhost:8080/carts">Cart</a></li>
         <li><a href="http://localhost:8080/chat">Chat</a></li>
+        <li><a href="http://localhost:8080/profile">Perfil de usuario</a></li>
+
     </ul>
 </nav>
 <h1>Carrito de Compras</h1>
@@ -33,13 +35,13 @@
 
 <script src="static/js/carts.js"></script>
 {{!-- <ul>
-  {{#each cartItems.products}}
+    {{#each cartItems.products}}
     <li>
-      <h2>{{ this.product.title }}</h2>
-      <p>Categoría: {{ this.product.category }}</p>
-      <p>Precio: ${{ this.product.price }}</p>
-      <p>Cantidad: {{ this.quantity }}</p>
-            <td><button class="remove-item-button" data-product-id="{{this.product._id}}">Eliminar</button></td>
+        <h2>{{ this.product.title }}</h2>
+        <p>Categoría: {{ this.product.category }}</p>
+        <p>Precio: ${{ this.product.price }}</p>
+        <p>Cantidad: {{ this.quantity }}</p>
+        <td><button class="remove-item-button" data-product-id="{{this.product._id}}">Eliminar</button></td>
     </li>
-  {{/each}}
+    {{/each}}
 </ul> --}}

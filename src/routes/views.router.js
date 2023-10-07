@@ -8,6 +8,25 @@ const router = express.Router();
 const productCatalog = new Products('products')
 const cartManager = new Carts('carts');
 
+//MANEJO DE VISTAS DE USUARIOS:
+//Middleware para manejar las vistas privadas y sus correspondientes permisos:
+const publicAccess = (req, res, next) => {
+    if (req.session.user) return res.redirect('/');
+    next();
+}
+
+const privateAccess = (req, res, next) => {
+    if (!req.session.user) return res.redirect('/login');
+    next();
+}
+
+const adminAccess = (req, res, next) => {
+    if (!req.session.user || req.session.user.role !== 'admin') {
+        return res.redirect('/login'); 
+    }
+    next();
+}
+
 router.get('/', async (req, res) => {
     let page = parseInt(req.query.page) || 1;
     let limit = parseInt(req.query.limit) || 15;
@@ -31,10 +50,10 @@ router.get('/', async (req, res) => {
             queryObj.title = { $regex: new RegExp(query, 'i') };
         }
         if (category) {
-            queryObj.category = category; 
+            queryObj.category = category;
         }
         if (available) {
-            queryObj.available = available;ad
+            queryObj.available = available; ad
         }
 
         const products = await productsModel
@@ -81,7 +100,7 @@ router.get('/', async (req, res) => {
     }
 });
 
-router.get('/realtimeproducts', async (req, res) => {
+router.get('/realtimeproducts', adminAccess, async (req, res) => {
     try {
         const products = await productCatalog.getRealTimeProducts();
         res.render('realTimeProducts', { products });
@@ -90,6 +109,7 @@ router.get('/realtimeproducts', async (req, res) => {
     }
 });
 
+//ESTAS VAN EN PRODUCTS.ROUTER?
 
 router.post('/realtimeproducts', upload.single('thumbnail'), async (req, res) => {
     const productData = req.body;
@@ -142,7 +162,9 @@ router.get('/products', async (req, res) => {
     try {
         const products = await productCatalog.getAll();
         const carts = await cartManager.getAll();
-        res.render('products', { products, carts });
+        const user = req.session.user || {};
+
+        res.render('products', { products, carts, user });
     } catch (error) {
         console.error(error);
         res.status(500).json({ status: 'error', message: 'Error al obtener la lista de productos' });
@@ -167,4 +189,25 @@ router.get('/products/:pid', async (req, res) => {
     }
 });
 
+
+//Rutas para renderizacion de las vistas
+
+//registro
+router.get('/register', publicAccess, (req, res) => {
+    res.render('register');
+});
+
+//login
+router.get('/login', publicAccess, (req, res) => {
+    res.render('login');
+});
+
+//perfil de usuario (PRIVADA)
+router.get('/profile', privateAccess, (req, res) => {
+    console.log('Usuario actual: ', req.session.user.email, '. Rol: ', req.session.user.role);
+
+    res.render('profile', {
+        user: req.session.user
+    });
+});
 export default router;

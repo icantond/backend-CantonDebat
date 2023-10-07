@@ -9,10 +9,16 @@
         <li><a href="http://localhost:8080/realtimeproducts">RealTimeProducts</a></li>
         <li><a href="http://localhost:8080/carts">Cart</a></li>
         <li><a href="http://localhost:8080/chat">Chat</a></li>
+        <li><a href="http://localhost:8080/profile">Perfil de usuario</a></li>
+
     </ul>
 </nav>
 
-<div id="product-card-container">
+<div class="welcome-message">
+<h2>Hola, {{user.name}}!</h2>
+</div>
+
+<div id="product-card-container" class="product-card-container">
     {{#each products}}
     <div class="product-card">
         <h2>{{ title }}</h2>

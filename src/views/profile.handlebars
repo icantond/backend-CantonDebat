@@ -1,0 +1,22 @@
+<head>
+    <link rel="stylesheet" href="static/css/style.css">
+</head>
+<nav class="navigation">
+    <ul class="menu">
+        <li><a href="http://localhost:8080">Home</a></li>
+        <li><a href="http://localhost:8080/products">Products</a></li>
+        <li><a href="http://localhost:8080/realtimeproducts">RealTimeProducts</a></li>
+        <li><a href="http://localhost:8080/carts">Cart</a></li>
+        <li><a href="http://localhost:8080/chat">Chat</a></li>
+        <li><a href="http://localhost:8080/profile">Perfil de usuario</a></li>
+
+    </ul>
+</nav>
+<div>
+    <h1>Tu perfil (sin datos sensibles)</h1>
+    <p>{{user.name}}</p>
+    <p>{{user.email}}</p>
+    <p>{{user.age}}</p>
+    <p>{{user.role}}</p>
+    <a href="/api/sessions/logout"><button>Salir</button></a>
+</div>

@@ -1,7 +1,5 @@
 <head>
     <link rel="stylesheet" href="static/css/chat.css">
-
-    <link rel="stylesheet" href="static/css/style.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 </head>
 <nav class="navigation">
@@ -11,13 +9,15 @@
         <li><a href="http://localhost:8080/realtimeproducts">RealTimeProducts</a></li>
         <li><a href="http://localhost:8080/carts">Cart</a></li>
         <li><a href="http://localhost:8080/chat">Chat</a></li>
+        <li><a href="http://localhost:8080/profile">Perfil de usuario</a></li>
+
     </ul>
 </nav>
 
 <h1 class="page-title">Chat en Tiempo Real</h1>
 
 <div id="chat-container">
-    
+
     <div id="messages">
         {{#each messages}}
         <div class="message">

@@ -8,6 +8,7 @@
         <li><a href="http://localhost:8080/realtimeproducts">RealTimeProducts</a></li>
         <li><a href="http://localhost:8080/carts">Cart</a></li>
         <li><a href="http://localhost:8080/chat">Chat</a></li>
+        <li><a href="http://localhost:8080/profile">Perfil de usuario</a></li>
     </ul>
 </nav>
 <h1 class="page-title">HOME-Productos</h1>
@@ -25,7 +26,7 @@
         <option value="15">15</option>
         <option value="20">20</option>
     </select>
-    
+
     <label for="category">Categoría:</label>
     <select id="category" name="category">
         <option value="">Todas</option>
@@ -50,17 +51,19 @@
     </select>
 
     <button type="submit">Aplicar Filtros</button>
-    
+
     </div>
 </form>
 
-<ul class="product-list-container">
+<ul class="product-list-container product-card-container">
     {{#each products}}
-    <div class="product-list-item">
+    <div class="product-card">
         <h2>{{title}}</h2>
         <p>{{description}}</p>
         <p>Precio: ${{price}}</p>
         <img src="static/img/{{thumbnail}}" alt="{{title}}" width="200">
+        <a href="http://localhost:8080/products/{{ _id }}"><button class="product-detail-button" style="display: inline-block;">Ver
+                detalle</button></a>
     </div>
     {{/each}}
 </ul>

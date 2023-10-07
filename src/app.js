@@ -1,4 +1,6 @@
 import express from 'express';
+import session from 'express-session';
+import MongoStore from 'connect-mongo';
 import { __dirname } from './utils.js';
 import handlebars from 'express-handlebars';
 import mongoose from 'mongoose';
@@ -7,11 +9,22 @@ import path from 'path';
 import productsRouter from './routes/products.router.js';
 import cartsRouter from './routes/carts.router.js';
 import viewsRouter from './routes/views.router.js';
+import sessionsRouter from './routes/sessions.router.js';
 import chatRouter from './routes/chat.router.js';
 import messagesModel from './dao/models/messages.model.js';
 import Products from './dao/dbManagers/products.manager.js';
 
+
 const app = express();
+try {
+    await (mongoose.connect('mongodb+srv://nachoman4:T5Cq5qd7DDKrfOYp@cluster47300icd.5tk8odk.mongodb.net/ecommerce?retryWrites=true&w=majority'));
+     // mongoose.connect('mongodb://127.0.0.1:27017/ecommerce', { useNewUrlParser: true, useUnifiedTopology: true }) //LOCAL
+
+    console.log('Conexión a MongoDB exitosa');
+} catch (error) {
+    console.error('Error al conectar a MongoDB:', error);
+}
+
 const PORT = 8080;
 const httpServer = app.listen(PORT, () => console.log(`Listening on PORT ${PORT}`));
 const socketServer = new Server(httpServer);
@@ -25,16 +38,29 @@ app.use('/static', express.static(path.join(__dirname, '../public')))
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+//Persistir nuestra session en BDD
+app.use(session({
+    store: MongoStore.create({
+        client: mongoose.connection.getClient(),
+        ttl: 3600 //en segundos
+    }),
+    secret: 'Coder47300Secret',
+    resave: true,
+    saveUninitialized: true,
+}));
+
 //rutas OK
 app.use('/', viewsRouter);
 app.use('/realtimeproducts', viewsRouter);
 app.use('/carts', cartsRouter); 
 app.use('/chat', chatRouter);
 app.use('/api/products', productsRouter);
-app.use('/api/carts', cartsRouter); uí
+app.use('/api/carts', cartsRouter); 
 app.use('/products', viewsRouter);
 app.use('/productdetail', viewsRouter);
-
+app.use('/', viewsRouter);
+app.use('/api/sessions', sessionsRouter);
+app.use('/profile', viewsRouter);
 //con estas rutas funciona el agregado al carrito:
     // app.use('/', viewsRouter);
     // app.use('/realtimeproducts', viewsRouter);
@@ -51,14 +77,14 @@ app.use('/productdetail', viewsRouter);
 // app.use('/products', viewsRouter);
 // app.use('/productdetail', viewsRouter);
 
-mongoose.connect('mongodb+srv://nachoman4:T5Cq5qd7DDKrfOYp@cluster47300icd.5tk8odk.mongodb.net/ecommerce?retryWrites=true&w=majority') //ATLAS
-// mongoose.connect('mongodb://127.0.0.1:27017/ecommerce', { useNewUrlParser: true, useUnifiedTopology: true }) //LOCAL
-    .then(() => {
-        console.log('Conexión a MongoDB exitosa');
-    })
-    .catch((error) => {
-        console.error('Error al conectar a MongoDB:', error);
-    });
+// mongoose.connect('mongodb+srv://nachoman4:T5Cq5qd7DDKrfOYp@cluster47300icd.5tk8odk.mongodb.net/ecommerce?retryWrites=true&w=majority') //ATLAS
+// // mongoose.connect('mongodb://127.0.0.1:27017/ecommerce', { useNewUrlParser: true, useUnifiedTopology: true }) //LOCAL
+//     .then(() => {
+//         console.log('Conexión a MongoDB exitosa');
+//     })
+//     .catch((error) => {
+//         console.error('Error al conectar a MongoDB:', error);
+//     });
 
 
 //CONFIGURACION DE SOCKETS

@@ -1,7 +1,6 @@
 <head>
     <link rel="stylesheet" href="../static/css/style.css">
 </head>
-
 <nav class="navigation">
     <ul class="menu">
         <li><a href="http://localhost:8080">Home</a></li>
@@ -9,15 +8,19 @@
         <li><a href="http://localhost:8080/realtimeproducts">RealTimeProducts</a></li>
         <li><a href="http://localhost:8080/carts">Cart</a></li>
         <li><a href="http://localhost:8080/chat">Chat</a></li>
+        <li><a href="http://localhost:8080/profile">Perfil de usuario</a></li>
+
     </ul>
 </nav>
 
+<div class="product-card">
 <div class="product-item">
     <h2>{{ productData.title }}</h2>
     <p>Categoría: {{ productData.category }}</p>
     <p>Precio: ${{ productData.price }}</p>
     <p>Id: {{productData._id}}</p>
-    <img src="../static/img/{{productData.thumbnail}}" alt="{{productData.thumbnail}}" >
+    <img src="../static/img/{{productData.thumbnail}}" alt="{{productData.thumbnail}}">
     <button class="add-to-cart-from-detail-button" data-product-id="{{ productData._id }}">Agregar al Carrito</button>
+</div>
 </div>
 <script src="../static/js/cartsProductDetail.js"></script>
