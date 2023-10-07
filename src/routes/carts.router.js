@@ -16,6 +16,10 @@ router.post('/:cid/products/:pid', async (req, res) => {
     console.log('productId:', productId);
 
     try {
+        // Restar la cantidad del stock disponible en la colección "products"
+        await Product.findByIdAndUpdate(productId, {
+            $inc: { stock: -1 }, // Restar la cantidad del stock
+        });
         const updatedCart = await cartsManager.addProductToCart(cartId, productId);
         if (!updatedCart) {
             throw new Error('Producto o carrito no encontrado');

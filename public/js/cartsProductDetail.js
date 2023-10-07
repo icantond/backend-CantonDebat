@@ -21,7 +21,16 @@ addToCartFromProductDetailButtons.forEach((button) => {
 
             if (response.ok) {
                 const updatedCart = await response.json();
+                Swal.fire({
+                    title: 'Producto agregado al carrito',
+                    icon: 'success',
+                    toast: 'true',
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3500
+                });
                 console.log('Producto agregado al carrito:', updatedCart);
+                location.reload();
             } else {
                 console.error('Error al agregar el producto al carrito');
             }

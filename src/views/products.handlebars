@@ -1,6 +1,7 @@
 {{!-- DEJAR ESTA VERSION: --}}
 <head>
     <link rel="stylesheet" href="static/css/style.css">
+
 </head>
 <nav class="navigation">
     <ul class="menu">
@@ -25,6 +26,7 @@
         <p>Categoría: {{ category }}</p>
         <p>Precio: ${{ price }}</p>
         <p>ID: {{ _id }}</p>
+        <p>Stock: {{stock}}</p>
 
 
         <!-- Agregar un botón para agregar el producto al carrito -->
@@ -34,7 +36,6 @@
     </div>
     {{/each}}
 </div>
-
-
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script src="static/js/carts.js"></script>

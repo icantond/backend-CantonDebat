@@ -11,7 +11,7 @@ addToCartButtons.forEach((button) => {
         console.log('Agregando producto con ID:', pid, 'al carrito: ', cid);
 
         try {
-            
+
             const response = await fetch(`api/carts/6518b3030b4bb755731f2cd0/products/${pid}`, {
                 method: 'POST',
                 headers: {
@@ -22,6 +22,29 @@ addToCartButtons.forEach((button) => {
 
             if (response.ok) {
                 const updatedCart = await response.json();
+                // Toastify({
+                //     text: "Producto agregado al carrito",
+                //     duration: 4000,
+                //     // destination: "https://github.com/apvarun/toastify-js",
+                //     // newWindow: true,
+                //     // close: true,
+                //     gravity: "bottom", // `top` or `bottom`
+                //     position: "left", // `left`, `center` or `right`
+                //     stopOnFocus: true, // Prevents dismissing of toast on hover
+                //     style: {
+                //       background: "linear-gradient(to right, #00b09b, #96c93d)",
+                //     },
+                //     onClick: function(){} // Callback after click
+                //   }).showToast();
+                Swal.fire({
+                    title: 'Producto agregado al carrito',
+                    icon: 'success',
+                    toast: 'true',
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3500 // La notificación se cerrará automáticamente después de 1.5 segundos
+                });
+                location.reload();
                 console.log('Producto agregado al carrito:', updatedCart);
             } else {
                 console.error('Error al agregar el producto al carrito');
@@ -83,6 +106,6 @@ if (clearCartButton) {
         } catch (error) {
             console.error("Error de red:", error);
         }
-    
-})
+
+    })
 };
