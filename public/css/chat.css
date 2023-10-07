@@ -80,3 +80,38 @@ body {
 #send-button:hover {
     color: #0056b3;
 }
+/* Estilos para el Navbar */
+.navigation {
+    background-color: #007BFF; /* Color de fondo del Navbar */
+    padding: 10px 0; /* Espaciado interno del Navbar */
+}
+
+.menu {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    justify-content: center; /* Centrar elementos horizontalmente */
+}
+
+.menu li {
+    margin-right: 20px; /* Espacio entre elementos del menú */
+}
+
+.menu a {
+    text-decoration: none;
+    color: #fff; /* Color del texto en los enlaces */
+    font-weight: 500; /* Grosor de la fuente en los enlaces */
+    font-size: 18px; /* Tamaño de la fuente en los enlaces */
+    transition: color 0.3s; /* Transición de color al pasar el mouse */
+}
+
+.menu a:hover {
+    color: #0056b3; /* Cambio de color al pasar el mouse */
+}
+
+/* Opcional: Estilo para el enlace activo (página actual) */
+.menu a.active {
+    font-weight: 700; /* Puede usar un estilo diferente para la página activa */
+}
+
