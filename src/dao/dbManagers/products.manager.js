@@ -47,6 +47,7 @@ export default class Products {
         const count = await productsModel.countDocuments({});
         return count;
     }
+    
     getRealTimeProducts = async () => {
         const products = await productsModel.find().lean();
         return products;
@@ -75,4 +76,6 @@ export default class Products {
         const result = await productsModel.distinct('category');
         return result;
     }
+
+    
 };

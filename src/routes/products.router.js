@@ -1,20 +1,16 @@
 import express from 'express';
 import Products from '../dao/dbManagers/products.manager.js'
 import { upload } from '../utils.js';
-import productsModel from '../dao/models/products.model.js';
-// import path from 'path';
 
 const router = express.Router();
-const productCatalog = new Products();
+const productManager = new Products();
 
 // Rutas para productos
 router.get('/', async (req, res) => { //Consulta todos los productos
     const limit = req.query.limit;
 
     try {
-        const products = await productCatalog.getAll();
-
-
+        const products = await productManager.getAll();
         if (limit) {
             res.json(products.slice(0, parseInt(limit))); // Establecer el límite de productos a mostrar
         } else {
@@ -23,8 +19,6 @@ router.get('/', async (req, res) => { //Consulta todos los productos
     } catch (error) {
         console.error('Error al obtener productos:', error);// DEPURACION
         res.status(500).send({ error: 'Error al obtener productos' });
-
-
     }
 });
 
@@ -37,7 +31,7 @@ router.get('/:pid', async (req, res) => {//Consulta productos por ID
     }
 
     try {
-        const product = await productCatalog.getProductById(productId);
+        const product = await productManager.getProductById(productId);
 
         if (product) {
             res.json(product);
@@ -58,10 +52,10 @@ router.post('/', upload.single('thumbnail'), async (req, res) => {
         if (thumbnailFile) {
             productData.thumbnail = thumbnailFile.filename;
         } else {
-            productData.thumbnail = ''; // o productData.thumbnail = '';
+            productData.thumbnail = ''; 
         }
 
-        const newProduct = await productCatalog.addProduct(productData);
+        const newProduct = await productManager.addProduct(productData);
 
         res.status(201).send(newProduct);
     } catch (error) {
@@ -69,20 +63,24 @@ router.post('/', upload.single('thumbnail'), async (req, res) => {
     }
 });
 
-
-router.delete('/:pid', async (req, res) => {//Borrar prod por ID
+router.delete('/:pid', async (req, res) => {
     const productId = req.params.pid;
 
-    let result = await productsModel.findByIdAndDelete(productId);
+    try {
+        const result = await productManager.delete(productId);
 
-    if (result === null) {
-        return res.status(404).send({ message: 'Producto no encontrado' });
-    } else {
-        return res.status(202).send({ message: 'Producto eliminado con exito', data: result });
+        if (!result) {
+            return res.status(404).send({ message: 'Producto no encontrado' });
+        } else {
+            return res.status(202).send({ message: 'Producto eliminado con éxito', data: result });
+        }
+    } catch (error) {
+        console.error(error);
+        res.status(500).send({ status: 'error', message: 'Error al eliminar el producto' });
     }
 });
 
-router.put('/:pid', upload.array('thumbnail'), async (req, res) => {//Modificar un producto
+router.put('/:pid', upload.array('thumbnail'), async (req, res) => {
     const productId = req.params.pid;
     if (!productId) {
         res.status(400).send({ error: 'Debe actualizar mediante un ID de producto' });
@@ -92,28 +90,23 @@ router.put('/:pid', upload.array('thumbnail'), async (req, res) => {//Modificar 
     const updatedFields = req.body;
 
     try {
-        const existingProduct = await productsModel.findById(productId);
-        if (!existingProduct) {
+        const updatedProduct = await productManager.update(productId, updatedFields);
+
+        if (!updatedProduct) {
             res.status(404).send({ error: 'Producto no encontrado' });
             return;
-        }
-        for (const key in updatedFields) {
-            if (updatedFields.hasOwnProperty(key)) {
-                existingProduct[key] = updatedFields[key];
-            }
         }
 
         if (req.files && req.files.length > 0) {
             const imageUrls = req.files.map((file) => {
                 return file.filename;
             });
-            existingProduct.thumbnail = imageUrls;
+            updatedProduct.thumbnail = imageUrls;
         }
-        const updatedProduct = await existingProduct.save();
+
         res.status(200).send({ message: 'Producto actualizado con éxito', product: updatedProduct });
     } catch (error) {
         res.status(500).send({ error: 'Error al actualizar el producto' });
     }
 });
-
 export default router;

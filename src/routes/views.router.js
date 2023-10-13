@@ -22,7 +22,7 @@ const privateAccess = (req, res, next) => {
 
 const adminAccess = (req, res, next) => {
     if (!req.session.user || req.session.user.role !== 'admin') {
-        return res.redirect('/login'); 
+        return res.redirect('/login');
     }
     next();
 }
@@ -188,6 +188,25 @@ router.get('/products/:pid', async (req, res) => {
         res.status(500).json({ status: 'error', message: 'Error al obtener el producto' });
     }
 });
+
+router.get('/carts', async (req, res) => {
+    try {
+        const cartId = '6518b3030b4bb755731f2cd0';
+        const cartItems = await cartManager.getCartDetails(cartId);
+
+        cartItems.products.forEach((item) => {
+            item.totalPrice = item.quantity * item.product.price;
+        });
+
+        cartItems.cartTotal = cartItems.products.reduce((total, item) => {
+            return total + item.totalPrice;
+        }, 0);
+
+        res.render('carts', { cartItems });
+    } catch (error) {
+
+    }
+})
 
 
 //Rutas para renderizacion de las vistas

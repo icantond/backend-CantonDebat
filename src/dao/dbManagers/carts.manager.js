@@ -80,5 +80,76 @@ export default class Carts {
             throw error;
         }
     }
+
+    async deleteProductFromCart(cartId, productId) {
+        try {
+            const cart = await cartsModel.findById(cartId);
+    
+            if (!cart) {
+                throw new Error('Carrito no encontrado');
+            }
+    
+            const productIndex = cart.products.findIndex(item => item.product.equals(productId));
+    
+            if (productIndex !== -1) {
+                cart.products.splice(productIndex, 1);
+                const result = await cart.save();
+                return result;
+            } else {
+                throw new Error('Producto no encontrado en el carrito');
+            }
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    async emptyCart(cartId) {
+        try {
+            const cart = await cartsModel.findByIdAndUpdate(cartId, { products: [] });
+            return cart;
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    async updateCart(cartId, newProducts) {
+        try {
+            const cart = await cartsModel.findById(cartId);
+    
+            if (!cart) {
+                throw new Error('Carrito no encontrado');
+            }
+    
+            cart.products = newProducts;
+            const updatedCart = await cart.save();
+    
+            return updatedCart;
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    async updateProductQuantity(cartId, productId, newQuantity) {
+        try {
+            const cart = await cartsModel.findById(cartId);
+    
+            if (!cart) {
+                throw new Error('Carrito no encontrado');
+            }
+    
+            const productIndex = cart.products.findIndex((item) => item.product.toString() === productId);
+    
+            if (productIndex === -1) {
+                throw new Error('Producto no encontrado en el carrito');
+            }
+    
+            cart.products[productIndex].quantity = newQuantity;
+            await cart.save();
+    
+            return cart;
+        } catch (error) {
+            throw error;
+        }
+    }
 }
 
