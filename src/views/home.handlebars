@@ -1,0 +1,89 @@
+<head>
+    <link rel="stylesheet" href="static/css/style.css">
+</head>
+<nav class="navigation">
+    <ul class="menu">
+        <li><a href="http://localhost:8080">Home</a></li>
+        <li><a href="http://localhost:8080/products">Products</a></li>
+        <li><a href="http://localhost:8080/realtimeproducts">RealTimeProducts</a></li>
+        <li><a href="http://localhost:8080/carts">Cart</a></li>
+        <li><a href="http://localhost:8080/chat">Chat</a></li>
+    </ul>
+</nav>
+<h1 class="page-title">HOME-Productos</h1>
+
+<form action="/" method="GET">
+
+    <label for="query">Buscar Producto:</label>
+    <input type="text" id="query" name="query" placeholder="Nombre del Producto">
+
+    <label for="limit">Resultados por página:</label>
+    <select type="number" id="limit" name="limit" placeholder="Resultados por página">
+        <option value="3">3</option>
+        <option value="5">5</option>
+        <option value="10">10</option>
+        <option value="15">15</option>
+        <option value="20">20</option>
+    </select>
+    
+    <label for="category">Categoría:</label>
+    <select id="category" name="category">
+        <option value="">Todas</option>
+        {{#each categories}}
+        <option value="{{this}}">{{this}}</option>
+        {{/each}}
+    </select>
+    </select>
+
+    <label for="available">Disponibilidad:</label>
+    <select id="available" name="available">
+        <option value="">Todas</option>
+        <option value="true">Disponible</option>
+        <option value="false">No Disponible</option>
+    </select>
+
+    <label for="sort">Ordenar por Precio:</label>
+    <select id="sort" name="sort">
+        <option value="">Ninguno</option>
+        <option value="asc">Menor a Mayor</option>
+        <option value="desc">Mayor a Menor</option>
+    </select>
+
+    <button type="submit">Aplicar Filtros</button>
+    
+    </div>
+</form>
+
+<ul class="product-list-container">
+    {{#each products}}
+    <div class="product-list-item">
+        <h2>{{title}}</h2>
+        <p>{{description}}</p>
+        <p>Precio: ${{price}}</p>
+        <img src="static/img/{{thumbnail}}" alt="{{title}}" width="200">
+    </div>
+    {{/each}}
+</ul>
+
+<!-- Paginación -->
+<div class="pagination">
+    {{#if hasPrevPage}}
+    <a href="{{prevLink}}" class="page-link">Anterior</a>
+    {{/if}}
+
+    {{#each pageNumbers}}
+    {{#if this.isCurrentPage}}
+    <span class="current-page">{{this.page}}</span>
+    {{else}}
+    <a href="{{this.link}}" class="page-link">{{this.page}}</a>
+    {{/if}}
+    {{/each}}
+
+    {{#if hasNextPage}}
+    <a href="{{nextLink}}" class="page-link">Siguiente</a>
+    {{/if}}
+</div>
+
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="static/js/index.js"></script>
