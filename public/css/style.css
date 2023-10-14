@@ -1,12 +1,18 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Roboto:ital,wght@0,300;0,400;0,500;0,700;0,900;1,400;1,500;1,700&display=swap');
+
+a{
+    text-decoration: none;
+}
 body {
     font-family: 'Poppins', sans-serif;
     margin: 0;
     padding: 0;
 }
-ul li{
+
+ul li {
     list-style: none;
 }
+
 .page-title {
     text-align: center;
     background-color: #007BFF;
@@ -34,15 +40,15 @@ ul li{
     list-style: none;
     padding: 0;
     display: flex;
-    flex-wrap: wrap; 
-    justify-content: space-between; 
+    flex-wrap: wrap;
+    justify-content: space-between;
 }
 
 .product-list-item {
     background-color: #fff;
     border: 1px solid #ccc;
     border-radius: 5px;
-    width: calc(30% - 10px); 
+    width: calc(30% - 10px);
     margin-bottom: 20px;
     padding: 10px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -105,6 +111,7 @@ button[type="submit"] {
 button[type="submit"]:hover {
     background-color: #0056b3;
 }
+
 /* Estilos de Paginación */
 .pagination {
     display: flex;
@@ -127,15 +134,18 @@ button[type="submit"]:hover {
 .current-page {
     padding: 5px 10px;
     margin: 0 5px;
-    background-color: #007BFF; /* Mismo color que .page-title */
+    background-color: #007BFF;
+    /* Mismo color que .page-title */
     color: #fff;
     border-radius: 5px;
 }
 
 .page-link:hover {
-    background-color: #0056b3; /* Cambio de color al pasar el mouse */
+    background-color: #0056b3;
+    /* Cambio de color al pasar el mouse */
     color: #fff;
 }
+
 .btn-clear-filters {
     background-color: #ccc;
     color: #333;
@@ -150,10 +160,13 @@ button[type="submit"]:hover {
 .btn-clear-filters:hover {
     background-color: #ddd;
 }
+
 /* Estilos para el Navbar */
 .navigation {
-    background-color: #007BFF; /* Color de fondo del Navbar */
-    padding: 10px 0; /* Espaciado interno del Navbar */
+    background-color: #007BFF;
+    /* Color de fondo del Navbar */
+    padding: 10px 0;
+    /* Espaciado interno del Navbar */
 }
 
 .menu {
@@ -161,28 +174,36 @@ button[type="submit"]:hover {
     padding: 0;
     margin: 0;
     display: flex;
-    justify-content: center; /* Centrar elementos horizontalmente */
+    justify-content: center;
+    /* Centrar elementos horizontalmente */
 }
 
 .menu li {
-    margin-right: 20px; /* Espacio entre elementos del menú */
+    margin-right: 20px;
+    /* Espacio entre elementos del menú */
 }
 
 .menu a {
     text-decoration: none;
-    color: #fff; /* Color del texto en los enlaces */
-    font-weight: 500; /* Grosor de la fuente en los enlaces */
-    font-size: 18px; /* Tamaño de la fuente en los enlaces */
-    transition: color 0.3s; /* Transición de color al pasar el mouse */
+    color: #fff;
+    /* Color del texto en los enlaces */
+    font-weight: 500;
+    /* Grosor de la fuente en los enlaces */
+    font-size: 18px;
+    /* Tamaño de la fuente en los enlaces */
+    transition: color 0.3s;
+    /* Transición de color al pasar el mouse */
 }
 
 .menu a:hover {
-    color: #0056b3; /* Cambio de color al pasar el mouse */
+    color: #0056b3;
+    /* Cambio de color al pasar el mouse */
 }
 
 /* Opcional: Estilo para el enlace activo (página actual) */
 .menu a.active {
-    font-weight: 700; /* Puede usar un estilo diferente para la página activa */
+    font-weight: 700;
+    /* Puede usar un estilo diferente para la página activa */
 }
 
 /* Estilos para las tarjetas de productos */
@@ -227,6 +248,7 @@ button[type="submit"]:hover {
 .product-card button:hover {
     background-color: #0056b3;
 }
+
 /* Estilos para la lista de elementos del carrito */
 .cart-list {
     list-style: none;
@@ -261,3 +283,244 @@ button[type="submit"]:hover {
     font-weight: 700;
     font-size: 24px;
 }
+/* Estilos para la vista login.handlebars */
+
+.login-form-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #007BFF; /* Relleno azul */
+}
+
+form.login-form {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    display: flex; /* Añade display flex */
+    flex-direction: column; /* Añade flex-direction column */
+    align-items: center; /* Centra verticalmente en el contenedor */
+}
+
+.login-form-title {
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+.login-label {
+    font-size: 18px;
+    display: block;
+    margin-top: 10px;
+}
+
+.login-input {
+    width: 100%;
+    padding: 10px;
+    margin: 5px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    box-sizing: border-box; /* Añade esta propiedad para evitar que los inputs sobresalgan */
+}
+.login-button {
+    background-color: #007BFF;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 18px;
+    cursor: pointer;
+    margin-top: 20px;
+}
+
+.login-button:hover {
+    background-color: #0056b3;
+}
+
+.social {
+    margin-top: 20px;
+}
+
+.social .gh {
+    background-color: #333;
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-right: 10px;
+    display: inline-block;
+}
+
+.social .rg {
+    color: #007BFF;
+    cursor: pointer;
+    display: inline-block;
+}
+
+.social .gh i {
+    margin-right: 5px;
+}
+
+/* #loginForm{
+    background-color: #007BFF;
+    height: 520px;
+    width: 400px;
+    position: absolute;
+    transform: translate(-50%, -50%);
+    top: 50%;
+    left: 50%;
+    border-radius: 10px;
+    backdrop-filter: blur(10px);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 0 40px rgba(8, 7, 16, 0.6);
+    padding: 50px 35px;
+    font-family: 'Poppins', sans-serif;
+    color: #ffffff;
+    letter-spacing: 0.5px;
+}
+.social {
+    margin-top: 30px;
+    display: flex;
+}
+
+.social div {
+    background: red;
+    width: 150px;
+    border-radius: 3px;
+    padding: 5px 10px 10px 5px;
+    background-color: rgba(255, 255, 255, 0.27);
+    color: #eaf0fb;
+    text-align: center;
+}
+
+.social div:hover {
+    background-color: rgba(255, 255, 255, 0.47);
+}
+
+.social .fb {
+    margin-left: 25px;
+}
+
+.social i {
+    margin-right: 4px;
+} */
+
+/* 
+*,
+*:before,
+*:after {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #080710;
+}
+
+.background {
+    width: 430px;
+    height: 520px;
+    position: absolute;
+    transform: translate(-50%, -50%);
+    left: 50%;
+    top: 50%;
+}
+
+.background .shape {
+    height: 200px;
+    width: 200px;
+    position: absolute;
+    border-radius: 50%;
+}
+
+.shape:first-child {
+    background: linear-gradient(#1845ad, #23a2f6);
+    left: -80px;
+    top: -80px;
+}
+
+.shape:last-child {
+    background: linear-gradient(to right, #ff512f, #f09819);
+    right: -30px;
+    bottom: -80px;
+}
+
+form {
+    height: 520px;
+    width: 400px;
+    position: absolute;
+    transform: translate(-50%, -50%);
+    top: 50%;
+    left: 50%;
+    border-radius: 10px;
+    backdrop-filter: blur(10px);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 0 40px rgba(8, 7, 16, 0.6);
+    padding: 50px 35px;
+}
+
+form * {
+    font-family: 'Poppins', sans-serif;
+    color: #ffffff;
+    letter-spacing: 0.5px;
+    outline: none;
+    border: none;
+}
+
+form h3 {
+    font-size: 32px;
+    font-weight: 500;
+    line-height: 42px;
+    text-align: center;
+}
+
+label {
+    display: block;
+    margin-top: 30px;
+    font-size: 16px;
+    font-weight: 500;
+}
+
+
+
+button {
+    margin-top: 50px;
+    width: 100%;
+    background-color: #ffffff;
+    color: #080710;
+    padding: 15px 0;
+    font-size: 18px;
+    font-weight: 600;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.social {
+    margin-top: 30px;
+    display: flex;
+}
+
+.social div {
+    background: red;
+    width: 150px;
+    border-radius: 3px;
+    padding: 5px 10px 10px 5px;
+    background-color: rgba(255, 255, 255, 0.27);
+    color: #eaf0fb;
+    text-align: center;
+}
+
+.social div:hover {
+    background-color: rgba(255, 255, 255, 0.47);
+}
+
+.social .fb {
+    margin-left: 25px;
+}
+
+.social i {
+    margin-right: 4px;
+} */

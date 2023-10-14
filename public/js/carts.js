@@ -22,27 +22,14 @@ addToCartButtons.forEach((button) => {
 
             if (response.ok) {
                 const updatedCart = await response.json();
-                // Toastify({
-                //     text: "Producto agregado al carrito",
-                //     duration: 4000,
-                //     // destination: "https://github.com/apvarun/toastify-js",
-                //     // newWindow: true,
-                //     // close: true,
-                //     gravity: "bottom", // `top` or `bottom`
-                //     position: "left", // `left`, `center` or `right`
-                //     stopOnFocus: true, // Prevents dismissing of toast on hover
-                //     style: {
-                //       background: "linear-gradient(to right, #00b09b, #96c93d)",
-                //     },
-                //     onClick: function(){} // Callback after click
-                //   }).showToast();
+                
                 Swal.fire({
                     title: 'Producto agregado al carrito',
                     icon: 'success',
                     toast: 'true',
                     position: 'top-end',
                     showConfirmButton: false,
-                    timer: 3500 // La notificación se cerrará automáticamente después de 1.5 segundos
+                    timer: 3500 
                 });
                 location.reload();
                 console.log('Producto agregado al carrito:', updatedCart);
@@ -61,13 +48,11 @@ const removeItemButtons = document.querySelectorAll('.remove-item-button');
 removeItemButtons.forEach((button) => {
     button.addEventListener('click', async () => {
         const productId = button.getAttribute('data-product-id');
-        console.log('Eliminando producto con ID del lado del cliente:', productId);
-        const currentURL = window.location.href;
-        const parts = currentURL.split('/');
-        const cartId = parts[parts.length - 1];
+        const cartId = "6518b3030b4bb755731f2cd0";
+        console.log('Eliminando producto del lado del cliente ID:', productId, ', carrito: ', cartId);
 
         try {
-            const response = await fetch(`/carts/6518b3030b4bb755731f2cd0/products/${productId}`, {
+            const response = await fetch(`/api/carts/${cartId}/products/${productId}`, {
                 method: "DELETE",
             });
 
@@ -87,9 +72,8 @@ removeItemButtons.forEach((button) => {
 const clearCartButton = document.getElementById('empty-cart');
 if (clearCartButton) {
     clearCartButton.addEventListener('click', async () => {
-        const currentURL = window.location.href;
-        const parts = currentURL.split('/');
-        const cartId = parts[parts.length - 1];
+        const cartId = "6518b3030b4bb755731f2cd0";  
+
 
         try {
             const response = await fetch(`/carts/${cartId}`, {
@@ -106,6 +90,6 @@ if (clearCartButton) {
         } catch (error) {
             console.error("Error de red:", error);
         }
-
-    })
+    
+})
 };

@@ -12,26 +12,28 @@
 
     </ul>
 </nav>
-<div>
-    <h1>Registro</h1>
-    <form id="registerForm">
-        <label>Nombre</label>
-        <input name="first_name">
+<div class="login-form-container">
+    
+    <form id="registerForm" class="login-form">
+        <h1 class="login-form-title">Registro</h1>
+        <label class="login-label">Nombre</label>
+        <input name="first_name" class="login-input">
         <br />
-        <label>Apellido</label>
-        <input name="last_name">
+        <label class="login-label">Apellido</label>
+        <input name="last_name" class="login-input">
         <br />
-        <label>Email</label>
-        <input name="email">
+        <label class="login-label">Email</label>
+        <input name="email" class="login-input">
         <br />
-        <label>Edad</label>
-        <input name="age">
+        <label class="login-label">Edad</label>
+        <input name="age" class="login-input">
         <br />
-        <label>Contraseña</label>
-        <input type="password" name="password">
+        <label class="login-label">Contraseña</label>
+        <input type="password" name="password" class="login-input">
 
-        <input type="submit">
+        <input type="submit" class="login-button">
+            <p>¿Ya tienes una cuenta? <a href="/login">Ingresa aquí</a></p>
+
     </form>
-    <p>¿Ya tienes una cuenta? <a href="/login">Ingresa aquí</a></p>
 </div>
 <script src="/static/js/register.js"></script>

@@ -1,5 +1,8 @@
 <head>
     <link rel="stylesheet" href="static/css/style.css">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap" rel="stylesheet">
 </head>
 <nav class="navigation">
     <ul class="menu">
@@ -10,16 +13,20 @@
         <li><a href="http://localhost:8080/chat">Chat</a></li>
 
 </nav>
-<div>
-    <h1>Login</h1>
-    <form id="loginForm">
-        <label>Email</label>
-        <input name="email">
-        <br/>
-        <label>Contraseña</label>
-        <input type="password" name="password">
-        <input type="submit">
+<div class="login-form-container">
+    <form id="loginForm" class="login-form"> 
+        <h1 class="login-form-title">Login</h1>
+        <label class="login-label">Email</label>
+        <input name="email" class="login-input" placeholder="nombre@ejemplo.com">
+        <br />
+        <label class="login-label">Contraseña</label>
+        <input type="password" name="password" class="login-input" placeholder="********">
+        <input type="submit" class="login-button" value="Iniciar Sesión">
+
+        <div class="social">
+            <a href="/api/sessions/github"><div class="gh"><i class="fab fa-github"></i> Ingresar con GitHub</div></a>
+            <a href="http://localhost:8080/register"><div class="rg"> Registrarse</div></a>
+        </div>
     </form>
-    <p>¿No estás registrado? <a href="/register">Regístrate aquí</a></p>
 </div>
 <script src="/static/js/login.js"></script>

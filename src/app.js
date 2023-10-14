@@ -13,7 +13,8 @@ import sessionsRouter from './routes/sessions.router.js';
 import chatRouter from './routes/chat.router.js';
 import messagesModel from './dao/models/messages.model.js';
 import Products from './dao/dbManagers/products.manager.js';
-
+import initializePassport from './config/passport.config.js';
+import passport from 'passport';
 
 const app = express();
 try {
@@ -49,48 +50,40 @@ app.use(session({
     saveUninitialized: true,
 }));
 
+//passport
+initializePassport();
+app.use(passport.initialize());
+app.use(passport.session());
+
 //rutas OK
 app.use('/', viewsRouter);
 app.use('/realtimeproducts', viewsRouter);
 app.use('/carts', cartsRouter); 
 app.use('/chat', chatRouter);
 app.use('/api/products', productsRouter);
-app.use('/api/carts', cartsRouter); 
+app.use('/api/carts', cartsRouter);
 app.use('/products', viewsRouter);
 app.use('/productdetail', viewsRouter);
-app.use('/', viewsRouter);
 app.use('/api/sessions', sessionsRouter);
 app.use('/profile', viewsRouter);
-// app.use('/login', sessionsRouter);
-// app.use('/register', sessionsRouter);
 
+//Config Passport
+app.use((req, res, next) => {
+    res.locals.isAuthenticated = req.isAuthenticated();
+    next();
+});
+// app.use((req, res, next) => {
+//     if (req.isAuthenticated()) {
+//         return next();
+//     }
 
-//con estas rutas funciona el agregado al carrito:
-    // app.use('/', viewsRouter);
-    // app.use('/realtimeproducts', viewsRouter);
-    // app.use('/api/products', productsRouter);
-    // app.use('/api/carts', cartsRouter);
-    // app.use('/chat', chatRouter);
-    // app.use('/products', viewsRouter);
+//     const publicRoutes = ['/login', '/register']; 
+//     if (publicRoutes.includes(req.path)) {
+//         return next();
+//     }
 
-    //y con estas funciona la vista /carts:
-// app.use('/', viewsRouter);
-// app.use('/realtimeproducts', viewsRouter);
-// app.use('/carts', cartsRouter);
-// app.use('/chat', chatRouter);
-// app.use('/products', viewsRouter);
-// app.use('/productdetail', viewsRouter);
-
-// mongoose.connect('mongodb+srv://nachoman4:T5Cq5qd7DDKrfOYp@cluster47300icd.5tk8odk.mongodb.net/ecommerce?retryWrites=true&w=majority') //ATLAS
-// // mongoose.connect('mongodb://127.0.0.1:27017/ecommerce', { useNewUrlParser: true, useUnifiedTopology: true }) //LOCAL
-//     .then(() => {
-//         console.log('Conexión a MongoDB exitosa');
-//     })
-//     .catch((error) => {
-//         console.error('Error al conectar a MongoDB:', error);
-//     });
-
-
+//     return res.redirect('/login');
+// });
 //CONFIGURACION DE SOCKETS
 const io = socketServer;
 

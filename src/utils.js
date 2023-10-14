@@ -1,7 +1,8 @@
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import multer from 'multer';
-import path  from 'path';
+import path from 'path';
+import bcrypt from 'bcrypt';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -19,8 +20,18 @@ const storage = multer.diskStorage({
     },
 
 });
-console.log(`dirname multer: ${path.join(__dirname, '..', 'public', 'img')}`);
-
 const upload = multer({ storage });
 
-export { __dirname, upload }
+const createHash = password =>
+    bcrypt.hashSync(password, bcrypt.genSaltSync(10));
+
+const isValidPassword = (plainPassword, hashedPassword) =>
+    bcrypt.compareSync(plainPassword, hashedPassword);
+
+
+export {
+    __dirname,
+    upload,
+    createHash,
+    isValidPassword
+};
