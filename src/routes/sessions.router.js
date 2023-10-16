@@ -26,34 +26,6 @@ router.post('/register', async (req, res) => {
     }
 });
 
-//Segundo servicio para loguear el usuario
-// router.post('/login', async (req, res) => {
-//     try {
-//         const { email, password } = req.body;
-//         const user = await usersModel.findOne({ email, password });
-
-//         req.session.user = {
-//             name: `${user.first_name} ${user.last_name}`,
-//             email: user.email,
-//             age: user.age
-//         }
-//         if (!user) {
-//             return res.status(400).send({ status: 'error', message: 'Nombre de usuario o contraseña incorrectos' });
-//         }
-
-//         req.session.user = {
-//             name: `${user.first_name} ${user.last_name}`,
-//             email: user.email,
-//             age: user.age, 
-//             role: user.role
-//         }
-
-//         res.send({ status: 'success', message: 'Sesión iniciada con éxito' });
-//     } catch (error) {
-//         res.status(500).send({ status: 'error', message: error.message })
-//     }
-// });
-// Segundo servicio para loguear el usuario
 router.post('/login', async (req, res) => {
     try {
         const { email, password } = req.body;

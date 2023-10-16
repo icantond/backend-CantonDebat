@@ -5,7 +5,7 @@ import { upload } from '../utils.js';
 import Carts from '../dao/dbManagers/carts.manager.js';
 
 const router = express.Router();
-const productCatalog = new Products('products')
+const productManager = new Products('products')
 const cartManager = new Carts('carts');
 
 //MANEJO DE VISTAS DE USUARIOS:
@@ -27,7 +27,7 @@ const adminAccess = (req, res, next) => {
     next();
 }
 
-router.get('/', async (req, res) => {
+router.get('/', privateAccess, async (req, res) => {
     let page = parseInt(req.query.page) || 1;
     let limit = parseInt(req.query.limit) || 15;
     let sort = req.query.sort || '';
@@ -35,7 +35,7 @@ router.get('/', async (req, res) => {
     let category = req.query.category || '';
     let available = req.query.available || '';
 
-    const categories = await productCatalog.getCategories();
+    const categories = await productManager.getCategories();
 
     const skip = (page - 1) * limit;
 
@@ -102,14 +102,12 @@ router.get('/', async (req, res) => {
 
 router.get('/realtimeproducts', adminAccess, async (req, res) => {
     try {
-        const products = await productCatalog.getRealTimeProducts();
+        const products = await productManager.getRealTimeProducts();
         res.render('realTimeProducts', { products });
     } catch (error) {
         res.status(500).json({ error: 'Error al obtener productos en tiempo real' });
     }
 });
-
-//ESTAS VAN EN PRODUCTS.ROUTER?
 
 router.post('/realtimeproducts', upload.single('thumbnail'), async (req, res) => {
     const productData = req.body;
@@ -119,14 +117,10 @@ router.post('/realtimeproducts', upload.single('thumbnail'), async (req, res) =>
         if (thumbnailFile) {
             productData.thumbnail = thumbnailFile.filename;
         } else {
-
             productData.thumbnail = '';
         }
-
-        const newProduct = await productCatalog.addProduct(productData);
-
-        socket.emit('updateProducts', await productCatalog.getRealTimeProducts());
-
+        const newProduct = await productManager.addProduct(productData);
+        socket.emit('updateProducts', await productManager.getRealTimeProducts());
         res.status(201).send(newProduct);
     } catch (error) {
         res.status(500).send({ error: 'Error al agregar el producto en tiempo real' });
@@ -138,16 +132,15 @@ router.delete('/realtimeproducts', async (req, res) => {
     console.log('Producto a eliminar (ID) recibido en el servidor:', deleteProductId);
     console.log(`ID is NaN: ${isNan(deleteProductId)}`)
 
-
     if (!deleteProductId || isNaN(deleteProductId)) {
         res.status(400).json({ error: 'ID de producto a eliminar inválido' });
         return;
     }
 
     try {
-        await productCatalog.deleteProduct(deleteProductId);
+        await productManager.deleteProduct(deleteProductId);
 
-        io.emit('updateProducts', await productCatalog.getProducts());
+        io.emit('updateProducts', await productManager.getProducts());
 
         res.status(200).json({ message: 'Producto eliminado con éxito' });
         console.log('Producto eliminado con éxito');
@@ -158,9 +151,9 @@ router.delete('/realtimeproducts', async (req, res) => {
     }
 });
 
-router.get('/products', async (req, res) => {
+router.get('/products', privateAccess, async (req, res) => {
     try {
-        const products = await productCatalog.getAll();
+        const products = await productManager.getAll();
         const carts = await cartManager.getAll();
         const user = req.session.user || {};
 
@@ -171,9 +164,9 @@ router.get('/products', async (req, res) => {
     }
 });
 
-router.get('/products/:pid', async (req, res) => {
+router.get('/products/:pid', privateAccess, async (req, res) => {
     try {
-        const pid = await productCatalog.getProductById(req.params.pid);
+        const pid = await productManager.getProductById(req.params.pid);
         const productData = {
             title: pid.title,
             category: pid.category,
@@ -189,7 +182,7 @@ router.get('/products/:pid', async (req, res) => {
     }
 });
 
-router.get('/carts', async (req, res) => {
+router.get('/carts', privateAccess, async (req, res) => {
     try {
         const cartId = '6518b3030b4bb755731f2cd0';
         const cartItems = await cartManager.getCartDetails(cartId);
@@ -208,8 +201,6 @@ router.get('/carts', async (req, res) => {
     }
 })
 
-
-//Rutas para renderizacion de las vistas
 
 //registro
 router.get('/register', publicAccess, (req, res) => {
