@@ -68,22 +68,23 @@ app.use('/api/sessions', sessionsRouter);
 app.use('/profile', viewsRouter);
 
 //Config Passport
-app.use((req, res, next) => {
-    res.locals.isAuthenticated = req.isAuthenticated();
-    next();
-});
 // app.use((req, res, next) => {
-//     if (req.isAuthenticated()) {
-//         return next();
-//     }
-
-//     const publicRoutes = ['/login', '/register']; 
-//     if (publicRoutes.includes(req.path)) {
-//         return next();
-//     }
-
-//     return res.redirect('/login');
+//     res.locals.isAuthenticated = req.isAuthenticated();
+//     next();
 // });
+
+app.use((req, res, next) => {
+    if (req.isAuthenticated()) {
+        return next();
+    }
+
+    const publicRoutes = ['/login', '/register']; 
+    if (publicRoutes.includes(req.path)) {
+        return next();
+    }
+
+    return res.redirect('/login');
+});
 //CONFIGURACION DE SOCKETS
 const io = socketServer;
 

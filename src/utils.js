@@ -27,8 +27,8 @@ const createHash = password =>
 
 const isValidPassword = (plainPassword, hashedPassword) =>
     bcrypt.compareSync(plainPassword, hashedPassword);
-
-
+//adminCoder@coder.com
+//adminCod3r123
 export {
     __dirname,
     upload,

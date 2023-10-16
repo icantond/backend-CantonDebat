@@ -22,12 +22,12 @@ const privateAccess = (req, res, next) => {
 
 const adminAccess = (req, res, next) => {
     if (!req.session.user || req.session.user.role !== 'admin') {
-        return res.redirect('/login');
+        return res.redirect('/');
     }
     next();
 }
 
-router.get('/', async (req, res) => {
+router.get('/', privateAccess, async (req, res) => {
     let page = parseInt(req.query.page) || 1;
     let limit = parseInt(req.query.limit) || 15;
     let sort = req.query.sort || '';
@@ -158,7 +158,7 @@ router.delete('/realtimeproducts', async (req, res) => {
     }
 });
 
-router.get('/products', async (req, res) => {
+router.get('/products', privateAccess, async (req, res) => {
     try {
         const products = await productCatalog.getAll();
         const carts = await cartManager.getAll();
@@ -171,7 +171,7 @@ router.get('/products', async (req, res) => {
     }
 });
 
-router.get('/products/:pid', async (req, res) => {
+router.get('/products/:pid', privateAccess, async (req, res) => {
     try {
         const pid = await productCatalog.getProductById(req.params.pid);
         const productData = {
@@ -189,7 +189,7 @@ router.get('/products/:pid', async (req, res) => {
     }
 });
 
-router.get('/carts', async (req, res) => {
+router.get('/carts', privateAccess, async (req, res) => {
     try {
         const cartId = '6518b3030b4bb755731f2cd0';
         const cartItems = await cartManager.getCartDetails(cartId);
