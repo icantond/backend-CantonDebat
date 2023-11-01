@@ -34,13 +34,7 @@ const productSchema = new mongoose.Schema({
         required: true
     },
     thumbnail: Array,
-    // thumbnail: {
-    //     filename: String,
-    //     extension: String,
-    // },    // thumbnail:{
-    // //     type: Array,
-    //     default: [],
-    // },
+    
 });
 
 productSchema.plugin(mongoosePaginate);

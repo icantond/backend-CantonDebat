@@ -21,7 +21,7 @@
     <p>Id: {{productData._id}}</p>
     <p>Stock: {{productData.stock}}</p>
     <img src="../static/img/{{productData.thumbnail}}" alt="{{productData.thumbnail}}">
-    <button class="add-to-cart-from-detail-button" data-product-id="{{ productData._id }}">Agregar al Carrito</button>
+    <button class="add-to-cart-from-detail-button" data-product-id="{{ productData._id }}" data-cart-id="{{userCartId}}">Agregar al Carrito</button>
 </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

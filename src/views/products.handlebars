@@ -29,10 +29,11 @@
         <p>Stock: {{stock}}</p>
 
 
-        <!-- Agregar un botón para agregar el producto al carrito -->
         <a href="http://localhost:8080/products/{{ _id }}"><button class="product-detail-button">Ver
                 detalle</button></a>
-        <button class="add-to-cart-button" data-product-id="{{ _id }}">Agregar al Carrito</button>
+        <button class="add-to-cart-button" data-product-id="{{ _id }}" data-cart-id="{{../userCartId}}" data-user-id="{{../user._id}}">Agregar al Carrito</button>
+        <p>recibiendo cartid{{../userCartId}}</p>
+        <p>recibiendo user email {{../user.email}}</p>
     </div>
     {{/each}}
 </div>

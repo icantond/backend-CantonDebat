@@ -12,8 +12,9 @@
 
     </ul>
 </nav>
-<h1>Carrito de Compras</h1>
 
+<h1>Carrito de Compras</h1>
+<small>ID de carrito: {{userCartId}} <small/>
 <ul class="cart-list">
     {{#each cartItems.products}}
     <li class="cart-item">
@@ -22,7 +23,7 @@
         <p>Precio Unitario: ${{ this.product.price }}</p>
         <p>Cantidad: {{ this.quantity }}</p>
         <p>Precio Total por Producto:${{ this.totalPrice }}</p>
-        <button class="remove-item-button" data-product-id="{{this.product._id}}">Eliminar</button>
+        <button class="remove-item-button" data-product-id="{{this.product._id}}" data-cart-id="{{../userCartId}}">Eliminar</button>
     </li>
     {{/each}}
 </ul>
@@ -31,6 +32,6 @@
     <p>Total del Carrito: ${{ cartItems.cartTotal }}</p>
 </div>
 
-<button id="empty-cart">Vaciar Carrito</button>
+<button id="empty-cart" data-cart-id="{{userCartId}}">Vaciar Carrito</button>
 
 <script src="static/js/carts.js"></script>

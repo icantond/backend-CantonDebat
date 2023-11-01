@@ -14,9 +14,10 @@
 </nav>
 <div>
     <h1>Tu perfil (sin datos sensibles)</h1>
-    <p>{{user.name}}</p>
-    <p>{{user.email}}</p>
-    <p>{{user.age}}</p>
-    <p>{{user.role}}</p>
+    
+    <p><strong>Nombre:</strong> {{user.first_name}}</p>
+    <p><strong>Email:</strong> {{user.email}}</p>
+    <p><strong>Edad:</strong> {{user.age}}</p>
+    <p><strong>Rol:</strong> {{user.role}}</p>
     <a href="/api/sessions/logout"><button>Salir</button></a>
 </div>

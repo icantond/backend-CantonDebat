@@ -7,13 +7,21 @@ const usersSchema = new mongoose.Schema({
     last_name: String,
     email: String,
     age: Number,
-    password: String, 
+    password: String,
     role: {
         type: String,
         default: 'user'
-}
+    },
+    cart: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'carts',
+        default: null                                       
+    }
 });
 
+usersSchema.pre('findOne', function(){
+    this.populate('cart');
+});
 const usersModel = mongoose.model(usersCollection, usersSchema);
 
 export default usersModel;

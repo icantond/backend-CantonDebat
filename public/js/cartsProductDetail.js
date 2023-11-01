@@ -5,11 +5,12 @@ const addToCartFromProductDetailButtons = document.querySelectorAll('.add-to-car
 addToCartFromProductDetailButtons.forEach((button) => {
     button.addEventListener('click', async () => {
         const pid = button.getAttribute('data-product-id');
+        const cid = button.getAttribute('data-cart-id');
         console.log('Agregando producto con ID:', pid);
         try {
             const baseUrl = window.location.origin;
 
-            const apiUrl = `${baseUrl}/api/carts/6518b3030b4bb755731f2cd0/products/${pid}`;
+            const apiUrl = `${baseUrl}/api/carts/${cid}/products/${pid}`;
 
             const response = await fetch(apiUrl, {
                 method: 'POST',

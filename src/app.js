@@ -6,15 +6,20 @@ import handlebars from 'express-handlebars';
 import mongoose from 'mongoose';
 import { Server } from 'socket.io';
 import path from 'path';
+
 import productsRouter from './routes/products.router.js';
 import cartsRouter from './routes/carts.router.js';
-import viewsRouter from './routes/views.router.js';
+// import viewsRouter from './routes/views.router.js';
+import ViewsRouter from './routes/views.router.js';
+
 import sessionsRouter from './routes/sessions.router.js';
 import chatRouter from './routes/chat.router.js';
+
 import messagesModel from './dao/models/messages.model.js';
 import Products from './dao/dbManagers/products.manager.js';
 import initializePassport from './config/passport.config.js';
 import passport from 'passport';
+
 
 const app = express();
 try {
@@ -25,6 +30,8 @@ try {
 } catch (error) {
     console.error('Error al conectar a MongoDB:', error);
 }
+
+const viewsRouter = new ViewsRouter();
 
 const PORT = 8080;
 const httpServer = app.listen(PORT, () => console.log(`Listening on PORT ${PORT}`));
@@ -56,16 +63,16 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 //rutas OK
-app.use('/', viewsRouter);
-app.use('/realtimeproducts', viewsRouter);
-app.use('/carts', cartsRouter); 
+app.use('/', viewsRouter.getRouter());
+app.use('/realtimeproducts', viewsRouter.getRouter().getRouter());
+app.use('/carts', viewsRouter.getRouter()); 
 app.use('/chat', chatRouter);
 app.use('/api/products', productsRouter);
 app.use('/api/carts', cartsRouter);
-app.use('/products', viewsRouter);
-app.use('/productdetail', viewsRouter);
+app.use('/products', viewsRouter.getRouter());
+app.use('/productdetail', viewsRouter.getRouter());
 app.use('/api/sessions', sessionsRouter);
-app.use('/profile', viewsRouter);
+app.use('/profile', viewsRouter.getRouter());
 
 //Config Passport
 // app.use((req, res, next) => {
