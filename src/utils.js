@@ -29,9 +29,16 @@ const isValidPassword = (plainPassword, hashedPassword) =>
     bcrypt.compareSync(plainPassword, hashedPassword);
 //adminCoder@coder.com
 //adminCod3r123
+
+const generateToken = (user) => {
+    const token = jwt.sign({ user }, PRIVATE_KEY_JWT, { expiresIn: '24h' });
+    return token;
+}
+
 export {
     __dirname,
     upload,
     createHash,
-    isValidPassword
+    isValidPassword,
+    generateToken
 };

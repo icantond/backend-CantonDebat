@@ -6,8 +6,8 @@ import productsModel from '../dao/models/products.model.js';
 import { upload } from '../utils.js';
 import Carts from '../dao/dbManagers/carts.manager.js';
 
-const productCatalog = new Products('products');
-const cartManager = new Carts('carts');
+const productsManager = new Products('products');
+// const cartManager = new Carts('carts');
 
 const publicAccess = new Router().handlePolicies(['PUBLIC']);
 const privateAccess = new Router().handlePolicies(['USER'], passportStrategiesEnum.JWT);
@@ -16,13 +16,14 @@ const adminAccess = new Router().handlePolicies(['ADMIN'], passportStrategiesEnu
 export default class ViewsRouter extends Router {
     constructor() {
         super();
+        const cartManager = new Carts('carts');
     }
 
     init() {
         this.get('/', privateAccess, passportStrategiesEnum.JWT, this.showHomePage);
         this.get('/realtimeproducts', adminAccess, passportStrategiesEnum.JWT, this.showRealTimeProducts);
         this.post('/realtimeproducts', upload.single('thumbnail'), this.addRealTimeProduct);
-        // this.delete('/realtimeproducts', this.deleteRealTimeProduct);
+        this.delete('/realtimeproducts', this.deleteRealTimeProduct);
         this.get('/products', privateAccess, passportStrategiesEnum.JWT, this.showProducts);
         this.get('/products/:pid', privateAccess, passportStrategiesEnum.JWT, this.showProductDetail);
         this.get('/carts', privateAccess, passportStrategiesEnum.JWT, this.showCarts);
@@ -42,7 +43,7 @@ export default class ViewsRouter extends Router {
             let category = req.query.category || '';
             let available = req.query.available || '';
 
-            const categories = await productCatalog.getCategories();
+            const categories = await productsManager.getCategories();
 
             const skip = (page - 1) * limit;
 
@@ -109,7 +110,7 @@ export default class ViewsRouter extends Router {
     showRealTimeProducts = async (req, res) => {
         try {
             // Lógica para mostrar los productos en tiempo real
-            const products = await productCatalog.getRealTimeProducts();
+            const products = await productsManager.getRealTimeProducts();
             res.render('realTimeProducts', { products });
         } catch (error) {
             res.status(500).json({ error: 'Error al obtener productos en tiempo real' });
@@ -128,9 +129,9 @@ export default class ViewsRouter extends Router {
                 productData.thumbnail = '';
             }
 
-            const newProduct = await productCatalog.addProduct(productData);
+            const newProduct = await productsManager.addProduct(productData);
 
-            socket.emit('updateProducts', await productCatalog.getRealTimeProducts());
+            socket.emit('updateProducts', await productsManager.getRealTimeProducts());
 
             res.status(201).send(newProduct);
         } catch (error) {
@@ -148,9 +149,9 @@ export default class ViewsRouter extends Router {
                 return;
             }
 
-            await productCatalog.deleteProduct(deleteProductId);
+            await productsManager.deleteProduct(deleteProductId);
 
-            io.emit('updateProducts', await productCatalog.getProducts());
+            io.emit('updateProducts', await productsManager.getProducts());
 
             res.status(200).json({ message: 'Producto eliminado con éxito' });
         } catch (error) {
@@ -161,8 +162,8 @@ export default class ViewsRouter extends Router {
     showProducts = async (req, res) => {
         try {
             // Lógica para mostrar la lista de productos
-            const products = await productCatalog.getAll();
-            const carts = await cartManager.getAll();
+            const products = await productsManager.getAll();
+            const carts = await this.cartManager.getAll();
             const user = req.session.user || {};
             const userCartId = user.cart;
 
@@ -176,7 +177,7 @@ export default class ViewsRouter extends Router {
     showProductDetail = async (req, res) => {
         try {
             // Lógica para mostrar el detalle de un producto
-            const pid = await productCatalog.getProductById(req.params.pid);
+            const pid = await productsManager.getProductById(req.params.pid);
             const user = req.session.user || {};
             const userCartId = user.cart;
 
@@ -200,7 +201,7 @@ export default class ViewsRouter extends Router {
             // Lógica para mostrar los carritos
             const user = req.session.user || {};
             const userCartId = user.cart;
-            const cartItems = await cartManager.getCartDetails(cartId);
+            const cartItems = await this.cartManager.getCartDetails(cartId);
 
             cartItems.products.forEach((item) => {
                 item.totalPrice = item.quantity * item.product.price;
@@ -244,7 +245,7 @@ export default class ViewsRouter extends Router {
 // import Carts from '../dao/dbManagers/carts.manager.js';
 
 // const router = express.Router();
-// const productCatalog = new Products('products')
+// const productsManager = new Products('products')
 // const cartManager = new Carts('carts');
 
 // //MANEJO DE VISTAS DE USUARIOS:
@@ -274,7 +275,7 @@ export default class ViewsRouter extends Router {
 //     let category = req.query.category || '';
 //     let available = req.query.available || '';
 
-//     const categories = await productCatalog.getCategories();
+//     const categories = await productsManager.getCategories();
 
 //     const skip = (page - 1) * limit;
 
@@ -341,7 +342,7 @@ export default class ViewsRouter extends Router {
 
 // router.get('/realtimeproducts', adminAccess, async (req, res) => {
 //     try {
-//         const products = await productCatalog.getRealTimeProducts();
+//         const products = await productsManager.getRealTimeProducts();
 //         res.render('realTimeProducts', { products });
 //     } catch (error) {
 //         res.status(500).json({ error: 'Error al obtener productos en tiempo real' });
@@ -361,9 +362,9 @@ export default class ViewsRouter extends Router {
 //             productData.thumbnail = '';
 //         }
 
-//         const newProduct = await productCatalog.addProduct(productData);
+//         const newProduct = await productsManager.addProduct(productData);
 
-//         socket.emit('updateProducts', await productCatalog.getRealTimeProducts());
+//         socket.emit('updateProducts', await productsManager.getRealTimeProducts());
 
 //         res.status(201).send(newProduct);
 //     } catch (error) {
@@ -383,9 +384,9 @@ export default class ViewsRouter extends Router {
 //     }
 
 //     try {
-//         await productCatalog.deleteProduct(deleteProductId);
+//         await productsManager.deleteProduct(deleteProductId);
 
-//         io.emit('updateProducts', await productCatalog.getProducts());
+//         io.emit('updateProducts', await productsManager.getProducts());
 
 //         res.status(200).json({ message: 'Producto eliminado con éxito' });
 //         console.log('Producto eliminado con éxito');
@@ -398,7 +399,7 @@ export default class ViewsRouter extends Router {
 
 // router.get('/products', privateAccess, async (req, res) => {
 //     try {
-//         const products = await productCatalog.getAll();
+//         const products = await productsManager.getAll();
 //         const carts = await cartManager.getAll();
 //         const user = req.session.user   || {};
 //         const userCartId = user.cart;
@@ -416,7 +417,7 @@ export default class ViewsRouter extends Router {
 
 // router.get('/products/:pid', privateAccess, async (req, res) => {
 //     try {
-//         const pid = await productCatalog.getProductById(req.params.pid);
+//         const pid = await productsManager.getProductById(req.params.pid);
 //         const user = req.session.user   || {};
 //         const userCartId = user.cart;
 

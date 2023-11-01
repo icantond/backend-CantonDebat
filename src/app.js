@@ -8,7 +8,8 @@ import { Server } from 'socket.io';
 import path from 'path';
 
 import productsRouter from './routes/products.router.js';
-import cartsRouter from './routes/carts.router.js';
+// import cartsRouter from './routes/carts.router.js';
+import CartsRouter from './routes/carts.router.js';
 // import viewsRouter from './routes/views.router.js';
 import ViewsRouter from './routes/views.router.js';
 
@@ -20,6 +21,8 @@ import Products from './dao/dbManagers/products.manager.js';
 import initializePassport from './config/passport.config.js';
 import passport from 'passport';
 
+const cartsRouter = new CartsRouter();
+const viewsRouter = new ViewsRouter();
 
 const app = express();
 try {
@@ -30,8 +33,6 @@ try {
 } catch (error) {
     console.error('Error al conectar a MongoDB:', error);
 }
-
-const viewsRouter = new ViewsRouter();
 
 const PORT = 8080;
 const httpServer = app.listen(PORT, () => console.log(`Listening on PORT ${PORT}`));
@@ -64,11 +65,11 @@ app.use(passport.session());
 
 //rutas OK
 app.use('/', viewsRouter.getRouter());
-app.use('/realtimeproducts', viewsRouter.getRouter().getRouter());
+app.use('/realtimeproducts', viewsRouter.getRouter());
 app.use('/carts', viewsRouter.getRouter()); 
 app.use('/chat', chatRouter);
 app.use('/api/products', productsRouter);
-app.use('/api/carts', cartsRouter);
+app.use('/api/carts', cartsRouter.getRouter());
 app.use('/products', viewsRouter.getRouter());
 app.use('/productdetail', viewsRouter.getRouter());
 app.use('/api/sessions', sessionsRouter);

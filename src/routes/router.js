@@ -44,6 +44,16 @@ export default class Router {
         )
     }
 
+    delete(path, policies, passportStrategy, ...callbacks) {
+        this.router.delete(
+            path,
+            this.applyCustomPassportCall(passportStrategy),
+            this.handlePolicies(policies),
+            this.generateCustomResponse,
+            this.applyCallbacks(callbacks)
+        );
+    }    
+
     applyCustomPassportCall = (strategy) => (req, res, next) => {
         if(strategy === passportStrategiesEnum.JWT){
             passport.authenticate(strategy, function(err, user, info){

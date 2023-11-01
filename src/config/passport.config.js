@@ -20,7 +20,6 @@ const initializePassport = () =>{
         }
     }))
 };
-
 // const initializePassport = () => {
 //     passport.use('github', new GitHubStrategy({
 //         clientID: 'Iv1.4677b74926edd633',
