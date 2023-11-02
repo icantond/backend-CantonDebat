@@ -1,6 +1,7 @@
 const passportStrategiesEnum = {
     JWT: 'jwt', 
-    NOTHING: 'na' 
+    NOTHING: 'na', 
+    GITHUB: 'github',
 }
 
 const accessRoles = {

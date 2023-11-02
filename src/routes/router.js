@@ -60,6 +60,7 @@ export default class Router {
                 if (err) return next(err);
 
                 if (!user) {
+                    console.log('No se autenticó el usuario:', info);
                     res.status(401).send({error: info.messages ? info.messages : info.toString() })
                 }
 
@@ -72,15 +73,22 @@ export default class Router {
         }
     }
 
+    
     handlePolicies = (policies) => (req, res, next) => {
         //["ADMIN"]
         //No validamos nada
+        if (!req.user) {
+            return res.status(401).json({ error: 'No autenticado' });
+        }
+    
         if (policies[0] === 'PUBLIC') return next();
-
-        if (!policies.includes(user.role.toUpperCase()))
-            return res.status(403).json({ error: 'No permissions' })
-
-        req.user = user;
+    
+        const user = req.user;
+    
+        if (!policies.includes(user.role.toUpperCase())) {
+            return res.status(403).json({ error: 'No tienes permisos para acceder a esta página' });
+        }
+    
         next();
     }
 

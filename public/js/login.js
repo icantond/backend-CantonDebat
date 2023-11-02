@@ -14,10 +14,19 @@ form.addEventListener('submit', (e) => {
         headers: {
             'Content-Type': 'application/json'
         }
-        
+
     }).then(result => {
         if (result.status === 200) {
             window.location.replace('/products');
-        } 
+        } else {
+            // Manejo de errores
+            result.json().then(data => {
+                alert('Error: ' + data.error);
+            });
+        }
+    }).catch(error => {
+        console.error('Error de red:', error);
+        // Manejo de errores de red
+        alert('Error de red, inténtelo de nuevo más tarde');
     });
 });

@@ -10,10 +10,11 @@ import path from 'path';
 import productsRouter from './routes/products.router.js';
 // import cartsRouter from './routes/carts.router.js';
 import CartsRouter from './routes/carts.router.js';
-// import viewsRouter from './routes/views.router.js';
-import ViewsRouter from './routes/views.router.js';
+import viewsRouter from './routes/views.router.js';
+// import ViewsRouter from './routes/views.router.js';
 
-import sessionsRouter from './routes/sessions.router.js';
+// import sessionsRouter from './routes/sessions.router.js';
+import SessionsRouter from './routes/sessions.router.js';
 import chatRouter from './routes/chat.router.js';
 
 import messagesModel from './dao/models/messages.model.js';
@@ -22,7 +23,8 @@ import initializePassport from './config/passport.config.js';
 import passport from 'passport';
 
 const cartsRouter = new CartsRouter();
-const viewsRouter = new ViewsRouter();
+// const viewsRouter = new ViewsRouter();
+const sessionsRouter = new SessionsRouter();
 
 const app = express();
 try {
@@ -61,19 +63,19 @@ app.use(session({
 //passport
 initializePassport();
 app.use(passport.initialize());
-app.use(passport.session());
+// app.use(passport.session());
 
 //rutas OK
-app.use('/', viewsRouter.getRouter());
-app.use('/realtimeproducts', viewsRouter.getRouter());
-app.use('/carts', viewsRouter.getRouter()); 
+app.use('/', viewsRouter);
+app.use('/realtimeproducts', viewsRouter);
+app.use('/carts', viewsRouter); 
 app.use('/chat', chatRouter);
 app.use('/api/products', productsRouter);
 app.use('/api/carts', cartsRouter.getRouter());
-app.use('/products', viewsRouter.getRouter());
-app.use('/productdetail', viewsRouter.getRouter());
-app.use('/api/sessions', sessionsRouter);
-app.use('/profile', viewsRouter.getRouter());
+app.use('/products', viewsRouter);
+app.use('/productdetail', viewsRouter);
+app.use('/api/sessions', sessionsRouter.getRouter());
+app.use('/profile', viewsRouter);
 
 //Config Passport
 // app.use((req, res, next) => {
