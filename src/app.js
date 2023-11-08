@@ -10,15 +10,18 @@ import productsRouter from './routes/products.router.js';
 import cartsRouter from './routes/carts.router.js';
 import viewsRouter from './routes/views.router.js';
 import sessionsRouter from './routes/sessions.router.js';
-import chatRouter from './routes/chat.router.js';
+// import chatRouter from './routes/chat.router.js';
 import messagesModel from './dao/models/messages.model.js';
 import Products from './dao/dbManagers/products.manager.js';
 import initializePassport from './config/passport.config.js';
 import passport from 'passport';
 
+import configs from './config/config.js';
+
 const app = express();
+console.log(configs)
 try {
-    await (mongoose.connect('mongodb+srv://nachoman4:T5Cq5qd7DDKrfOYp@cluster47300icd.5tk8odk.mongodb.net/ecommerce?retryWrites=true&w=majority'));
+    await mongoose.connect(configs.mongoUrl);
      // mongoose.connect('mongodb://127.0.0.1:27017/ecommerce', { useNewUrlParser: true, useUnifiedTopology: true }) //LOCAL
 
     console.log('Conexión a MongoDB exitosa');
@@ -40,12 +43,13 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 //Persistir nuestra session en BDD
+
 app.use(session({
     store: MongoStore.create({
         client: mongoose.connection.getClient(),
         ttl: 3600 //en segundos
     }),
-    secret: 'Coder47300Secret',
+    secret: configs.sessionSecret,
     resave: true,
     saveUninitialized: true,
 }));
@@ -59,7 +63,7 @@ app.use(passport.session());
 app.use('/', viewsRouter);
 app.use('/realtimeproducts', viewsRouter);
 app.use('/carts', cartsRouter); 
-app.use('/chat', chatRouter);
+app.use('/chat', viewsRouter);
 app.use('/api/products', productsRouter);
 app.use('/api/carts', cartsRouter);
 app.use('/products', viewsRouter);

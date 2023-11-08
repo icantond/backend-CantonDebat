@@ -18,9 +18,10 @@ const storage = multer.diskStorage({
         const uniqueFilename = `${timestamp}-${file.originalname}`;
         cb(null, uniqueFilename);
     },
-
 });
+
 const upload = multer({ storage });
+
 
 const createHash = password =>
     bcrypt.hashSync(password, bcrypt.genSaltSync(10));
@@ -29,6 +30,7 @@ const isValidPassword = (plainPassword, hashedPassword) =>
     bcrypt.compareSync(plainPassword, hashedPassword);
 //adminCoder@coder.com
 //adminCod3r123
+
 export {
     __dirname,
     upload,

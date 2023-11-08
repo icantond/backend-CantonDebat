@@ -3,6 +3,11 @@ import mongoose from 'mongoose';
 const cartCollection = 'carts';
 
 const cartSchema = new mongoose.Schema({
+    user: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'users',
+        required: true
+    },
     products: [
         {
             product: {
@@ -19,6 +24,8 @@ const cartSchema = new mongoose.Schema({
         }
     ]
 });
+
+
 cartSchema.pre('findOne', function(){
     this.populate('products.product');
 });

@@ -5,7 +5,7 @@ import { upload } from '../utils.js';
 import Carts from '../dao/dbManagers/carts.manager.js';
 
 const router = express.Router();
-const productCatalog = new Products('products')
+const productsManager = new Products('products')
 const cartManager = new Carts('carts');
 
 //MANEJO DE VISTAS DE USUARIOS:
@@ -35,7 +35,7 @@ router.get('/', privateAccess, async (req, res) => {
     let category = req.query.category || '';
     let available = req.query.available || '';
 
-    const categories = await productCatalog.getCategories();
+    const categories = await productsManager.getCategories();
 
     const skip = (page - 1) * limit;
 
@@ -102,7 +102,7 @@ router.get('/', privateAccess, async (req, res) => {
 
 router.get('/realtimeproducts', adminAccess, async (req, res) => {
     try {
-        const products = await productCatalog.getRealTimeProducts();
+        const products = await productsManager.getRealTimeProducts();
         res.render('realTimeProducts', { products });
     } catch (error) {
         res.status(500).json({ error: 'Error al obtener productos en tiempo real' });
@@ -123,9 +123,9 @@ router.post('/realtimeproducts', upload.single('thumbnail'), async (req, res) =>
             productData.thumbnail = '';
         }
 
-        const newProduct = await productCatalog.addProduct(productData);
+        const newProduct = await productsManager.addProduct(productData);
 
-        socket.emit('updateProducts', await productCatalog.getRealTimeProducts());
+        socket.emit('updateProducts', await productsManager.getRealTimeProducts());
 
         res.status(201).send(newProduct);
     } catch (error) {
@@ -145,9 +145,9 @@ router.delete('/realtimeproducts', async (req, res) => {
     }
 
     try {
-        await productCatalog.deleteProduct(deleteProductId);
+        await productsManager.deleteProduct(deleteProductId);
 
-        io.emit('updateProducts', await productCatalog.getProducts());
+        io.emit('updateProducts', await productsManager.getProducts());
 
         res.status(200).json({ message: 'Producto eliminado con éxito' });
         console.log('Producto eliminado con éxito');
@@ -160,7 +160,7 @@ router.delete('/realtimeproducts', async (req, res) => {
 
 router.get('/products', privateAccess, async (req, res) => {
     try {
-        const products = await productCatalog.getAll();
+        const products = await productsManager.getAll();
         const carts = await cartManager.getAll();
         const user = req.session.user || {};
 
@@ -173,7 +173,7 @@ router.get('/products', privateAccess, async (req, res) => {
 
 router.get('/products/:pid', privateAccess, async (req, res) => {
     try {
-        const pid = await productCatalog.getProductById(req.params.pid);
+        const pid = await productsManager.getProductById(req.params.pid);
         const productData = {
             title: pid.title,
             category: pid.category,
@@ -207,6 +207,10 @@ router.get('/carts', privateAccess, async (req, res) => {
 
     }
 })
+
+router.get('/chat', (req, res) => {
+    res.render('chat');
+});
 
 
 //Rutas para renderizacion de las vistas
