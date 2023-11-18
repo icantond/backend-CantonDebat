@@ -1,10 +1,14 @@
-import * as ProductsServices from '../services/products.services.js';
+// import * as productsRepository from '../services/products.services.js';
+import { Products } from '../dao/factory.js';
+import ProductsRepository from '../repositories/products.repository.js';
 
-async function getAllProducts(req, res) {
+const productsRepository = new ProductsRepository(Products);
+
+async function getAll(req, res) {
     const { limit } = req.query;
 
     try {
-        const products = await ProductsServices.getAllProducts(limit);
+        const products = await productsRepository.getAll(limit);
         res.json(products);
     } catch (error) {
         console.error('Error al obtener productos:', error);
@@ -21,7 +25,7 @@ async function getProductById(req, res) {
     }
 
     try {
-        const product = await ProductsServices.getProductById(productId);
+        const product = await productsRepository.getProductById(productId);
 
         if (product) {
             res.json(product);
@@ -44,7 +48,7 @@ async function addProduct(req, res) {
             productData.thumbnail = '';
         }
 
-        const newProduct = await ProductsServices.addProduct(productData);
+        const newProduct = await productsRepository.addProduct(productData);
 
         res.status(201).send(newProduct);
     } catch (error) {
@@ -56,7 +60,7 @@ async function deleteProduct(req, res) {
     const productId = req.params.pid;
 
     try {
-        const result = await ProductsServices.deleteProduct(productId);
+        const result = await productsRepository.deleteProduct(productId);
 
         if (!result) {
             return res.status(404).send({ message: 'Producto no encontrado' });
@@ -80,7 +84,7 @@ async function updateProduct(req, res) {
     const updatedFields = req.body;
 
     try {
-        const updatedProduct = await ProductsServices.updateProduct(productId, updatedFields);
+        const updatedProduct = await productsRepository.updateProduct(productId, updatedFields);
 
         if (!updatedProduct) {
             res.status(404).send({ error: 'Producto no encontrado' });
@@ -101,7 +105,7 @@ async function updateProduct(req, res) {
 }
 
 export {
-    getAllProducts,
+    getAll,
     getProductById,
     addProduct,
     deleteProduct,

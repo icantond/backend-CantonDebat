@@ -1,4 +1,4 @@
-import usersModel from '../models/users.model.js';
+import usersModel from '../mongo/models/users.model.js';
 
 export default class UsersManager {
     async createUser(userData) {

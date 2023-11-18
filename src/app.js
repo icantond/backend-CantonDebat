@@ -11,7 +11,7 @@ import cartsRouter from './routes/carts.router.js';
 import viewsRouter from './routes/views.router.js';
 import sessionsRouter from './routes/sessions.router.js';
 // import chatRouter from './routes/chat.router.js';
-import messagesModel from './dao/models/messages.model.js';
+import messagesModel from './dao/mongo/models/messages.model.js';
 import Products from './dao/dbManagers/products.manager.js';
 import initializePassport from './config/passport.config.js';
 import passport from 'passport';

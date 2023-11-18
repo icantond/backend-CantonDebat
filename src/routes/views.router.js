@@ -1,6 +1,6 @@
 import express from 'express';
 import Products from '../dao/dbManagers/products.manager.js';
-import productsModel from '../dao/models/products.model.js';
+import productsModel from '../dao/mongo/models/products.model.js';
 import { upload } from '../utils.js';
 import Carts from '../dao/dbManagers/carts.manager.js';
 

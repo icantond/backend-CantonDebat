@@ -1,5 +1,4 @@
 import { Router } from 'express';
-// import Carts from '../dao/dbManagers/carts.manager.js';
 import * as CartsController from '../controllers/carts.controller.js';
 
 const router = Router();
@@ -15,7 +14,53 @@ router.delete('/:cid', CartsController.emptyCart);
 
 export default router;
 
-// router.get('/:cid', getCartbyId)
+// import { cartsRepository } from '../repositories/index.js';
+
+// const router = Router();
+
+// router.post('/:cid/products/:pid', async (req, res) =>{
+//     const { cid, pid } = req.params;
+//     const cart = await cartsRepository.addProductToCart(cid, pid);
+//     res.json(cart);
+// });
+
+// router.get('/:cid', async (req, res) =>{
+//     const cid = req.params.cid;
+//     const cart = await cartsRepository.getCartDetails(cid);
+//     res.json(cart);
+// });
+
+// router.post('/', async (req, res) =>{
+//     const cart = await cartsRepository.createCart();
+//     res.json(cart);
+// });
+
+// router.delete('/:cid/products/:pid', async (req, res) =>{
+//     const { cid, pid } = req.params;
+//     const cart = await cartsRepository.deleteProductFromCart(cid, pid);
+//     res.json(cart);
+// });
+
+// router.put('/:cid', async (req, res) =>{
+//     const cid = req.params.cid;
+//     const cart = await cartsRepository.updateCart(cid);
+//     res.json(cart);
+// });
+
+// router.put('/:cid/products/:pid', async (req, res) =>{
+//     const { cid, pid } = req.params;
+//     const cart = await cartsRepository.updateProductQuantity(cid, pid);
+//     res.json(cart);
+// });
+
+// router.delete('/:cid', async (req, res) =>{
+//     const cid = req.params.cid;
+//     const cart = await cartsRepository.emptyCart(cid);
+//     res.json(cart);
+// });
+
+// export default router;
+
 
 // router.post('/:cid/products/:pid', async (req, res) => {
 //     console.log('Solicitud POST recibida en la ruta /:cid/products/:pid');

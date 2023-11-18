@@ -6,6 +6,7 @@ const configs = {
     sessionSecret: process.env.SESSION_SECRET_KEY,
     githubId: process.env.GITHUB_CLIENT_ID,
     githubSecret: process.env.GITHUB_CLIENT_SECRET,
+    persistence: process.env.PERSISTENCE,
 };
 
 export default configs;
