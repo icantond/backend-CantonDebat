@@ -13,6 +13,7 @@
     </ul>
 </nav>
 <h1>Carrito de Compras</h1>
+<small>ID de carrito: {{userCartId}} <small/>
 
 <ul class="cart-list">
     {{#each cartItems.products}}
@@ -22,7 +23,7 @@
         <p>Precio Unitario: ${{ this.product.price }}</p>
         <p>Cantidad: {{ this.quantity }}</p>
         <p>Precio Total por Producto:${{ this.totalPrice }}</p>
-        <button class="remove-item-button" data-product-id="{{this.product._id}}">Eliminar</button>
+        <button class="remove-item-button" data-product-id="{{this.product._id}}" data-cart-id="{{../userCartId}}">Eliminar</button>
     </li>
     {{/each}}
 </ul>

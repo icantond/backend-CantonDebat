@@ -163,8 +163,10 @@ router.get('/products', privateAccess, async (req, res) => {
         const products = await productsManager.getAll();
         const carts = await cartManager.getAll();
         const user = req.session.user || {};
+        const userCartId = user.cart;
+        console.log('usuario: ', user, 'cartId:', userCartId)
 
-        res.render('products', { products, carts, user });
+        res.render('products', { products, userCartId, user });
     } catch (error) {
         console.error(error);
         res.status(500).json({ status: 'error', message: 'Error al obtener la lista de productos' });
@@ -191,8 +193,11 @@ router.get('/products/:pid', privateAccess, async (req, res) => {
 
 router.get('/carts', privateAccess, async (req, res) => {
     try {
-        const cartId = '6518b3030b4bb755731f2cd0';
-        const cartItems = await cartManager.getCartDetails(cartId);
+        const user = req.session.user   || {};
+        const userCartId = user.cart;
+        
+        const cartItems = await cartManager.getCartDetails(userCartId);
+        console.log(`trabajando con usuario ${user.email} en carrito ID ${userCartId}`)
 
         cartItems.products.forEach((item) => {
             item.totalPrice = item.quantity * item.product.price;
@@ -202,11 +207,12 @@ router.get('/carts', privateAccess, async (req, res) => {
             return total + item.totalPrice;
         }, 0);
 
-        res.render('carts', { cartItems });
+        res.render('carts', { cartItems, userCartId });
     } catch (error) {
 
     }
 })
+                    
 
 router.get('/chat', (req, res) => {
     res.render('chat');

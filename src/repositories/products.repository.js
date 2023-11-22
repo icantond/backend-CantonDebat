@@ -1,8 +1,9 @@
 import ProductDTO from '../DTOs/products.dto.js';
+import Products from '../dao/mongo/products.mongo.js';
 
 export default class ProductsRepository {
     constructor (dao) {
-        this.dao = dao;
+        this.dao = new Products();
     };
 
     async getAll() {

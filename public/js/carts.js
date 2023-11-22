@@ -7,12 +7,14 @@ addToCartButtons.forEach((button) => {
     button.addEventListener('click', async () => {
         console.log('Click para agregar producto al carrito')
         const pid = button.getAttribute('data-product-id');
-        const cid = "6518b3030b4bb755731f2cd0";
+        // const cid = "6518b3030b4bb755731f2cd0";
+        const cid = button.getAttribute('data-cart-id');
         console.log('Agregando producto con ID:', pid, 'al carrito: ', cid);
 
         try {
 
-            const response = await fetch(`api/carts/6518b3030b4bb755731f2cd0/products/${pid}`, {
+            // const response = await fetch(`api/carts/6518b3030b4bb755731f2cd0/products/${pid}`, {
+                const response = await fetch(`api/carts/${cid}/products/${pid}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -48,7 +50,7 @@ const removeItemButtons = document.querySelectorAll('.remove-item-button');
 removeItemButtons.forEach((button) => {
     button.addEventListener('click', async () => {
         const productId = button.getAttribute('data-product-id');
-        const cartId = "6518b3030b4bb755731f2cd0";
+        const cartId = button.getAttribute('data-cart-id');
         console.log('Eliminando producto del lado del cliente ID:', productId, ', carrito: ', cartId);
 
         try {
@@ -70,13 +72,12 @@ removeItemButtons.forEach((button) => {
 });
 
 const clearCartButton = document.getElementById('empty-cart');
+
 if (clearCartButton) {
     clearCartButton.addEventListener('click', async () => {
-        const cartId = "6518b3030b4bb755731f2cd0";  
-
-
+        const cartId = clearCartButton.getAttribute('data-cart-id');
         try {
-            const response = await fetch(`/carts/${cartId}`, {
+            const response = await fetch(`/api/carts/${cartId}`, {
                 method: "DELETE",
             });
 
@@ -90,6 +91,5 @@ if (clearCartButton) {
         } catch (error) {
             console.error("Error de red:", error);
         }
-    
-})
+    })
 };

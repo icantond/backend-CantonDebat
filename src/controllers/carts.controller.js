@@ -5,22 +5,48 @@ import CartsRepository from "../repositories/carts.repository.js";
 const cartsRepository = new CartsRepository(Carts);
 
 async function addProductToCart(req, res) {
+    // const cartId = req.params.cid;
+    const productId = req.params.pid;
+    const cartId = req.session.user.cart;
+
     try {
-        const {cartId, productId}= req.params;
-        const updatedCart = await cartsRepository.addProductToCart(cartId, productId);
-        if (!updatedCart) {
-            return res.status(404).json({ status: 'error', message: 'Producto o carrito no encontrado' });
+        const cart = await cartsRepository.getCartDetails(cartId);
+
+        const existingProductIndex = cart.products.findIndex(item => item.product.equals(productId));
+
+        if (existingProductIndex !== -1) {
+            cart.products[existingProductIndex].quantity++;
+        } else {
+            cart.products.push({ product: productId, quantity: 1 });
         }
-        return res.status(201).json({ status: 'success', message: 'Producto agregado al carrito' });
+
+        const updatedCart = await cartsRepository.updateCart(cartId, cart);
+
+        return res.status(201).json({ status: 'success', message: 'Producto agregado al carrito', data: updatedCart });
     } catch (error) {
         console.error(error);
         return res.status(500).json({ status: 'error', message: 'Error al agregar el producto al carrito' });
     }
 }
+// async function addProductToCart(req, res) {
+//     const cartId = req.params.cid;
+//     const productId = req.params.pid;
+//     try {
+
+//         const updatedCart = await cartsRepository.addProductToCart(cartId, productId);
+//         if (!updatedCart) {
+//             return res.status(404).json({ status: 'error', message: 'Producto o carrito no encontrado' });
+//         }
+//         return res.status(201).json({ status: 'success', message: 'Producto agregado al carrito' });
+//     } catch (error) {
+//         console.error(error);
+//         return res.status(500).json({ status: 'error', message: 'Error al agregar el producto al carrito' });
+//     }
+// }
 
 async function getCartDetails(req, res) {
-    const cartId = req.params.cid;
-
+    const cartId = req.params.user.cart;
+    console.log(cartId);
     try {
         const cartDetails = await cartsRepository.getCartDetails(cartId);
         res.json(cartDetails);

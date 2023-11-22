@@ -1,13 +1,13 @@
 import { Users } from '../dao/factory.js';
 import UsersRepository from '../repositories/users.repository.js';
-
+import CartsRepository from '../repositories/carts.repository.js';
+// import { usersRepository } from '../repositories/index.js';
 // import UsersManager from '../dao/dbManagers/users.manager.js';
 import { createHash, isValidPassword } from '../utils.js';
 
-const usersRepository = new UsersRepository(Users);
-
-
 // const usersManager = new UsersManager();
+const usersRepository = new UsersRepository();
+const cartsRepository = new CartsRepository();
 
 async function registerUser(req, res) {
     try {
@@ -18,7 +18,7 @@ async function registerUser(req, res) {
             return res.status(400).send({ status: 'error', message: 'User already exists' });
         }
 
-        await usersManager.createUser({
+        const newUser = await usersRepository.registerUser({
             first_name,
             last_name,
             email,
@@ -26,6 +26,13 @@ async function registerUser(req, res) {
             password: createHash(password)
         });
 
+        const newCart = await cartsRepository.createCart({
+            user: newUser._id,
+            products: []
+        });
+        newUser.cart = newCart._id;
+        await usersRepository.save(newUser);
+        console.log(`Se ha creado el usuario con el correo ${newUser.email}, con ID de carrito ${newCart}`);
         res.status(201).send({ status: 'success', message: 'User registered' });
     } catch (error) {
         res.status(500).send({ status: 'error', message: error.message });
@@ -34,13 +41,6 @@ async function registerUser(req, res) {
 
 async function loginUser(req, res) {
     try {
-        console.log('usersRepository:', usersRepository);  // Añade este log
-        console.log('usersRepository.dao:', usersRepository.dao);  // Añade este log
-        console.log('usersRepository.dao instanceof Users:', usersRepository.dao instanceof Users);  // Añade este log
-
-        if (!(usersRepository.dao instanceof Users)) {
-            return res.status(500).send({ status: 'error', message: 'Invalid UsersDAO instance' });
-        }
         const { email, password } = req.body;
         console.log(`Intentando iniciar sesión con email ${email} desde sessions.controller.js`)
         const user = await usersRepository.getUserByEmail(email);
@@ -53,7 +53,8 @@ async function loginUser(req, res) {
             name: `${user.first_name} ${user.last_name}`,
             email: user.email,
             age: user.age,
-            role: user.role
+            role: user.role,
+            cart: user.cart._id
         }
 
         res.send({ status: 'success', message: 'Sesión iniciada con éxito' });

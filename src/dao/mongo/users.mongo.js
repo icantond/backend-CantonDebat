@@ -17,4 +17,8 @@ export default class Users {
     async getUserByEmail(email) {
         return await usersModel.findOne({ email });
     }
+
+    async save(user) {
+        return await usersModel.findByIdAndUpdate(user._id, user, { new: true });
+    }
 }

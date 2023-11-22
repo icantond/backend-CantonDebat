@@ -1,9 +1,11 @@
 import  CartDTO  from '../DTOs/carts.dto.js';
+import Carts from '../dao/mongo/carts.mongo.js';
 
 export default class CartsRepository {
     constructor(dao) {
-        this.dao = dao;
+        this.dao = new Carts();
     }
+    
 
     async addProductToCart(cartId, productId) {
         return await this.dao.addProductToCart(cartId, productId);
