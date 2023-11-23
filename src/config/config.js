@@ -7,6 +7,11 @@ const configs = {
     githubId: process.env.GITHUB_CLIENT_ID,
     githubSecret: process.env.GITHUB_CLIENT_SECRET,
     persistence: process.env.PERSISTENCE,
+    nodemailerUser: process.env.NODEMAILER_USER,
+    nodemailerPass: process.env.NODEMAILER_PASS,
+    twilioAccountSID: process.env.TWILIO_ACCOUNT_SID,
+    twilioAuthToken: process.env.TWILIO_AUTH_TOKEN,
+    twilioSmsNumber: process.env.TWILIO_SMS_NUMBER,
 };
 
 export default configs;

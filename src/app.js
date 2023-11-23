@@ -90,7 +90,7 @@ socketServer.on('connection', socket => {
         try {
             const updatedProducts = await productsRepository.getRealTimeProducts();
     
-            socket.emit('updateProducts', updatedProducts); // Envía la lista actualizada al cliente
+            socket.emit('updateProducts', updatedProducts);
             console.log('Producto agregado:', newProduct);
         } catch (error) {
             console.error('Error al agregar el producto:', error);

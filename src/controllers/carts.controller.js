@@ -1,6 +1,9 @@
+import configs from "../config/config.js";
+import transport from "../config/nodemailer.config.js";
 import { cartsRepository, productsRepository, ticketsRepository } from "../repositories/index.js";
+import { smsNumber, client } from '../config/twilio.config.js'
 
-async function addProductToCart (req, res) {
+async function addProductToCart(req, res) {
     const productId = req.params.pid;
     const cartId = req.session.user.cart;
 
@@ -116,7 +119,7 @@ async function purchaseCart(req, res) {
                     newStock: product.stock - cartItem.quantity,
                 });
             } else {
-            return res.status(400).json({ success: false, message: `No hay suficiente stock para el producto ${product.title}` });            
+                return res.status(400).json({ success: false, message: `No hay suficiente stock para el producto ${product.title}` });
             }
         }
 
@@ -132,7 +135,6 @@ async function purchaseCart(req, res) {
             return total + productPrice * quantity;
         }, 0);
 
-        // Actualizar el carrito con el precio total
         cart.cartTotal = totalPrice;
 
         await cartsRepository.updateCart(cartId, cart);
@@ -146,8 +148,55 @@ async function purchaseCart(req, res) {
             })),
             totalPrice: totalPrice,
         };
-        
+
         const createdTicket = await ticketsRepository.createTicket(ticketData);
+
+        const productsHTML = cart.products.map(cartItem => `
+                <p>
+                    <strong>Producto:</strong> ${cartItem.product.title}<br>
+                    <strong>Cantidad:</strong> ${cartItem.quantity}<br>
+                    <strong>Precio unitario:</strong> $${cartItem.product.price.toFixed(2)}<br>
+                    <strong>Subtotal por producto:</strong> $${(cartItem.product.price * cartItem.quantity).toFixed(2)}<br>
+                </p>
+            `).join('');
+
+        const mailOptions = {
+            from: configs.nodemailerUser,
+            to: req.session.user.email,
+            subject: 'Detalles de la compra',
+            html: `
+                <h1>Te acercamos el detalle de tu compra:</h1>
+                ${productsHTML}
+            <p><strong>Precio total de la compra:</strong> $${totalPrice.toFixed(2)}</p>
+            `
+        }
+
+        // Enviar el correo electrónico
+        const info = await transport.sendMail(mailOptions);
+        console.log('Correo electrónico enviado:', info.response)
+
+        const productsSMS = cart.products.map(cartItem => `
+        Producto: ${cartItem.product.title},
+        Cantidad: ${cartItem.quantity},
+        Precio unitario: $${cartItem.product.price.toFixed(2)},
+        Subtotal por producto: $${(cartItem.product.price * cartItem.quantity).toFixed(2)}
+    `).join('\n');
+
+    // Construir el mensaje SMS
+    const smsMessage = `
+        Te acercamos el detalle de tu compra:
+        ${productsSMS}
+        Precio total de la compra: $${totalPrice.toFixed(2)}
+    `;
+
+    // Enviar SMS
+    await client.messages.create({
+        body: smsMessage,
+        from: smsNumber,
+        to: '+5493424292480', 
+    });
+    console.log('SMS enviado:', smsMessage);
+
 
         res.status(200).json({ success: true, message: 'Compra finalizada con éxito', ticketData });
         await cartsRepository.emptyCart(cartId);
@@ -156,8 +205,6 @@ async function purchaseCart(req, res) {
         res.status(500).json({ success: false, message: 'Error al procesar la compra' });
     }
 }
-
-
 
 export {
     addProductToCart,
