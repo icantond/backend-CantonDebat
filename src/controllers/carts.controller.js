@@ -108,7 +108,6 @@ async function purchaseCart(req, res) {
 
         const productsToUpdate = [];
 
-        // Verificar el stock y construir la lista de productos para actualizar
         for (const cartItem of cart.products) {
             const product = await productsRepository.getProductById(cartItem.product);
             if (product.stock >= cartItem.quantity) {
@@ -116,17 +115,17 @@ async function purchaseCart(req, res) {
                     productId: product._id,
                     newStock: product.stock - cartItem.quantity,
                 });
+            } else {
+            return res.status(400).json({ success: false, message: `No hay suficiente stock para el producto ${product.title}` });            
             }
         }
 
-        // Actualizar el stock de los productos en la base de datos
         const updatePromises = productsToUpdate.map(async (updateInfo) => {
             return productsRepository.updateProductStock(updateInfo.productId, updateInfo.newStock);
         });
 
         await Promise.all(updatePromises);
 
-        // Calcular el precio total
         const totalPrice = cart.products.reduce((total, cartItem) => {
             const productPrice = cartItem.product.price;
             const quantity = cartItem.quantity;

@@ -76,6 +76,7 @@ const clearCartButton = document.getElementById('empty-cart');
 if (clearCartButton) {
     clearCartButton.addEventListener('click', async () => {
         const cartId = clearCartButton.getAttribute('data-cart-id');
+        console.log('Vaciando carrito ID:', cartId);
         try {
             const response = await fetch(`/api/carts/${cartId}`, {
                 method: "DELETE",
