@@ -10,7 +10,13 @@ export default class Carts {
     }
 
     async getCartDetails(cartId) {
-        return await cartsModel.findById(cartId).populate('products.product');
+        return await cartsModel.findById(cartId).populate({
+            path: 'products.product',
+            select: 'title price description _id'
+        }).lean()
+    };
+    async getCartById (cartId){
+        return await cartsModel.findById(cartId);
     }
 
     async createCart(cartData) {

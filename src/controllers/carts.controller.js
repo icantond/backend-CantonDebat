@@ -1,16 +1,11 @@
-// import * as CartsServices from '../services/carts.services.js';
-import { Carts } from "../dao/factory.js";
-import CartsRepository from "../repositories/carts.repository.js";
+import { cartsRepository, productsRepository, ticketsRepository } from "../repositories/index.js";
 
-const cartsRepository = new CartsRepository(Carts);
-
-async function addProductToCart(req, res) {
-    // const cartId = req.params.cid;
+async function addProductToCart (req, res) {
     const productId = req.params.pid;
     const cartId = req.session.user.cart;
 
     try {
-        const cart = await cartsRepository.getCartDetails(cartId);
+        const cart = await cartsRepository.getCartById(cartId);
 
         const existingProductIndex = cart.products.findIndex(item => item.product.equals(productId));
 
@@ -28,21 +23,6 @@ async function addProductToCart(req, res) {
         return res.status(500).json({ status: 'error', message: 'Error al agregar el producto al carrito' });
     }
 }
-// async function addProductToCart(req, res) {
-//     const cartId = req.params.cid;
-//     const productId = req.params.pid;
-//     try {
-
-//         const updatedCart = await cartsRepository.addProductToCart(cartId, productId);
-//         if (!updatedCart) {
-//             return res.status(404).json({ status: 'error', message: 'Producto o carrito no encontrado' });
-//         }
-//         return res.status(201).json({ status: 'success', message: 'Producto agregado al carrito' });
-//     } catch (error) {
-//         console.error(error);
-//         return res.status(500).json({ status: 'error', message: 'Error al agregar el producto al carrito' });
-//     }
-// }
 
 async function getCartDetails(req, res) {
     const cartId = req.params.user.cart;
@@ -118,6 +98,68 @@ async function emptyCart(req, res) {
         return res.status(500).json({ status: 'error', message: 'Error al eliminar todos los productos del carrito' });
     }
 }
+
+async function purchaseCart(req, res) {
+    const cartId = req.params.cid;
+
+    try {
+        const cartId = req.params.cid;
+        const cart = await cartsRepository.getCartDetails(cartId);
+
+        const productsToUpdate = [];
+
+        // Verificar el stock y construir la lista de productos para actualizar
+        for (const cartItem of cart.products) {
+            const product = await productsRepository.getProductById(cartItem.product);
+            if (product.stock >= cartItem.quantity) {
+                productsToUpdate.push({
+                    productId: product._id,
+                    newStock: product.stock - cartItem.quantity,
+                });
+            }
+        }
+
+        // Actualizar el stock de los productos en la base de datos
+        const updatePromises = productsToUpdate.map(async (updateInfo) => {
+            return productsRepository.updateProductStock(updateInfo.productId, updateInfo.newStock);
+        });
+
+        await Promise.all(updatePromises);
+
+        // Calcular el precio total
+        const totalPrice = cart.products.reduce((total, cartItem) => {
+            const productPrice = cartItem.product.price;
+            const quantity = cartItem.quantity;
+            return total + productPrice * quantity;
+        }, 0);
+
+        // Actualizar el carrito con el precio total
+        cart.cartTotal = totalPrice;
+
+        await cartsRepository.updateCart(cartId, cart);
+        console.log('Grabando ticket de usuario id: ', req.session.user.id, req.session.user.email);
+
+        const ticketData = {
+            user: req.session.user.id,
+            products: cart.products.map(cartItem => ({
+                product: cartItem.product,
+                quantity: cartItem.quantity
+            })),
+            totalPrice: totalPrice,
+        };
+        
+        const createdTicket = await ticketsRepository.createTicket(ticketData);
+
+        res.status(200).json({ success: true, message: 'Compra finalizada con éxito', ticketData });
+        await cartsRepository.emptyCart(cartId);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ success: false, message: 'Error al procesar la compra' });
+    }
+}
+
+
+
 export {
     addProductToCart,
     getCartDetails,
@@ -125,5 +167,6 @@ export {
     deleteProductFromCart,
     updateCart,
     updateProductQuantity,
-    emptyCart
+    emptyCart,
+    purchaseCart
 };

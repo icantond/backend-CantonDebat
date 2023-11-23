@@ -12,6 +12,7 @@
 
     </ul>
 </nav>
+
 <h1>Carrito de Compras</h1>
 <small>ID de carrito: {{userCartId}} <small/>
 
@@ -33,5 +34,8 @@
 </div>
 
 <button id="empty-cart">Vaciar Carrito</button>
+<button id="purchase-cart" data-cart-id="{{userCartId}}">Finalizar compra</button>
 
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="static/js/carts.js"></script>

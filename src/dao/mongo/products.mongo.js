@@ -25,6 +25,10 @@ export default class Products {
         return await productsModel.countDocuments();
     };
 
+    async updateProductStock (productId, newStock) {
+        return await productsModel.findByIdAndUpdate(productId, { stock: newStock }, { new: true });
+    };
+
     async updateProduct(productId) {
         return await productsModel.findByIdAndUpdate(productId, req.body, { new: true });
     };

@@ -1,8 +1,4 @@
-// import * as productsRepository from '../services/products.services.js';
-import { Products } from '../dao/factory.js';
-import ProductsRepository from '../repositories/products.repository.js';
-
-const productsRepository = new ProductsRepository(Products);
+import { productsRepository } from '../repositories/index.js';
 
 async function getAll(req, res) {
     const { limit } = req.query;

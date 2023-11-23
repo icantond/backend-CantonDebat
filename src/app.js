@@ -10,20 +10,16 @@ import productsRouter from './routes/products.router.js';
 import cartsRouter from './routes/carts.router.js';
 import viewsRouter from './routes/views.router.js';
 import sessionsRouter from './routes/sessions.router.js';
-// import chatRouter from './routes/chat.router.js';
 import messagesModel from './dao/mongo/models/messages.model.js';
-import Products from './dao/dbManagers/products.manager.js';
 import initializePassport from './config/passport.config.js';
 import passport from 'passport';
-
 import configs from './config/config.js';
+import { productsRepository } from './repositories/index.js';
 
 const app = express();
 console.log(configs)
 try {
     await mongoose.connect(configs.mongoUrl);
-     // mongoose.connect('mongodb://127.0.0.1:27017/ecommerce', { useNewUrlParser: true, useUnifiedTopology: true }) //LOCAL
-
     console.log('Conexión a MongoDB exitosa');
 } catch (error) {
     console.error('Error al conectar a MongoDB:', error);
@@ -71,12 +67,6 @@ app.use('/productdetail', viewsRouter);
 app.use('/api/sessions', sessionsRouter);
 app.use('/profile', viewsRouter);
 
-//Config Passport
-// app.use((req, res, next) => {
-//     res.locals.isAuthenticated = req.isAuthenticated();
-//     next();
-// });
-
 app.use((req, res, next) => {
     if (req.isAuthenticated()) {
         return next();
@@ -94,12 +84,11 @@ const io = socketServer;
 
 socketServer.on('connection', socket => {
     console.log("Nuevo cliente conectado");
-    const productManager = new Products('products');
 
     //Socket para agregar productos
     socket.on('addProduct', async (newProduct) => {
         try {
-            const updatedProducts = await productManager.getRealTimeProducts();
+            const updatedProducts = await productsRepository.getRealTimeProducts();
     
             socket.emit('updateProducts', updatedProducts); // Envía la lista actualizada al cliente
             console.log('Producto agregado:', newProduct);
@@ -114,10 +103,10 @@ socketServer.on('connection', socket => {
 
         try {
 
-            await productManager.delete(productId);
+            await productsRepository.delete(productId);
             io.emit('producto_eliminado', { productId });
 
-            const updatedProducts = await productManager.getRealTimeProducts();
+            const updatedProducts = await productsRepository.getRealTimeProducts();
             io.emit('updateProducts', updatedProducts);
 
         } catch (error) {

@@ -21,7 +21,7 @@
     <div id="messages">
         {{#each messages}}
         <div class="message">
-            <p class="message-user">{{this.user}}:</p>
+            <p class="message-user">{{../userName}}:</p>
             <p class="message-message"> {{this.message}}</p>
         </div>
         {{/each}}
@@ -29,7 +29,7 @@
 
     <form id="chat-form">
         <input type="text" id="message" placeholder="Escribe un mensaje">
-        <button type="submit" id="send-button">
+        <button type="submit" id="send-button" data-user-name="{{userName}}">
             <i class="bi bi-send"></i>
         </button>
     </form>
