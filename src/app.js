@@ -15,6 +15,7 @@ import initializePassport from './config/passport.config.js';
 import passport from 'passport';
 import configs from './config/config.js';
 import { productsRepository } from './repositories/index.js';
+import errorHandler from './middlewares/errors/index.js'
 
 const app = express();
 console.log(configs)
@@ -37,7 +38,7 @@ app.set('view engine', 'handlebars')
 app.use('/static', express.static(path.join(__dirname, '../public')))
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
+app.use(errorHandler)
 //Persistir nuestra session en BDD
 
 app.use(session({
@@ -66,13 +67,14 @@ app.use('/products', viewsRouter);
 app.use('/productdetail', viewsRouter);
 app.use('/api/sessions', sessionsRouter);
 app.use('/profile', viewsRouter);
+// app.use('/api/mockingproducts', productsRouter)
 
 app.use((req, res, next) => {
     if (req.isAuthenticated()) {
         return next();
     }
 
-    const publicRoutes = ['/login', '/register']; 
+    const publicRoutes = ['/login', '/register', '/mockingproducts']; 
     if (publicRoutes.includes(req.path)) {
         return next();
     }

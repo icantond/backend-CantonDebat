@@ -1,6 +1,6 @@
 import express from 'express';
 import { upload } from '../utils.js';
-import { publicAccess, privateAccess, adminAccess } from '../config/auth.middlewares.js';
+import { publicAccess, privateAccess, adminAccess } from '../middlewares/auth/auth.middlewares.js';
 import * as ViewsController from '../controllers/views.controller.js';
 
 const router = express.Router();

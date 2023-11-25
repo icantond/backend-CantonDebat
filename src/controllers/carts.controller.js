@@ -3,6 +3,7 @@ import transport from "../config/nodemailer.config.js";
 import { cartsRepository, productsRepository, ticketsRepository } from "../repositories/index.js";
 import { smsNumber, client } from '../config/twilio.config.js'
 
+
 async function addProductToCart(req, res) {
     const productId = req.params.pid;
     const cartId = req.session.user.cart;
