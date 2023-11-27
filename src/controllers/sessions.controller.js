@@ -64,8 +64,64 @@ function logoutUser(req, res) {
     });
 }
 
+async function handleGithubAuth(req, res) {
+    res.send({ status: 'success', message: 'user registered' });
+}
+async function handleGithubCallback(req, res) {
+    try {
+        req.session.user = req.user;
+
+        const { email } = req.user;
+        const user = await usersRepository.getUserByEmail(email);
+
+        if (!user) {
+            // Este bloque se ejecutará si el usuario registrado desde GitHub no existe localmente
+            const newUser = await usersRepository.registerUser({
+                first_name: req.user.first_name,
+                last_name: '',
+                email,
+                age: 0,
+                password: '',  // Puedes dejarlo en blanco ya que no se utilizará
+            });
+
+            const newCart = await cartsRepository.createCart({
+                user: newUser._id,
+                products: []
+            });
+
+            newUser.cart = newCart._id;
+            await usersRepository.save(newUser);
+            console.log(`Se ha creado el usuario con el correo ${newUser.email}, con ID de carrito ${newCart}`);
+        } else if (!user.cart) {
+            const newCart = await cartsRepository.createCart({
+                user: user._id,
+                products: []
+            });
+
+            user.cart = newCart._id;
+            await usersRepository.save(user);
+            console.log(`Se ha asociado un carrito al usuario con el correo ${user.email}, con ID de carrito ${newCart}`);
+        }
+
+        res.redirect('/');
+    } catch (error) {
+        res.status(500).send({ status: 'error', message: error.message });
+    }
+}
+// async function handleGithubCallback(req, res) {
+//     try {
+//         req.session.user = req.user;
+//         res.redirect('/');
+//     } catch (error) {
+//         res.status(500).send({ status: 'error', message: error.message });
+//     }
+// }
+
+
 export {
     registerUser,
     loginUser,
-    logoutUser
+    logoutUser,
+    handleGithubAuth,
+    handleGithubCallback
 };

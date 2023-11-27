@@ -7,14 +7,7 @@ const router = Router();
 router.post('/register', SessionsController.registerUser);
 router.post('/login', SessionsController.loginUser);
 router.get('/logout', SessionsController.logoutUser);
-
-router.get('/github', passport.authenticate('github', { scope: ['user:email'] }), async (req, res) => {
-    res.send({ status: 'success', message: 'user registered' });
-});
-
-router.get('/github-callback', passport.authenticate('github', { failureRedirect: '/login' }), async (req, res) => {
-    req.session.user = req.user;
-    res.redirect('/');
-});
+router.get('/github', passport.authenticate('github', { scope: ['user:email'] }), SessionsController.handleGithubAuth);
+router.get('/github-callback', passport.authenticate('github', { failureRedirect: '/login' }), SessionsController.handleGithubCallback);
 
 export default router;

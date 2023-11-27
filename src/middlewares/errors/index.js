@@ -1,47 +1,43 @@
-import EErrors from "./enums.js";
+import EErrors from './enums.js';
 
 export default (error, req, res, next) => {
+    if (res.headersSent) {
+        return next(error);
+    }
+
     switch (error.code) {
         case EErrors.INVALID_TYPER_ERROR:
             res.status(400).send({
                 status: 'error',
                 error: error.name,
                 description: error.cause
-            })
+            });
             break;
 
-        case EErrors.ROUTING_ERROR:
-            res.status(404).send({
+        case 'ValidationError':
+            res.status(400).send({
                 status: 'error',
-                error: error.name,
-                description: error.cause
-            })
-            break;
-
-        case EErrors.USER_NOT_FOUND:
-            res.status(404).send({
-                status: 'error',
-                error: error.name,
-                description: error.cause
-            })
+                error: 'ValidationError',
+                description: 'Validation error',
+                validationErrors: error.validationErrors,
+            });
             break;
 
         case EErrors.DATABASE_ERROR:
             res.status(500).send({
                 status: 'error',
-                error: error.name,
-                description: error.cause
+                error: 'DatabaseError',
+                description: 'Database error',
             });
             break;
 
-        default: res.status(500).send({
-            status: 'error',
-            error: error.name,
-            description: error.cause,
-        });
+        default:
+            res.status(500).send({
+                status: 'error',
+                error: error.name,
+                description: error.cause,
+            });
             break;
-
     }
     next();
-    
-}
+};

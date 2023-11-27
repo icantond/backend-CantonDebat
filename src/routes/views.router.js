@@ -7,6 +7,7 @@ const router = express.Router();
 
 router.get('/', privateAccess, ViewsController.getProductsQueries);
 router.get('/carts/:cid', adminAccess, ViewsController.getAll);
+router.get('/realtimeproducts', adminAccess, ViewsController.getRealTimeProducts);
 router.post('/realtimeproducts', upload.single('thumbnail'), ViewsController.postRealTimeProducts);
 router.delete('/realtimeproducts/:pid', ViewsController.deleteRealTimeProducts);
 router.get('/products', privateAccess, ViewsController.getAllProducts);

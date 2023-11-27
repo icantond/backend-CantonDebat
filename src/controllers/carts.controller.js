@@ -2,6 +2,7 @@ import configs from "../config/config.js";
 import transport from "../config/nodemailer.config.js";
 import { cartsRepository, productsRepository, ticketsRepository } from "../repositories/index.js";
 import { smsNumber, client } from '../config/twilio.config.js'
+import EErrors from "../middlewares/errors/enums.js";
 
 
 async function addProductToCart(req, res) {
@@ -10,7 +11,7 @@ async function addProductToCart(req, res) {
 
     try {
         const cart = await cartsRepository.getCartById(cartId);
-
+        
         const existingProductIndex = cart.products.findIndex(item => item.product.equals(productId));
 
         if (existingProductIndex !== -1) {
@@ -24,7 +25,26 @@ async function addProductToCart(req, res) {
         return res.status(201).json({ status: 'success', message: 'Producto agregado al carrito', data: updatedCart });
     } catch (error) {
         console.error(error);
-        return res.status(500).json({ status: 'error', message: 'Error al agregar el producto al carrito' });
+
+        if (error.name === 'ValidationError') {
+            const validationErrors = Object.values(error.errors).map(err => ({
+                field: err.path,
+                message: err.message,
+            }));
+
+            return res.status(400).json({
+                status: 'error',
+                error: 'ValidationError',
+                description: 'Validation error while adding product to cart',
+                validationErrors,
+            });
+        } else {
+            return next({
+                name: 'DatabaseError', 
+                cause: 'Error al agregar el producto al carrito',
+                code: EErrors.DATABASE_ERROR,
+            });
+        }
     }
 }
 

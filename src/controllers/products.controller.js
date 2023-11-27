@@ -1,4 +1,4 @@
-import usersModel from '../dao/mongo/models/users.model.js';
+// import usersModel from '../dao/mongo/models/users.model.js';
 import { productsRepository } from '../repositories/index.js';
 import { generateMockProduct } from '../utils.js';
 import { generateProductErrorInfo } from '../middlewares/errors/info.js';
@@ -41,10 +41,10 @@ async function getProductById(req, res) {
 async function addProduct(req, res) {
     const productData = req.body;
     const thumbnailFile = req.file;
-
-        if (!productData.title || !productData.price) {
+    try { 
+                if (!productData.title || !productData.price || !productData.description || !productData.stock           || !productData.code || !productData.category) {
             throw CustomError.createError({
-                name: 'ProductError',
+                name: 'AddProductError',
                 cause: generateProductErrorInfo(productData),
                 message: 'Error trying to create product',
                 code: EErrors.INVALID_TYPER_ERROR
@@ -60,7 +60,55 @@ async function addProduct(req, res) {
         const newProduct = await productsRepository.addProduct(productData);
 
         res.status(201).send(newProduct);
+
+    } catch (error) {
+        console.error(error);
+
+        if (error.name === 'AddProductError') {
+            return next({
+                name: 'AddProductError',
+                cause: error.cause,
+                code: EErrors.INVALID_TYPER_ERROR,
+            });
+
+        } else {
+            return next({
+                name: 'InternalError',
+                cause: 'Error while creating product',
+                code: EErrors.DATABASE_ERROR,
+            });
+        }
+    }
 }
+
+// async function addProduct(req, res) {
+//     const productData = req.body;
+//     const thumbnailFile = req.file;
+
+//     try {
+//         if (!productData.title || !productData.price) {
+//             throw CustomError.createError({
+//                 name: 'ProductError',
+//                 cause: generateProductErrorInfo(productData),
+//                 message: 'Error trying to create product',
+//                 code: EErrors.INVALID_TYPER_ERROR
+//             });
+//         }
+
+//         if (thumbnailFile) {
+//             productData.thumbnail = thumbnailFile.filename;
+//         } else {
+//             productData.thumbnail = '';
+//         }
+
+//         const newProduct = await productsRepository.addProduct(productData);
+
+//         res.status(201).send(newProduct);
+//     } catch (error) {
+//         // res.status(500).send({ error: 'Error al agregar el producto' });
+//         next(error)
+// }
+// }
 
 async function deleteProduct(req, res) {
     const productId = req.params.pid;
@@ -110,13 +158,13 @@ async function updateProduct(req, res) {
     }
 }
 
-async function getMockProducts(req, res) {
-    try {
+async function getMockProducts (req, res){
+    try{
         let mockProducts = []
-        for (let i = 0; i < 100; i++) {
-            mockProducts.push(generateMockProduct())
-        }
-        res.send({ status: 'success', payload: mockProducts })
+        for (let i = 0; i < 100; i++){
+        mockProducts.push(generateMockProduct())
+    }
+    res.send({status: 'success', payload: mockProducts})
     } catch (error) {
         console.error(error);
         res.status(500).send({ status: 'error', message: 'Error al obtener mockingproducts' });
@@ -130,4 +178,4 @@ export {
     deleteProduct,
     updateProduct,
     getMockProducts
-};  
+};

@@ -1,5 +1,6 @@
 import productsModel from '../dao/mongo/models/products.model.js';
 import { cartsRepository, productsRepository } from '../repositories/index.js';
+import router from '../routes/views.router.js';
 
 
 async function getProductsQueries(req, res) {
@@ -83,6 +84,16 @@ async function getAll(req, res) {
         res.status(500).json({ error: 'Error al obtener productos en tiempo real' });
     }
 };
+
+async function getRealTimeProducts (req, res) {
+    try {
+        const products = await productsRepository.getAll();
+        res.render('realTimeProducts', { products });
+    } catch (error) {
+        res.status(500).json({ error: 'Error al obtener productos en tiempo real' });
+    }
+
+}
 
 async function postRealTimeProducts (req, res) {
     const productData = req.body;
@@ -209,6 +220,7 @@ async function getProfile (req, res) {
 export {
     getProductsQueries,
     getAll,
+    getRealTimeProducts,
     postRealTimeProducts,
     deleteRealTimeProducts,
     getAllProducts,

@@ -90,7 +90,7 @@ socketServer.on('connection', socket => {
     //Socket para agregar productos
     socket.on('addProduct', async (newProduct) => {
         try {
-            const updatedProducts = await productsRepository.getRealTimeProducts();
+            const updatedProducts = await productsRepository.getAll();
     
             socket.emit('updateProducts', updatedProducts);
             console.log('Producto agregado:', newProduct);
@@ -108,7 +108,7 @@ socketServer.on('connection', socket => {
             await productsRepository.delete(productId);
             io.emit('producto_eliminado', { productId });
 
-            const updatedProducts = await productsRepository.getRealTimeProducts();
+            const updatedProducts = await productsRepository.getAll();
             io.emit('updateProducts', updatedProducts);
 
         } catch (error) {

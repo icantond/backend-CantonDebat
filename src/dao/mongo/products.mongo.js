@@ -17,8 +17,8 @@ export default class Products {
         return await productsModel.findById(productId).lean();
     };
 
-    async addProduct(req, res) {
-        return await productsModel.create(req.body);
+    async addProduct(product) {
+        return await productsModel.create(product);
     };
 
     async count () {
