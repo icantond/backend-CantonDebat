@@ -2,6 +2,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 const configs = {
+    environment: process.env.ENVIRONMENT,
     mongoUrl: process.env.MONGO_URL,
     sessionSecret: process.env.SESSION_SECRET_KEY,
     githubId: process.env.GITHUB_CLIENT_ID,

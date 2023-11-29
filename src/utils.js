@@ -9,20 +9,16 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 const storage = multer.diskStorage({
-
     destination: function (req, file, cb) {
         cb(null, path.join(__dirname, '..', 'public', 'img'));
     },
-
     filename: function (req, file, cb) {
         const timestamp = Date.now();
         const uniqueFilename = `${timestamp}-${file.originalname}`;
         cb(null, uniqueFilename);
     },
 });
-
 const upload = multer({ storage });
-
 
 const createHash = password =>
     bcrypt.hashSync(password, bcrypt.genSaltSync(10));
@@ -31,6 +27,7 @@ const isValidPassword = (plainPassword, hashedPassword) =>
     bcrypt.compareSync(plainPassword, hashedPassword);
 //adminCoder@coder.com
 //adminCod3r123
+
 
 const generateMockProduct = () => {
     return{

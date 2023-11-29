@@ -6,31 +6,42 @@ import EErrors from "../middlewares/errors/enums.js";
 
 
 async function addProductToCart(req, res) {
+    req.logger.http(`HTTP request received for ${req.url}. Method: ${req.method} ${new Date().toISOString()}`);
+    
     const productId = req.params.pid;
     const cartId = req.session.user.cart;
 
     try {
+        req.logger.info(`Attempting to retrieve cart with ID: ${cartId} ${new Date().toISOString()}`);  
         const cart = await cartsRepository.getCartById(cartId);
-        
         const existingProductIndex = cart.products.findIndex(item => item.product.equals(productId));
+        req.logger.info(`Cart with ID: ${cartId} retrieved successfully ${new Date().toISOString()}`);
 
         if (existingProductIndex !== -1) {
             cart.products[existingProductIndex].quantity++;
+            req.logger.info(`Product quantity updated for product with ID: ${productId} ${new Date().toISOString()}`);
+
         } else {
             cart.products.push({ product: productId, quantity: 1 });
+            req.logger.info(`Product with ID: ${productId} added to cart ${new Date().toISOString()}`);                                 
         }
 
+        req.logger.info(`Attempting to update cart with ID: ${cartId} ${new Date().toISOString()}`);
         const updatedCart = await cartsRepository.updateCart(cartId, cart);
+        req.logger.info(`Cart with ID: ${cartId} updated successfully ${new Date().toISOString()}`);
 
         return res.status(201).json({ status: 'success', message: 'Producto agregado al carrito', data: updatedCart });
     } catch (error) {
-        console.error(error);
+        // console.error(error);
+        req.logger.error(`Error adding product to cart: ${productId} - ${error} ${new Date().toISOString()}`);
 
         if (error.name === 'ValidationError') {
             const validationErrors = Object.values(error.errors).map(err => ({
                 field: err.path,
                 message: err.message,
             }));
+
+            req.logger.error(`Validation errors: ${JSON.stringify(validationErrors)} ${new Date().toISOString()}`);
 
             return res.status(400).json({
                 status: 'error',
@@ -39,6 +50,7 @@ async function addProductToCart(req, res) {
                 validationErrors,
             });
         } else {
+            req.logger.fatal(`Fatal error: unable to connect with database while adding product to cart. ${new Date().toISOString()}`)
             return next({
                 name: 'DatabaseError', 
                 cause: 'Error al agregar el producto al carrito',

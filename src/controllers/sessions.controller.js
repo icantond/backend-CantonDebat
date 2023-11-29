@@ -32,12 +32,15 @@ async function registerUser(req, res) {
 }
 
 async function loginUser(req, res) {
+    req.logger.debug(`Attempting to login with email: ${req.body.email}`);
+
     try {
         const { email, password } = req.body;
-        console.log(`Intentando iniciar sesión con email ${email} desde sessions.controller.js`)
         const user = await usersRepository.getUserByEmail(email);
 
         if (!user || !isValidPassword(password, user.password)) {
+            req.logger.warn(`Login failed for email: ${email}. Check credentials`);
+            
             return res.status(401).send({ status: 'error', message: 'Nombre de usuario o contraseña incorrectos' });
         }
 
@@ -50,16 +53,24 @@ async function loginUser(req, res) {
             id: user._id
         }
 
+        req.logger.info(`Login successful for email: ${email}`);
+
         res.send({ status: 'success', message: 'Sesión iniciada con éxito' });
     } catch (error) {
+        req.logger.error(`Error during login: ${error.message}`);
         res.status(500).send({ status: 'error', message: error.message });
     }
 }
 
 function logoutUser(req, res) {
     req.session.destroy(error => {
-        if (error) return res.status(500).send({ status: 'error', error: 'Error al cerrar sesión' });
+        if (error) {
+            req.logger.error(`Error during logout: ${error.message}`);
+            return res.status(500).send({ status: 'error', error: 'Error al cerrar sesión' });
+
+        }
         res.redirect('/');
+        req.logger.info('Logout successful');
         console.log('Sesión cerrada');
     });
 }

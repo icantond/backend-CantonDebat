@@ -1,6 +1,6 @@
 import productsModel from '../dao/mongo/models/products.model.js';
 import { cartsRepository, productsRepository } from '../repositories/index.js';
-import router from '../routes/views.router.js';
+// import router from '../routes/views.router.js';
 
 
 async function getProductsQueries(req, res) {
