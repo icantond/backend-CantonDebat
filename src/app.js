@@ -16,6 +16,7 @@ import passport from 'passport';
 import configs from './config/config.js';
 import { productsRepository } from './repositories/index.js';
 import errorHandler from './middlewares/errors/index.js'
+import { addLogger } from './utils/logger.js';
 
 const app = express();
 console.log(configs)
@@ -56,6 +57,8 @@ initializePassport();
 app.use(passport.initialize());
 app.use(passport.session());
 
+app.use(addLogger);
+
 //rutas OK
 app.use('/', viewsRouter);
 app.use('/realtimeproducts', viewsRouter);
@@ -67,6 +70,8 @@ app.use('/products', viewsRouter);
 app.use('/productdetail', viewsRouter);
 app.use('/api/sessions', sessionsRouter);
 app.use('/profile', viewsRouter);
+app.use('/loggerTest', viewsRouter);
+
 // app.use('/api/mockingproducts', productsRouter)
 
 app.use((req, res, next) => {

@@ -1,4 +1,5 @@
 import productsModel from '../dao/mongo/models/products.model.js';
+import EErrors from '../middlewares/errors/enums.js';
 import { cartsRepository, productsRepository } from '../repositories/index.js';
 // import router from '../routes/views.router.js';
 
@@ -217,6 +218,27 @@ async function getProfile (req, res) {
     });
 };
 
+async function loggerTest(req, res) {
+    req.logger.fatal('Test log - fatal');
+    req.logger.error('Test log - error');
+    req.logger.warn('Test log - warn');
+    req.logger.info('Test log - info');
+    req.logger.http('Test log - http');
+    req.logger.debug('Test log - debug');
+
+    try {
+        throw new Error('Test error');
+    } catch (error) {
+        req.logger.error(`Error during loggerTest: ${error.message}`);
+        res.status(500).json({
+            status: 'error',
+            error: 'InternalError',
+            description: 'Error during loggerTest',
+            code: EErrors.INTERNAL_ERROR,
+        });
+    }
+}
+
 export {
     getProductsQueries,
     getAll,
@@ -229,5 +251,6 @@ export {
     getChat,
     getRegister,
     getLogin,
-    getProfile
+    getProfile,
+    loggerTest
 };

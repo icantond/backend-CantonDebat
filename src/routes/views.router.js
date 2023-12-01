@@ -2,6 +2,7 @@ import express from 'express';
 import { upload } from '../utils.js';
 import { publicAccess, privateAccess, adminAccess } from '../middlewares/auth/auth.middlewares.js';
 import * as ViewsController from '../controllers/views.controller.js';
+import { addLogger } from '../utils/logger.js';
 
 const router = express.Router();
 
@@ -17,5 +18,6 @@ router.get('/chat', privateAccess, ViewsController.getChat);
 router.get('/register', publicAccess, ViewsController.getRegister);
 router.get('/login', publicAccess, ViewsController.getLogin);
 router.get('/profile', privateAccess, ViewsController.getProfile);
+router.get('/loggerTest', ViewsController.loggerTest);
 
 export default router;
