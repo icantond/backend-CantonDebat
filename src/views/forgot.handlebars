@@ -1,0 +1,37 @@
+<form>
+    <label for="email">Correo electrónico:</label>
+    <input type="email" id="email" name="email" required>
+    <button type="button" id="submit">Enviar enlace de restablecimiento</button>
+</form>
+
+<script>
+    const email = document.getElementById('email');
+    const submit = document.getElementById('submit');
+
+    submit.addEventListener('click', async () => {
+        try {
+            const response = await fetch("/api/sessions/reset-password", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ email: email.value })
+            });
+
+            if (response.ok) {
+                console.log('Enlace de restablecimiento enviado correctamente');
+                Swal.fire({
+                    position: 'top-end',
+                    icon: 'success',
+                    title: 'Correo Enviado',
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+            } else {
+                console.error('Error al enviar el enlace de restablecimiento');
+            }
+        } catch (error) {
+            console.error('Error de red:', error);
+        }
+    });
+</script>

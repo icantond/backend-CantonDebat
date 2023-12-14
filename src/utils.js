@@ -4,6 +4,8 @@ import multer from 'multer';
 import path from 'path';
 import bcrypt from 'bcrypt';
 import { fakerES as faker } from '@faker-js/faker';
+import configs from './config/config.js'
+import jwt from 'jsonwebtoken';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -29,6 +31,14 @@ const isValidPassword = (plainPassword, hashedPassword) =>
 //adminCod3r123
 
 
+const generateToken = (email) => {
+    const token = jwt.sign({ email }, configs.jwtKey, { expiresIn: '1h' });
+    console.log('generated token: ', token, 'for email ', email)
+    return token;
+    
+}
+
+
 const generateMockProduct = () => {
     return{
         title: faker.commerce.productName(),
@@ -47,5 +57,6 @@ export {
     upload,
     createHash,
     isValidPassword, 
+    generateToken,
     generateMockProduct
 };

@@ -1,5 +1,8 @@
 import { cartsRepository, usersRepository } from '../repositories/index.js';
 import { createHash, isValidPassword } from '../utils.js';
+import configs from '../config/config.js';
+import transport from '../config/nodemailer.config.js';
+import { generateToken } from '../utils.js';
 
 async function registerUser(req, res) {
     try {
@@ -40,7 +43,7 @@ async function loginUser(req, res) {
 
         if (!user || !isValidPassword(password, user.password)) {
             req.logger.warn(`Login failed for email: ${email}. Check credentials`);
-            
+
             return res.status(401).send({ status: 'error', message: 'Nombre de usuario o contraseña incorrectos' });
         }
 
@@ -86,13 +89,12 @@ async function handleGithubCallback(req, res) {
         const user = await usersRepository.getUserByEmail(email);
 
         if (!user) {
-            // Este bloque se ejecutará si el usuario registrado desde GitHub no existe localmente
             const newUser = await usersRepository.registerUser({
                 first_name: req.user.first_name,
                 last_name: '',
                 email,
                 age: 0,
-                password: '',  // Puedes dejarlo en blanco ya que no se utilizará
+                password: '',  
             });
 
             const newCart = await cartsRepository.createCart({
@@ -107,7 +109,8 @@ async function handleGithubCallback(req, res) {
             const newCart = await cartsRepository.createCart({
                 user: user._id,
                 products: []
-            });
+            }); 
+            
 
             user.cart = newCart._id;
             await usersRepository.save(user);
@@ -119,20 +122,41 @@ async function handleGithubCallback(req, res) {
         res.status(500).send({ status: 'error', message: error.message });
     }
 }
-// async function handleGithubCallback(req, res) {
-//     try {
-//         req.session.user = req.user;
-//         res.redirect('/');
-//     } catch (error) {
-//         res.status(500).send({ status: 'error', message: error.message });
-//     }
-// }
 
+const sendPasswordResetLink = async (req, res) => {
+    const userEmail = req.body.email;
+    console.log('Intentando reestablecer contraseña user ', userEmail)
+    const user = await usersRepository.getUserByEmail(userEmail);
+    console.log('User: ', user, 'encontrado en BD')
+    if (!user) {
+        return res.status(400).json({ error: 'El correo proporcionado no está registrado.' });
+    }    
+
+    const token = generateToken(user.email);
+    console.log('Token: ', token)
+
+    const mailOptions = {
+        from: configs.nodemailerUser,
+        to: user.email,
+        subject: 'Recuperación de contraseña',
+        html: `<p>Haz clic en el siguiente enlace para restablecer tu contraseña:</p>
+            <a href="http://localhost:8080/api/sessions/reset-password/${token}">Restablecer Contraseña</a>`,
+    };
+    
+    try {
+        transport.sendMail(mailOptions);
+        res.status(200).json({ message: 'Se ha enviado un enlace de restablecimiento de contraseña al correo proporcionado.' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Error al enviar el correo de recuperación de contraseña.' });
+    }
+};
 
 export {
     registerUser,
     loginUser,
     logoutUser,
     handleGithubAuth,
-    handleGithubCallback
+    handleGithubCallback,
+    sendPasswordResetLink
 };

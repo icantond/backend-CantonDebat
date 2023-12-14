@@ -39,7 +39,7 @@ app.set('view engine', 'handlebars')
 app.use('/static', express.static(path.join(__dirname, '../public')))
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(errorHandler)
+app.use(errorHandler);
 //Persistir nuestra session en BDD
 
 app.use(session({
@@ -68,10 +68,13 @@ app.use('/api/products', productsRouter);
 app.use('/api/carts', cartsRouter);
 app.use('/products', viewsRouter);
 app.use('/productdetail', viewsRouter);
+app.use('/reset-password', viewsRouter);
+app.use('/forgot', viewsRouter);
 app.use('/api/sessions', sessionsRouter);
 app.use('/profile', viewsRouter);
 app.use('/loggerTest', viewsRouter);
 
+    
 // app.use('/api/mockingproducts', productsRouter)
 
 app.use((req, res, next) => {
@@ -79,8 +82,8 @@ app.use((req, res, next) => {
         return next();
     }
 
-    const publicRoutes = ['/login', '/register', '/mockingproducts']; 
-    if (publicRoutes.includes(req.path)) {
+    const publicRoutes = ['/login', '/register', '/mockingproducts', '/forgot-password', '/reset-password']; 
+    if (publicRoutes.includes(req.path) || req.path.startsWith('/api/sessions/reset-password')) {
         return next();
     }
 

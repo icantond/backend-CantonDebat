@@ -239,6 +239,17 @@ async function loggerTest(req, res) {
     }
 }
 
+const showForgotPassword = (req, res) => {
+    res.render('forgot');
+};
+
+const showResetPassword = async (req, res) => {
+    const token = req.params.token;
+    
+    res.render('reset', { token });
+};
+
+
 export {
     getProductsQueries,
     getAll,
@@ -252,5 +263,7 @@ export {
     getRegister,
     getLogin,
     getProfile,
-    loggerTest
+    loggerTest,
+    showForgotPassword,
+    showResetPassword
 };

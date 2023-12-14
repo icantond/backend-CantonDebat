@@ -13,6 +13,7 @@ const configs = {
     twilioAccountSID: process.env.TWILIO_ACCOUNT_SID,
     twilioAuthToken: process.env.TWILIO_AUTH_TOKEN,
     twilioSmsNumber: process.env.TWILIO_SMS_NUMBER,
+    jwtKey: process.env.JWT_KEY
 };
 
 export default configs;
