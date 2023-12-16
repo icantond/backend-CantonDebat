@@ -2,7 +2,7 @@ import express from 'express';
 import { upload } from '../utils.js';
 import { publicAccess, privateAccess, adminAccess } from '../middlewares/auth/auth.middlewares.js';
 import * as ViewsController from '../controllers/views.controller.js';
-import { addLogger } from '../utils/logger.js';
+// import { addLogger } from '../utils/logger.js';
 
 const router = express.Router();
 
@@ -21,6 +21,5 @@ router.get('/profile', privateAccess, ViewsController.getProfile);
 router.get('/loggerTest', ViewsController.loggerTest);
 router.get('/forgot-password', publicAccess, ViewsController.showForgotPassword);
 router.get('/reset-password/:token', publicAccess, ViewsController.showResetPassword);
-
 
 export default router;

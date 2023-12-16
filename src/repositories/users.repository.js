@@ -22,4 +22,4 @@ export default class UsersRepository {
     async save (user) {
         return await this.dao.save(user);
     }
-}
+};

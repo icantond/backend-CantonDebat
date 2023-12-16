@@ -4,13 +4,15 @@
     <button type="button" id="submit">Enviar enlace de restablecimiento</button>
 </form>
 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <script>
     const email = document.getElementById('email');
     const submit = document.getElementById('submit');
 
     submit.addEventListener('click', async () => {
         try {
-            const response = await fetch("/api/sessions/reset-password", {
+            const response = await fetch("/api/sessions/forgot-password", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"

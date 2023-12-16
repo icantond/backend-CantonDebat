@@ -3,6 +3,7 @@ import { createHash, isValidPassword } from '../utils.js';
 import configs from '../config/config.js';
 import transport from '../config/nodemailer.config.js';
 import { generateToken } from '../utils.js';
+import jwt from 'jsonwebtoken';
 
 async function registerUser(req, res) {
     try {
@@ -140,7 +141,7 @@ const sendPasswordResetLink = async (req, res) => {
         to: user.email,
         subject: 'Recuperación de contraseña',
         html: `<p>Haz clic en el siguiente enlace para restablecer tu contraseña:</p>
-            <a href="http://localhost:8080/api/sessions/reset-password/${token}">Restablecer Contraseña</a>`,
+            <a href="http://localhost:8080/reset-password/${token}">Restablecer Contraseña</a>`,
     };
     
     try {
@@ -152,11 +153,37 @@ const sendPasswordResetLink = async (req, res) => {
     }
 };
 
+
+// };
+const resetPassword = async (req, res) => {
+    const { token } = req.params;
+    const { password } = req.body;
+
+    try {
+        const decodedToken = jwt.verify(token, configs.jwtKey);
+
+        const user = await usersRepository.getUserByEmail(decodedToken.email);
+
+        if (!user) {
+            return res.status(404).json({ error: 'Usuario no encontrado' });
+        }
+
+        user.password = createHash(password);
+        await user.save();
+        console.log('Contraseña restablecida exitosamente. User:', user.email);
+
+        return res.status(200).json({ message: 'Contraseña restablecida exitosamente' });
+    } catch (error) {
+        console.error('Error al restablecer la contraseña:', error);
+        return res.status(500).json({ error: 'Error interno del servidor' });
+    }
+};
 export {
     registerUser,
     loginUser,
     logoutUser,
     handleGithubAuth,
     handleGithubCallback,
-    sendPasswordResetLink
+    sendPasswordResetLink, 
+    resetPassword
 };

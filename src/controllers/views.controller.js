@@ -1,6 +1,8 @@
 import productsModel from '../dao/mongo/models/products.model.js';
 import EErrors from '../middlewares/errors/enums.js';
 import { cartsRepository, productsRepository } from '../repositories/index.js';
+import jwt from 'jsonwebtoken';
+import configs from '../config/config.js';
 // import router from '../routes/views.router.js';
 
 
@@ -248,7 +250,6 @@ const showResetPassword = async (req, res) => {
     
     res.render('reset', { token });
 };
-
 
 export {
     getProductsQueries,

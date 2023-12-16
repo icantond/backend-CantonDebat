@@ -27,8 +27,8 @@ try {
     console.error('Error al conectar a MongoDB:', error);
 }
 
-const PORT = 8080;
-const httpServer = app.listen(PORT, () => console.log(`Listening on PORT ${PORT}`));
+const PORT = configs.port;
+const httpServer = app.listen(PORT, () => console.log(`Server successfuly running on PORT ${PORT}`));
 const socketServer = new Server(httpServer);
 
 //Settings de Handlebars
@@ -68,27 +68,35 @@ app.use('/api/products', productsRouter);
 app.use('/api/carts', cartsRouter);
 app.use('/products', viewsRouter);
 app.use('/productdetail', viewsRouter);
-app.use('/reset-password', viewsRouter);
 app.use('/forgot', viewsRouter);
 app.use('/api/sessions', sessionsRouter);
 app.use('/profile', viewsRouter);
 app.use('/loggerTest', viewsRouter);
-
+app.use('/reset-password', sessionsRouter);
+app.use('/forgot-password', sessionsRouter);
     
 // app.use('/api/mockingproducts', productsRouter)
 
+
 app.use((req, res, next) => {
-    if (req.isAuthenticated()) {
+    const publicRoutes = ['/login', '/register', '/forgot-password']; 
+    const resetPasswordRoutes = ['/api/sessions/reset-password'];
+
+    // Permitir acceso a rutas públicas
+    if (publicRoutes.includes(req.path) || resetPasswordRoutes.some(route => req.path.startsWith(route))) {
         return next();
     }
 
-    const publicRoutes = ['/login', '/register', '/mockingproducts', '/forgot-password', '/reset-password']; 
-    if (publicRoutes.includes(req.path) || req.path.startsWith('/api/sessions/reset-password')) {
+    // Resto del middleware de autenticación
+    if (req.isAuthenticated()) {
         return next();
     }
 
     return res.redirect('/login');
 });
+
+
+
 //CONFIGURACION DE SOCKETS
 const io = socketServer;
 

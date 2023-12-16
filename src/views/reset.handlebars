@@ -1,39 +1,12 @@
-<form action="/api/sessions/reset-password/{{token}}" method="post">
+<form id="resetForm">
+    <small> Token: {{token}}</small>
+    <input type="hidden" name="token" id="token" value="{{token}}">
     <label for="password">Nueva contraseña:</label>
     <input type="password" id="password" name="password" required>
     <label for="confirmPassword">Confirmar contraseña:</label>
     <input type="password" id="confirmPassword" name="confirmPassword" required>
-    <button type="submit">Restablecer contraseña</button>
+    <button type="button" id="submit-button">Restablecer contraseña</button>
 </form>
 
 
-<script>
-    async function resetPassword() {
-        const password = document.getElementById('password').value;
-        const confirmPassword = document.getElementById('confirmPassword').value;
-        const token = '{{token}}'; 
-
-        if (password !== confirmPassword) {
-            console.error('Las contraseñas no coinciden');
-            return;
-        }
-
-        try {
-            const response = await fetch(`/api/sessions/reset-password/${token}`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ password }),
-            });
-
-            if (response.ok) {
-                console.log('Contraseña restablecida correctamente');
-            } else {
-                console.error('Error al restablecer la contraseña');
-            }
-        } catch (error) {
-            console.error('Error de red:', error);
-        }
-    }
-</script>
+<script src="/static/js/resetPassword.js"></script>

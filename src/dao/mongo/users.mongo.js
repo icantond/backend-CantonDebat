@@ -21,4 +21,4 @@ export default class Users {
     async save(user) {
         return await usersModel.findByIdAndUpdate(user._id, user, { new: true });
     }
-}
+}   
