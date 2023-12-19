@@ -1,5 +1,4 @@
 import express from 'express';
-// import Products from '../dao/dbManagers/products.manager.js'
 import { upload } from '../utils.js';
 import * as ProductsController from '../controllers/products.controller.js';
 import { publicAccess } from '../middlewares/auth/auth.middlewares.js';

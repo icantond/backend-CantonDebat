@@ -9,6 +9,7 @@ import jwt from 'jsonwebtoken';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
+const __mainDirname = path.join(__dirname, '..');
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -55,6 +56,7 @@ const generateMockProduct = () => {
 export {
     __dirname,
     upload,
+    __mainDirname,
     createHash,
     isValidPassword, 
     generateToken,

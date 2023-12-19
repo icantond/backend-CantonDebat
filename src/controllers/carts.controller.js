@@ -17,14 +17,9 @@ async function addProductToCart(req, res) {
         const existingProductIndex = cart.products.findIndex(item => item.product.equals(productId));
         req.logger.info(`Cart with ID: ${cartId} retrieved successfully ${new Date().toISOString()}`);
 
-        // Obtener el usuario actual
         const currentUser = req.session.user;
-        // console.log(currentUser.id)
 
-        // Verificar si el usuario actual es premium
         if (currentUser.role === 'premium') {
-            // Verificar si el producto pertenece al mismo usuario
-            // const productBelongsToUser = cart.products.some(item => item.product.equals(productId) && item.product.owner.equals(currentUser.id));
             const productBelongsToUser = cart.products.some(item => item.product.equals(productId) && item.product.owner.toString() === currentUser.id.toString());
 
             if (productBelongsToUser) {

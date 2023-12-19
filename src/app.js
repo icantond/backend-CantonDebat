@@ -1,7 +1,7 @@
 import express from 'express';
 import session from 'express-session';
 import MongoStore from 'connect-mongo';
-import { __dirname } from './utils.js';
+import { __dirname, __mainDirname } from './utils.js';
 import handlebars from 'express-handlebars';
 import mongoose from 'mongoose';
 import { Server } from 'socket.io';
@@ -17,6 +17,8 @@ import configs from './config/config.js';
 import { productsRepository } from './repositories/index.js';
 import errorHandler from './middlewares/errors/index.js'
 import { addLogger } from './utils/logger.js';
+import swaggerJsdoc from 'swagger-jsdoc';
+import swaggerUiExpress from 'swagger-ui-express';
 
 const app = express();
 console.log(configs)
@@ -30,6 +32,21 @@ try {
 const PORT = configs.port;
 const httpServer = app.listen(PORT, () => console.log(`Server successfuly running on PORT ${PORT}`));
 const socketServer = new Server(httpServer);
+
+const swaggerOptions = {
+    definition:{
+        openapi:'3.0.1',
+        info:{
+            title:'Documentación Ecommerce de productos de Tecnología',
+            description:'Proyecto final Curso Backend Coderhouse'
+        }
+    },
+    apis: [`${__mainDirname}/docs/**/*.yaml`]
+}
+console.log(__mainDirname)
+
+const specs = swaggerJsdoc(swaggerOptions);
+app.use('/api/docs', swaggerUiExpress.serve, swaggerUiExpress.setup(specs));
 
 //Settings de Handlebars
 app.engine('handlebars', handlebars.engine());
