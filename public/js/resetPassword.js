@@ -2,7 +2,7 @@ console.log("resetPassword.js loaded")
 
 const submitButton = document.getElementById("submit-button");
 
-submitButton. addEventListener("click", async(e) => {
+submitButton.addEventListener("click", async (e) => {
     e.preventDefault();
     const password = document.getElementById('password').value;
     const confirmPassword = document.getElementById('confirmPassword').value;
@@ -24,6 +24,18 @@ submitButton. addEventListener("click", async(e) => {
 
         if (response.ok) {
             console.log('Contraseña restablecida correctamente');
+            Swal.fire({
+                position: 'top-end',
+                icon: 'success',
+                title: 'Contraseña restablecida con éxito!',
+                showConfirmButton: false,
+                timer: 1500
+            });
+
+            setTimeout(() => {
+                window.location.href = '/login'
+            }, 2000);
+            
         } else {
             console.error('Error al restablecer la contraseña');
         }
@@ -32,4 +44,4 @@ submitButton. addEventListener("click", async(e) => {
     }
 
 })
-    
+

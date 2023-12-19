@@ -12,7 +12,9 @@
 
     </ul>
 </nav>
+
 <h2 class="section-title">Agregar Nuevo Producto</h2>
+<small>owner: {{owner}}</small>
 
 <form id="add-product-form" enctype="multipart/form-data">
     <form id="add-product-form">
@@ -36,14 +38,12 @@
 
         <label for="thumbnail">Imágenes:</label>
         <input type="file" id="thumbnail" name="thumbnail" accept=".png, .jpeg, .jpg, .webp, .tiff" multiple>
+        
+        <input type="hidden" id="owner" value="{{owner}}">
+        <input type="hidden" id="user-role" value="{{userRole}}">
 
+        
         <button type="submit">Agregar Producto</button>
-    </form>
-
-    <h2 class="section-title">Eliminar Producto</h2>
-    <form id="delete-product-form">
-        <input type="text" id="productId" placeholder="ID del producto a eliminar" required>
-        <button type="submit">Eliminar Producto</button>
     </form>
 
     <h1 class="page-title">Lista de Productos en Tiempo Real</h1>
@@ -52,8 +52,10 @@
             {{#each products}}
             <li class="product-list-item">
                 <h3 class="product-list-item-title">Producto: {{this.title}}</h3>
-                <p class="product-list-item-code">ID: {{this._id}}</p>
+                <p class="product-list-item-code" id="productId" >{{this._id}}</p>
                 <img src="static/img/{{this.thumbnail}}" width="50px">
+                <input type="hidden" id="product-owner" value="{{this.owner}}">
+                <button type="submit" class="delete-button">Eliminar Producto</button>
             </li>
             {{/each}}
         </ul>

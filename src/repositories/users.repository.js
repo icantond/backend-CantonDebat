@@ -22,4 +22,8 @@ export default class UsersRepository {
     async save (user) {
         return await this.dao.save(user);
     }
+
+    async changeUserRole(userId, newRole) {
+        return await this.dao.changeUserRole(userId, newRole);
+    }
 };

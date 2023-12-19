@@ -9,7 +9,7 @@ const privateAccess = (req, res, next) => {
 }
 
 const adminAccess = (req, res, next) => {
-    if (!req.session.user || req.session.user.role !== 'admin') {
+    if (!req.session.user || (req.session.user.role !== 'admin' && req.session.user.role !== 'premium')) {
         return res.redirect('/');
     }
     next();

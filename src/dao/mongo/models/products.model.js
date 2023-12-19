@@ -34,6 +34,12 @@ const productSchema = new mongoose.Schema({
         required: true
     },
     thumbnail: Array,
+    
+    owner: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'users',
+        required: true,
+    },
 });
 
 productSchema.plugin(mongoosePaginate);

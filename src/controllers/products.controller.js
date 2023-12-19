@@ -1,4 +1,3 @@
-// import usersModel from '../dao/mongo/models/users.model.js';
 import { productsRepository } from '../repositories/index.js';
 import { generateMockProduct } from '../utils.js';
 import { generateProductErrorInfo } from '../middlewares/errors/info.js';
@@ -41,8 +40,8 @@ async function getProductById(req, res) {
 async function addProduct(req, res) {
     const productData = req.body;
     const thumbnailFile = req.file;
-    try { 
-                if (!productData.title || !productData.price || !productData.description || !productData.stock           || !productData.code || !productData.category) {
+    try {
+        if (!productData.title || !productData.price || !productData.description || !productData.stock || !productData.code || !productData.category) {
             throw CustomError.createError({
                 name: 'AddProductError',
                 cause: generateProductErrorInfo(productData),
@@ -55,7 +54,9 @@ async function addProduct(req, res) {
             productData.thumbnail = thumbnailFile.filename;
         } else {
             productData.thumbnail = '';
-        }
+        };
+
+        productData.owner = req.session.user.id;
 
         const newProduct = await productsRepository.addProduct(productData);
 
@@ -79,53 +80,35 @@ async function addProduct(req, res) {
             });
         }
     }
-}
+};
 
-// async function addProduct(req, res) {
-//     const productData = req.body;
-//     const thumbnailFile = req.file;
+    async function deleteProduct(req, res) {
+        const productId = req.params.pid;
+        const userId = req.session.user.id;
+        console.log('rol: ', req.session.user.role)
 
-//     try {
-//         if (!productData.title || !productData.price) {
-//             throw CustomError.createError({
-//                 name: 'ProductError',
-//                 cause: generateProductErrorInfo(productData),
-//                 message: 'Error trying to create product',
-//                 code: EErrors.INVALID_TYPER_ERROR
-//             });
-//         }
+        try {
+            const product = await productsRepository.getProductById(productId);
 
-//         if (thumbnailFile) {
-//             productData.thumbnail = thumbnailFile.filename;
-//         } else {
-//             productData.thumbnail = '';
-//         }
+            if (!product) {
+                return res.status(404).send({ message: 'Producto no encontrado' });
+            }
+            if (req.session.user.role === 'premium' && product.owner !== userId ) {
+                return res.status(403).send({ message: 'No tienes permisos para borrar este producto' });
+            }
 
-//         const newProduct = await productsRepository.addProduct(productData);
+            const result = await productsRepository.deleteProduct(productId);
 
-//         res.status(201).send(newProduct);
-//     } catch (error) {
-//         // res.status(500).send({ error: 'Error al agregar el producto' });
-//         next(error)
-// }
-// }
-
-async function deleteProduct(req, res) {
-    const productId = req.params.pid;
-
-    try {
-        const result = await productsRepository.deleteProduct(productId);
-
-        if (!result) {
-            return res.status(404).send({ message: 'Producto no encontrado' });
-        } else {
-            return res.status(202).send({ message: 'Producto eliminado con éxito', data: result });
+            if (!result) {
+                return res.status(404).send({ message: 'Producto no encontrado' });
+            } else {
+                return res.status(202).send({ message: 'Producto eliminado con éxito', data: result });
+                                            }
+        } catch (error) {
+            console.error(error);
+            res.status(500).send({ status: 'error', message: 'Error al eliminar el producto' });
         }
-    } catch (error) {
-        console.error(error);
-        res.status(500).send({ status: 'error', message: 'Error al eliminar el producto' });
     }
-}
 
 async function updateProduct(req, res) {
     const productId = req.params.pid;
@@ -158,13 +141,13 @@ async function updateProduct(req, res) {
     }
 }
 
-async function getMockProducts (req, res){
-    try{
+async function getMockProducts(req, res) {
+    try {
         let mockProducts = []
-        for (let i = 0; i < 100; i++){
-        mockProducts.push(generateMockProduct())
-    }
-    res.send({status: 'success', payload: mockProducts})
+        for (let i = 0; i < 100; i++) {
+            mockProducts.push(generateMockProduct())
+        }
+        res.send({ status: 'success', payload: mockProducts })
     } catch (error) {
         console.error(error);
         res.status(500).send({ status: 'error', message: 'Error al obtener mockingproducts' });

@@ -3,6 +3,7 @@ import EErrors from '../middlewares/errors/enums.js';
 import { cartsRepository, productsRepository } from '../repositories/index.js';
 import jwt from 'jsonwebtoken';
 import configs from '../config/config.js';
+import moment from 'moment';
 // import router from '../routes/views.router.js';
 
 
@@ -80,18 +81,26 @@ async function getProductsQueries(req, res) {
 };
 
 async function getAll(req, res) {
+    const owner = req.session.user.id;
+    const userRole = req.session.user.role;
+    console.log(owner)
     try {
         const products = await productsRepository.getAll();
-        res.render('realTimeProducts', { products });
+        const productOwner = products.owner;
+        res.render('realTimeProducts', { products, owner, productOwner, userRole});
     } catch (error) {
         res.status(500).json({ error: 'Error al obtener productos en tiempo real' });
     }
 };
 
 async function getRealTimeProducts (req, res) {
+    const owner = req.session.user.id;
+    const userRole = req.session.user.role;
+    console.log(owner)
     try {
+    
         const products = await productsRepository.getAll();
-        res.render('realTimeProducts', { products });
+        res.render('realTimeProducts', { products, owner, userRole });
     } catch (error) {
         res.status(500).json({ error: 'Error al obtener productos en tiempo real' });
     }
@@ -148,7 +157,6 @@ async function deleteRealTimeProducts (req, res) {
 async function getAllProducts (req, res) {
     try {
         const products = await productsRepository.getAll();
-        // const carts = await cartsRepository.getAll();
         const user = req.session.user || {};
         const userCartId = user.cart;
         console.log('usuario: ', user, 'cartId:', userCartId)
@@ -247,10 +255,26 @@ const showForgotPassword = (req, res) => {
 
 const showResetPassword = async (req, res) => {
     const token = req.params.token;
-    
-    res.render('reset', { token });
-};
 
+    try {
+        const decodedToken = jwt.verify(token, configs.jwtKey);
+
+        if (decodedToken.exp <= moment().unix()) {
+            console.log('Token expirado');
+            return res.redirect('/forgot-password');
+        }
+
+        res.render('reset', { token });
+    } catch (error) {
+        if (error.name === 'TokenExpiredError') {
+            console.log('Token expirado');
+            return res.redirect('/forgot-password');
+        }
+
+        console.error('Error al verificar el token:', error);
+        res.status(500).send('Error interno del servidor');
+    }
+};
 export {
     getProductsQueries,
     getAll,

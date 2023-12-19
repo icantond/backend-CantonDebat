@@ -21,4 +21,9 @@ export default class Users {
     async save(user) {
         return await usersModel.findByIdAndUpdate(user._id, user, { new: true });
     }
+
+    
+    async changeUserRole(userId, newRole) {
+        return await usersModel.findByIdAndUpdate(userId, { role: newRole }, { new: true });
+    }
 }   

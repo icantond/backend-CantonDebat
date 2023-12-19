@@ -178,6 +178,32 @@ const resetPassword = async (req, res) => {
         return res.status(500).json({ error: 'Error interno del servidor' });
     }
 };
+
+async function changeUserRole(req, res) {
+    const userId = req.params.uid;
+    const newRole = req.body.role;
+
+    try {
+        // Verificar si el usuario tiene permisos para cambiar el rol
+        if (req.session.user.role !== 'admin' || !['user', 'premium'].includes(newRole)) {
+            return res.status(403).send({ message: 'No tienes permisos para cambiar el rol de un usuario o el rol es inválido' });
+        }
+        
+        // Cambiar el rol del usuario
+        const updatedUser = await usersRepository.changeUserRole(userId, newRole);
+
+        if (!updatedUser) {
+            return res.status(404).send({ message: 'Usuario no encontrado' });
+        } else {
+            return res.status(200).json({ message: 'Rol de usuario actualizado con éxito', data: updatedUser });
+        }
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ status: 'error', message: 'Error al cambiar el rol de usuario' });
+    }
+}
+
+
 export {
     registerUser,
     loginUser,
@@ -185,5 +211,6 @@ export {
     handleGithubAuth,
     handleGithubCallback,
     sendPasswordResetLink, 
-    resetPassword
+    resetPassword,
+    changeUserRole
 };

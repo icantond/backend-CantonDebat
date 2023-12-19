@@ -12,5 +12,7 @@ router.get('/github', passport.authenticate('github', { scope: ['user:email'] })
 router.get('/github-callback', passport.authenticate('github', { failureRedirect: '/login' }), SessionsController.handleGithubCallback);
 router.post('/forgot-password', SessionsController.sendPasswordResetLink);
 router.post('/api/sessions/reset-password/:token', SessionsController.resetPassword);
+router.put('/premium/:uid', SessionsController.changeUserRole);
+
 
 export default router;

@@ -17,6 +17,25 @@ async function addProductToCart(req, res) {
         const existingProductIndex = cart.products.findIndex(item => item.product.equals(productId));
         req.logger.info(`Cart with ID: ${cartId} retrieved successfully ${new Date().toISOString()}`);
 
+        // Obtener el usuario actual
+        const currentUser = req.session.user;
+        // console.log(currentUser.id)
+
+        // Verificar si el usuario actual es premium
+        if (currentUser.role === 'premium') {
+            // Verificar si el producto pertenece al mismo usuario
+            // const productBelongsToUser = cart.products.some(item => item.product.equals(productId) && item.product.owner.equals(currentUser.id));
+            const productBelongsToUser = cart.products.some(item => item.product.equals(productId) && item.product.owner.toString() === currentUser.id.toString());
+
+            if (productBelongsToUser) {
+                return res.status(400).json({
+                    status: 'error',
+                    error: 'PremiumUserError',
+                    description: 'Un usuario premium no puede agregar su propio producto al carrito',
+                });
+            }
+        }
+
         if (existingProductIndex !== -1) {
             cart.products[existingProductIndex].quantity++;
             req.logger.info(`Product quantity updated for product with ID: ${productId} ${new Date().toISOString()}`);
@@ -32,7 +51,6 @@ async function addProductToCart(req, res) {
 
         return res.status(201).json({ status: 'success', message: 'Producto agregado al carrito', data: updatedCart });
     } catch (error) {
-        // console.error(error);
         req.logger.error(`Error adding product to cart: ${productId} - ${error} ${new Date().toISOString()}`);
 
         if (error.name === 'ValidationError') {
