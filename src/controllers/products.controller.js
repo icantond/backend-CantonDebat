@@ -1,8 +1,10 @@
 import { productsRepository } from '../repositories/index.js';
-import { generateMockProduct } from '../utils.js';
+import { decodeJwtFromCookie, generateMockProduct } from '../utils.js';
 import { generateProductErrorInfo } from '../middlewares/errors/info.js';
 import CustomError from '../middlewares/errors/CustomError.js';
 import EErrors from '../middlewares/errors/enums.js';
+import jwt from 'jsonwebtoken';
+import configs from '../config/config.js';
 
 async function getAll(req, res) {
     const { limit } = req.query;
@@ -40,6 +42,7 @@ async function getProductById(req, res) {
 async function addProduct(req, res) {
     const productData = req.body;
     const thumbnailFile = req.file;
+    console.log('Cookie: ', req.cookies.userCookie)
     try {
         if (!productData.title || !productData.price || !productData.description || !productData.stock || !productData.code || !productData.category) {
             throw CustomError.createError({
@@ -56,7 +59,24 @@ async function addProduct(req, res) {
             productData.thumbnail = '';
         };
 
-        productData.owner = req.session.user.id;
+        // productData.owner = req.session.user.id;
+
+        const userCookie = req.cookies.userCookie;
+        console.log('userCookie en products controller: ', userCookie)
+        const decodedToken = jwt.verify(userCookie, configs.jwtKey);
+
+        console.log('decodedToken:', decodedToken);;
+
+        if (!decodedToken || !decodedToken.id) {
+            throw CustomError.createError({
+                name: 'AuthenticationError',
+                message: 'Invalid or missing user authentication token',
+                code: EErrors.UNAUTHORIZED_ERROR
+            });
+        }
+
+        // Asigna el ID de usuario al campo 'owner' del producto
+        productData.owner = decodedToken.id;
 
         const newProduct = await productsRepository.addProduct(productData);
 
@@ -69,7 +89,7 @@ async function addProduct(req, res) {
             return next({
                 name: 'AddProductError',
                 cause: error.cause,
-                code: EErrors.INVALID_TYPER_ERROR,
+                code    : EErrors.INVALID_TYPER_ERROR,
             });
 
         } else {
@@ -82,33 +102,33 @@ async function addProduct(req, res) {
     }
 };
 
-    async function deleteProduct(req, res) {
-        const productId = req.params.pid;
-        const userId = req.session.user.id;
-        console.log('rol: ', req.session.user.role)
+async function deleteProduct(req, res) {
+    const productId = req.params.pid;
+    const userId = req.session.user.id;
+    console.log('rol: ', req.session.user.role)
 
-        try {
-            const product = await productsRepository.getProductById(productId);
+    try {
+        const product = await productsRepository.getProductById(productId);
 
-            if (!product) {
-                return res.status(404).send({ message: 'Producto no encontrado' });
-            }
-            if (req.session.user.role === 'premium' && product.owner !== userId ) {
-                return res.status(403).send({ message: 'No tienes permisos para borrar este producto' });
-            }
-
-            const result = await productsRepository.deleteProduct(productId);
-
-            if (!result) {
-                return res.status(404).send({ message: 'Producto no encontrado' });
-            } else {
-                return res.status(202).send({ message: 'Producto eliminado con éxito', data: result });
-                                            }
-        } catch (error) {
-            console.error(error);
-            res.status(500).send({ status: 'error', message: 'Error al eliminar el producto' });
+        if (!product) {
+            return res.status(404).send({ message: 'Producto no encontrado' });
         }
+        if (req.session.user.role === 'premium' && product.owner !== userId) {
+            return res.status(403).send({ message: 'No tienes permisos para borrar este producto' });
+        }
+
+        const result = await productsRepository.deleteProduct(productId);
+
+        if (!result) {
+            return res.status(404).send({ message: 'Producto no encontrado' });
+        } else {
+            return res.status(202).send({ message: 'Producto eliminado con éxito', data: result });
+        }
+    } catch (error) {
+        console.error(error);
+        res.status(500).send({ status: 'error', message: 'Error al eliminar el producto' });
     }
+}
 
 async function updateProduct(req, res) {
     const productId = req.params.pid;

@@ -1,5 +1,6 @@
 import express from 'express';
 import session from 'express-session';
+import cookieParser from 'cookie-parser';
 import MongoStore from 'connect-mongo';
 import { __dirname, __mainDirname } from './utils.js';
 import handlebars from 'express-handlebars';
@@ -47,6 +48,7 @@ console.log(__mainDirname)
 
 const specs = swaggerJsdoc(swaggerOptions);
 app.use('/api/docs', swaggerUiExpress.serve, swaggerUiExpress.setup(specs));
+app.use(cookieParser());
 
 //Settings de Handlebars
 app.engine('handlebars', handlebars.engine());
@@ -59,6 +61,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(errorHandler);
 //Persistir nuestra session en BDD
 
+
 app.use(session({
     store: MongoStore.create({
         client: mongoose.connection.getClient(),
@@ -67,6 +70,7 @@ app.use(session({
     secret: configs.sessionSecret,
     resave: true,
     saveUninitialized: true,
+    cookie: {secure: false, maxAge: 3.6e+6}
 }));
 
 //passport

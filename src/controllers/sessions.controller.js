@@ -31,7 +31,7 @@ async function registerUser(req, res) {
         console.log(`Se ha creado el usuario con el correo ${newUser.email}, con ID de carrito ${newCart}`);
         res.status(201).send({ status: 'success', message: 'User registered' });
     } catch (error) {
-        res.status(500).send({ status: 'error', message: error.message });
+        res.status(500).send({ status: 'error', message: 'Internal server error' });
     }
 }
 
@@ -40,11 +40,11 @@ async function loginUser(req, res) {
 
     try {
         const { email, password } = req.body;
+        if (!email || !password) return res.status(400).send({ status: "error", error: "Incomplete values" });
         const user = await usersRepository.getUserByEmail(email);
 
         if (!user || !isValidPassword(password, user.password)) {
             req.logger.warn(`Login failed for email: ${email}. Check credentials`);
-
             return res.status(401).send({ status: 'error', message: 'Nombre de usuario o contraseña incorrectos' });
         }
 
@@ -56,10 +56,12 @@ async function loginUser(req, res) {
             cart: user.cart._id,
             id: user._id
         }
+        const token = jwt.sign(req.session.user, configs.jwtKey, {expiresIn: '1h'});
+        res.cookie('userCookie', token, {maxAge: 3600000, httpOnly: true }).send({ status: 'success', message: 'Sesión iniciada con éxito' });
 
         req.logger.info(`Login successful for email: ${email}`);
 
-        res.send({ status: 'success', message: 'Sesión iniciada con éxito' });
+        // res.send({ status: 'success', message: 'Sesión iniciada con éxito' });
     } catch (error) {
         req.logger.error(`Error during login: ${error.message}`);
         res.status(500).send({ status: 'error', message: error.message });
@@ -77,11 +79,23 @@ function logoutUser(req, res) {
         req.logger.info('Logout successful');
         console.log('Sesión cerrada');
     });
-}
+};
 
+async function currentUser(req, res) {
+    try {
+        const user = req.session.user;
+        if (!user) {
+            return res.status(401).send({ status: 'error', message: 'No se ha iniciado sesión' });
+        }
+        res.send({ status: 'success', message: 'Usuario autenticado', user });
+    } catch (error) {
+        res.status(500).send({ status: 'error', message: error.message });
+    }
+}
 async function handleGithubAuth(req, res) {
     res.send({ status: 'success', message: 'user registered' });
 }
+
 async function handleGithubCallback(req, res) {
     try {
         req.session.user = req.user;
@@ -154,7 +168,6 @@ const sendPasswordResetLink = async (req, res) => {
 };
 
 
-// };
 const resetPassword = async (req, res) => {
     const { token } = req.params;
     const { password } = req.body;
@@ -203,7 +216,6 @@ async function changeUserRole(req, res) {
     }
 }
 
-
 export {
     registerUser,
     loginUser,
@@ -212,5 +224,6 @@ export {
     handleGithubCallback,
     sendPasswordResetLink, 
     resetPassword,
-    changeUserRole
+    changeUserRole, 
+    currentUser
 };

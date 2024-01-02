@@ -37,7 +37,18 @@ const generateToken = (email) => {
     console.log('generated token: ', token, 'for email ', email)
     return token;
     
-}
+};
+const decodeJwtFromCookie = (userCookie) => {
+    try {
+        console.log('decoding cookie: ', userCookie);
+        const token = userCookie.split('=')[1]; 
+        const decodedToken = jwt.verify(token, configs.jwtKey);
+        return decodedToken;
+    } catch (error) {
+        console.error(error);
+        return null;
+    }
+};
 
 
 const generateMockProduct = () => {
@@ -60,5 +71,6 @@ export {
     createHash,
     isValidPassword, 
     generateToken,
-    generateMockProduct
+    generateMockProduct,
+    decodeJwtFromCookie
 };
