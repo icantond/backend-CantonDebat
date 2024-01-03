@@ -7,20 +7,31 @@ import jwt from 'jsonwebtoken';
 
 async function registerUser(req, res) {
     try {
-        const { first_name, last_name, email, age, password } = req.body;
+        const { first_name, last_name, email, age, password, role } = req.body;
         const exists = await usersRepository.getUserByEmail(email);
 
         if (exists) {
             return res.status(400).send({ status: 'error', message: 'User already exists' });
         }
 
+        const validRoles = ['user', 'admin', 'premium'];
+        const userRole = validRoles.includes(role) ? role : 'user';
+
         const newUser = await usersRepository.registerUser({
             first_name,
             last_name,
             email,
             age,
-            password: createHash(password)
+            password: createHash(password),
+            role: userRole,
         });
+        // const newUser = await usersRepository.registerUser({
+        //     first_name,
+        //     last_name,
+        //     email,
+        //     age,
+        //     password: createHash(password)
+        // });
 
         const newCart = await cartsRepository.createCart({
             user: newUser._id,
@@ -57,7 +68,8 @@ async function loginUser(req, res) {
             id: user._id
         }
         const token = jwt.sign(req.session.user, configs.jwtKey, {expiresIn: '1h'});
-        res.cookie('userCookie', token, {maxAge: 3600000, httpOnly: true }).send({ status: 'success', message: 'Sesión iniciada con éxito' });
+        res.cookie('userCookie', token, {maxAge: 3600000, httpOnly: true })
+        .send({ status: 'success', message: 'Login Successful', token });
 
         req.logger.info(`Login successful for email: ${email}`);
 

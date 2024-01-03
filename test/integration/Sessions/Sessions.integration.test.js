@@ -1,29 +1,26 @@
 import mongoose from 'mongoose';
 import * as chai from 'chai';
 import supertest from 'supertest';
-import jwt from 'jsonwebtoken';
 import configs from '../../../src/config/config.js';
-const expect = chai.expect;
-const requester = supertest('http://localhost:8080');
 
-describe('Testing del módulo Carts', () => {
+const expect = chai.expect;
+const requester = supertest(configs.devHost);
+
+describe('Testing del módulo Sessions', () => {
     //Limpiar la coleccion 'users' de la base de datos con un drop antes de cada prueba
-    beforeEach(async function() {
-        this.timeout(50000);
+    before(async function () {
+        this.timeout(10000);
         try {
-            await mongoose.connection.close();
-            await mongoose.connect(configs.mongoUrl)
-            
-            await mongoose.connection.dropCollection('users');
-            console.log('Colección users eliminada después de la prueba');
+            await mongoose.connect(configs.mongoUrl);
+            await mongoose.connection.db.dropCollection('users');
         } catch (error) {
-            console.error('Error al eliminar la colección users:', error);
+            console.error('Error al conectar a la base de datos', error);
         }
     });
 
     it('Debería manejar correctamente el registro de un usuario existente', async function () {
         this.timeout(10000);
-    
+
         const mockUser = {
             first_name: 'Juan',
             last_name: 'Perez',
@@ -32,25 +29,27 @@ describe('Testing del módulo Carts', () => {
             age: '20',
             role: 'admin'
         };
-    
+
         // Registrar al usuario por primera vez
         const registerResponse = await requester.post('/api/sessions/register')
             .send(mockUser)
             .expect(201);
-            console.log(registerResponse.body);
 
         // Intentar registrar al mismo usuario nuevamente
         const secondRegisterResponse = await requester.post('/api/sessions/register')
             .send(mockUser)
             .expect(400);
-    
+
         expect(secondRegisterResponse.body).to.have.property('status', 'error');
         expect(secondRegisterResponse.body).to.have.property('message', 'User already exists');
 
-        expect(registerResponse.body.status).to.be.equal('success');    
+        expect(registerResponse.body.status).to.be.equal('success');
     });
-    });
-    
+});
+
+
+
+
 
 
 //Borrar los datos de la base de datos antes de cada prueba
