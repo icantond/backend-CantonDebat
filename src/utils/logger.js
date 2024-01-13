@@ -1,4 +1,5 @@
-import winston from "winston";
+import winston, { debug } from "winston";
+import 'winston-daily-rotate-file';
 import configs from '../config/config.js';
 
 let logger;
@@ -39,14 +40,25 @@ if (configs.environment === 'development') {
         ]
     })
 } else {
-    logger = winston.createLogger({
-        transports: [
-            new winston.transports.File({
-                level: 'info',
-                filename: 'log/production.log'
-            })
-        ]
-    })
+    const fileTransporter = new winston.transports.DailyRotateFile({
+        filename: 'application-%DATE%.log',
+        datePattern: 'YYYY-MM-DD-HH-mm',
+        dirname: '/log',
+        zippedArchive: true,
+        maxSize: '1m',
+        maxFiles: 3,
+        frequency: '1m', //Si queremos generar un archivo diario, cambiamos frecuencia a un día
+        level: 'debug',
+
+        })
+    // logger = winston.createLogger({
+    //     transports: [
+    //         new winston.transports.File({
+    //             level: 'info',
+    //             filename: 'log/production.log'
+    //         })
+    //     ]
+    // })
 };
 
 export const addLogger = (req, res, next) => {
