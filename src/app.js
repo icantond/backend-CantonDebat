@@ -11,6 +11,7 @@ import productsRouter from './routes/products.router.js';
 import cartsRouter from './routes/carts.router.js';
 import viewsRouter from './routes/views.router.js';
 import sessionsRouter from './routes/sessions.router.js';
+import usersRouter from './routes/users.router.js';
 import messagesModel from './dao/mongo/models/messages.model.js';
 import initializePassport from './config/passport.config.js';
 import passport from 'passport';
@@ -18,11 +19,12 @@ import configs from './config/config.js';
 import { productsRepository } from './repositories/index.js';
 import errorHandler from './middlewares/errors/index.js'
 import { addLogger } from './utils/logger.js';
-import swaggerJsdoc from 'swagger-jsdoc';
+// import swaggerJsdoc from 'swagger-jsdoc';
 import swaggerUiExpress from 'swagger-ui-express';
+import swaggerFile from '../docs/swagger-output.json' assert { type: 'json' }
+import { authMiddleware } from './middlewares/auth/auth.middlewares.js';
 
 const app = express();
-console.log(configs)
 try {
     await mongoose.connect(configs.mongoUrl);
     console.log('Conexión a MongoDB exitosa');
@@ -34,20 +36,23 @@ const PORT = configs.port;
 const httpServer = app.listen(PORT, () => console.log(`Server successfuly running on PORT ${PORT}`));
 const socketServer = new Server(httpServer);
 
-const swaggerOptions = {
-    definition:{
-        openapi:'3.0.1',
-        info:{
-            title:'Documentación Ecommerce de productos de Tecnología',
-            description:'Proyecto final Curso Backend Coderhouse'
-        }
-    },
-    apis: [`${__mainDirname}/docs/**/*.yaml`]
-}
-console.log(__mainDirname)
+// const swaggerOptions = {
+//     definition:{
+//         openapi:'3.0.1',
+//         info:{
+//             title:'Documentación Ecommerce de productos de Tecnología',
+//             description:'Proyecto final Curso Backend Coderhouse'
+//         }
+//     },
+//     apis: [`${__mainDirname}/docs/**/*.yaml`]
+// }
+// console.log(__mainDirname)
 
-const specs = swaggerJsdoc(swaggerOptions);
-app.use('/api/docs', swaggerUiExpress.serve, swaggerUiExpress.setup(specs));
+
+// const specs = swaggerJsdoc(swaggerOptions);
+// app.use('/api/docs', swaggerUiExpress.serve, swaggerUiExpress.setup(specs));
+app.use('/api/docs', swaggerUiExpress.serve, swaggerUiExpress.setup(swaggerFile));
+
 app.use(cookieParser());
 
 //Settings de Handlebars
@@ -77,7 +82,7 @@ app.use(session({
 initializePassport();
 app.use(passport.initialize());
 app.use(passport.session());
-
+app.use(authMiddleware)
 app.use(addLogger);
 
 //rutas OK
@@ -90,6 +95,7 @@ app.use('/api/carts', cartsRouter);
 app.use('/products', viewsRouter);
 app.use('/productdetail', viewsRouter);
 app.use('/forgot', viewsRouter);
+app.use('/api/users', usersRouter)
 app.use('/api/sessions', sessionsRouter);
 app.use('/profile', viewsRouter);
 app.use('/loggerTest', viewsRouter);

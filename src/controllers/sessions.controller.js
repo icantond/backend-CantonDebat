@@ -39,14 +39,18 @@ async function registerUser(req, res) {
         });
         newUser.cart = newCart._id;
         await usersRepository.save(newUser);
-        console.log(`Se ha creado el usuario con el correo ${newUser.email}, con ID de carrito ${newCart}`);
+        req.logger.info(`Se ha creado el usuario con el correo ${newUser.email}, con ID de carrito ${newCart}`);
+        // console.log(`Se ha creado el usuario con el correo ${newUser.email}, con ID de carrito ${newCart}`);
         res.status(201).send({ status: 'success', message: 'User registered' });
     } catch (error) {
+        req.logger.error(`Error interno del servidor al registrar: ${error.message}`);
         res.status(500).send({ status: 'error', message: 'Internal server error' });
     }
 }
 
 async function loginUser(req, res) {
+    /* #swagger.tags = ['Sessions']
+        #swagger.description = 'Login endpoint*/
     req.logger.debug(`Attempting to login with email: ${req.body.email}`);
 
     try {
@@ -67,9 +71,13 @@ async function loginUser(req, res) {
             cart: user.cart._id,
             id: user._id
         }
-        const token = jwt.sign(req.session.user, configs.jwtKey, {expiresIn: '1h'});
-        res.cookie('userCookie', token, {maxAge: 3600000, httpOnly: true })
-        .send({ status: 'success', message: 'Login Successful', token });
+        const token = jwt.sign(req.session.user, configs.jwtKey, { expiresIn: '1h' });
+
+        /* #swagger.responses[200] = {
+            schema: {"$ref": "#/definitions/Login", description: "Login exitoso"}
+        }*/
+        res.cookie('userCookie', token, { maxAge: 3600000, httpOnly: true })
+            .send({ status: 'success', message: 'Login Successful', token });
 
         req.logger.info(`Login successful for email: ${email}`);
 
@@ -121,7 +129,7 @@ async function handleGithubCallback(req, res) {
                 last_name: '',
                 email,
                 age: 0,
-                password: '',  
+                password: '',
             });
 
             const newCart = await cartsRepository.createCart({
@@ -136,8 +144,8 @@ async function handleGithubCallback(req, res) {
             const newCart = await cartsRepository.createCart({
                 user: user._id,
                 products: []
-            }); 
-            
+            });
+
 
             user.cart = newCart._id;
             await usersRepository.save(user);
@@ -157,7 +165,7 @@ const sendPasswordResetLink = async (req, res) => {
     console.log('User: ', user, 'encontrado en BD')
     if (!user) {
         return res.status(400).json({ error: 'El correo proporcionado no está registrado.' });
-    }    
+    }
 
     const token = generateToken(user.email);
     console.log('Token: ', token)
@@ -169,7 +177,7 @@ const sendPasswordResetLink = async (req, res) => {
         html: `<p>Haz clic en el siguiente enlace para restablecer tu contraseña:</p>
             <a href="http://localhost:8080/reset-password/${token}">Restablecer Contraseña</a>`,
     };
-    
+
     try {
         transport.sendMail(mailOptions);
         res.status(200).json({ message: 'Se ha enviado un enlace de restablecimiento de contraseña al correo proporcionado.' });
@@ -204,29 +212,29 @@ const resetPassword = async (req, res) => {
     }
 };
 
-async function changeUserRole(req, res) {
-    const userId = req.params.uid;
-    const newRole = req.body.role;
+// async function changeUserRole(req, res) {
+//     const userId = req.params.uid;
+//     const newRole = req.body.role;
 
-    try {
-        // Verificar si el usuario tiene permisos para cambiar el rol
-        if (req.session.user.role !== 'admin' || !['user', 'premium'].includes(newRole)) {
-            return res.status(403).send({ message: 'No tienes permisos para cambiar el rol de un usuario o el rol es inválido' });
-        }
-        
-        // Cambiar el rol del usuario
-        const updatedUser = await usersRepository.changeUserRole(userId, newRole);
+//     try {
+//         // Verificar si el usuario tiene permisos para cambiar el rol
+//         if (req.session.user.role !== 'admin' || !['user', 'premium'].includes(newRole)) {
+//             return res.status(403).send({ message: 'No tienes permisos para cambiar el rol de un usuario o el rol es inválido' });
+//         }
 
-        if (!updatedUser) {
-            return res.status(404).send({ message: 'Usuario no encontrado' });
-        } else {
-            return res.status(200).json({ message: 'Rol de usuario actualizado con éxito', data: updatedUser });
-        }
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ status: 'error', message: 'Error al cambiar el rol de usuario' });
-    }
-}
+//         // Cambiar el rol del usuario
+//         const updatedUser = await usersRepository.changeUserRole(userId, newRole);
+
+//         if (!updatedUser) {
+//             return res.status(404).send({ message: 'Usuario no encontrado' });
+//         } else {
+//             return res.status(200).json({ message: 'Rol de usuario actualizado con éxito', data: updatedUser });
+//         }
+//     } catch (error) {
+//         console.error(error);
+//         res.status(500).json({ status: 'error', message: 'Error al cambiar el rol de usuario' });
+//     }
+// }
 
 export {
     registerUser,
@@ -234,8 +242,8 @@ export {
     logoutUser,
     handleGithubAuth,
     handleGithubCallback,
-    sendPasswordResetLink, 
+    sendPasswordResetLink,
     resetPassword,
-    changeUserRole, 
+    // changeUserRole,
     currentUser
 };

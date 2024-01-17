@@ -11,9 +11,36 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const __mainDirname = path.join(__dirname, '..');
 
+// const storage = multer.diskStorage({
+//     destination: function (req, file, cb) {
+//         cb(null, path.join(__dirname, '..', 'public', 'img'));
+//     },
+//     filename: function (req, file, cb) {
+//         const timestamp = Date.now();
+//         const uniqueFilename = `${timestamp}-${file.originalname}`;
+//         cb(null, uniqueFilename);
+//     },
+// });
+// const upload = multer({ storage });
+
+// const storage = (folder) => multer.diskStorage({
+//     destination: function (req, file, cb) {
+//         cb(null, path.join(__dirname, '..', 'public', 'img', folder));
+//     },
+//     filename: function (req, file, cb) {
+//         const timestamp = Date.now();
+//         const uniqueFilename = `${timestamp}-${file.originalname}`;
+//         cb(null, uniqueFilename);
+//     },
+// });
+
+// const uploadProfile = multer({ storage: storage('profiles') });
+// const uploadProduct = multer({ storage: storage('products') });
+// const uploadDocument = multer({ storage: storage('documents') });
+
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, path.join(__dirname, '..', 'public', 'img'));
+        cb(null, path.join(__dirname, '..', 'public', 'img', 'documents'));
     },
     filename: function (req, file, cb) {
         const timestamp = Date.now();
@@ -21,6 +48,7 @@ const storage = multer.diskStorage({
         cb(null, uniqueFilename);
     },
 });
+
 const upload = multer({ storage });
 
 const createHash = password =>
@@ -38,10 +66,11 @@ const generateToken = (email) => {
     return token;
     
 };
-const decodeJwtFromCookie = (userCookie) => {
+
+const decodeJwtFromCookie = (token) => {
     try {
-        console.log('decoding cookie: ', userCookie);
-        const token = userCookie.split('=')[1]; 
+        console.log('decoding cookie: ', token);
+            // const token = userCookie.split('= ')[1]; 
         const decodedToken = jwt.verify(token, configs.jwtKey);
         return decodedToken;
     } catch (error) {
@@ -67,6 +96,9 @@ const generateMockProduct = () => {
 export {
     __dirname,
     upload,
+    // uploadProfile,
+    // uploadDocument,
+    // uploadProduct,
     __mainDirname,
     createHash,
     isValidPassword, 

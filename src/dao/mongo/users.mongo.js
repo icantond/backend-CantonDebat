@@ -26,4 +26,12 @@ export default class Users {
     async changeUserRole(userId, newRole) {
         return await usersModel.findByIdAndUpdate(userId, { role: newRole }, { new: true });
     }
+
+    async uploadDocuments(userId, documents) {
+        return await usersModel.update(
+            { _id: userId },
+            { $push: { documents: { $each: documents } } },
+            { new: true }
+        );
+    }
 }   

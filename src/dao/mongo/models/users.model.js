@@ -10,17 +10,32 @@ const usersSchema = new mongoose.Schema({
     password: String,
     role: {
         type: String,
-        default: 'user', 
+        default: 'user',
         enum: ['user', 'admin', 'premium']
     },
     cart: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'carts',
-        default: null                                       
+        default: null
+    },
+    documents: [
+        {
+            name: String,
+            reference: String
+        }
+    ],
+    last_connection: {
+        type: Date,
+        default: new Date()
     }
 });
 
-usersSchema.pre('findOne', function(){
+// Middleware para actualizar last_connection antes de guardar
+usersSchema.pre('save', function (next) {
+    this.last_connection = new Date();
+    next();
+});
+usersSchema.pre('findOne', function () {
     this.populate('cart');
 });
 

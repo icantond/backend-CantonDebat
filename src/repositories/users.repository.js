@@ -1,6 +1,5 @@
 import Users from "../dao/mongo/users.mongo.js";
 
-// const dao = new Users();
 
 export default class UsersRepository {
     constructor(dao) {
@@ -25,5 +24,9 @@ export default class UsersRepository {
 
     async changeUserRole(userId, newRole) {
         return await this.dao.changeUserRole(userId, newRole);
+    }
+    
+    async uploadDocuments(userId, documents) {
+        return await this.dao.uploadDocuments(userId, documents);
     }
 };
