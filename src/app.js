@@ -22,7 +22,7 @@ import { addLogger } from './utils/logger.js';
 // import swaggerJsdoc from 'swagger-jsdoc';
 import swaggerUiExpress from 'swagger-ui-express';
 import swaggerFile from '../docs/swagger-output.json' assert { type: 'json' }
-import { authMiddleware } from './middlewares/auth/auth.middlewares.js';
+// import { authMiddleware } from './middlewares/auth/auth.middlewares.js';
 
 const app = express();
 try {
@@ -82,7 +82,7 @@ app.use(session({
 initializePassport();
 app.use(passport.initialize());
 app.use(passport.session());
-app.use(authMiddleware)
+// app.use(authMiddleware)
 app.use(addLogger);
 
 //rutas OK

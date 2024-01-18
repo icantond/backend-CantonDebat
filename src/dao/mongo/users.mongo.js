@@ -28,7 +28,7 @@ export default class Users {
     }
 
     async uploadDocuments(userId, documents) {
-        return await usersModel.update(
+        return await usersModel.findByIdAndUpdate(
             { _id: userId },
             { $push: { documents: { $each: documents } } },
             { new: true }

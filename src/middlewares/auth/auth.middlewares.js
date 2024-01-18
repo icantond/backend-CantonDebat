@@ -27,25 +27,19 @@ const adminAccess = (req, res, next) => {
 
 
 const authMiddleware = (req, res, next) => {
-    console.log(`req.session.user: ${req.session.user.email}`)
     const token = req.cookies.userCookie;
     console.log(`token: ${token}`)
 
-
-    // Verificar si el token está presente
     if (!token) {
         return res.status(401).json({ message: 'No estás autenticado' });
     }
 
-    // Decodificar el token
     const decodedToken = decodeJwtFromCookie(token);
 
-    // Verificar si el token es válido
     if (!decodedToken) {
         return res.status(401).json({ message: 'Token inválido' });
     }
 
-    // Almacenar los datos del usuario en el objeto de solicitud
     req.user = decodedToken;
     next();
 };
