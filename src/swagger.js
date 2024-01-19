@@ -1,4 +1,5 @@
 import swaggerAutogen from "swagger-autogen";
+import configs from "./config/config.js";
 
 const doc = {
     info: {
@@ -6,7 +7,7 @@ const doc = {
         title: 'Documentación generada con AutoGen',
         description: 'Documentación de Ecommerce proyecto Backend'
     },
-    host: 'localhost:8080',
+    host: configs.devHost,
     basePath: '/',
     schemes: ['http'],
     tags: [

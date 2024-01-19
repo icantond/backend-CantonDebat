@@ -1,5 +1,5 @@
 import { productsRepository } from '../repositories/index.js';
-import { decodeJwtFromCookie, generateMockProduct } from '../utils.js';
+import { generateMockProduct } from '../utils.js';
 import { generateProductErrorInfo } from '../middlewares/errors/info.js';
 import CustomError from '../middlewares/errors/CustomError.js';
 import EErrors from '../middlewares/errors/enums.js';

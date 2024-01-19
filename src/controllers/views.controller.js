@@ -57,7 +57,7 @@ async function getProductsQueries(req, res) {
         const pageNumbers = [];
         for (let i = 1; i <= totalPages; i++) {
             const isCurrentPage = i === currentPage;
-            const link = isCurrentPage ? null : `http://localhost:8080/?page=${i}&limit=${limit}&sort=${sort}&query=${query}&category=${category}&available=${available}`; // Reemplaza con tu ruta adecuada
+            const link = isCurrentPage ? null : `${configs.devHost}/?page=${i}&limit=${limit}&sort=${sort}&query=${query}&category=${category}&available=${available}`; // Reemplaza con tu ruta adecuada
             pageNumbers.push({ page: i, link, isCurrentPage });
         }
 
@@ -71,8 +71,8 @@ async function getProductsQueries(req, res) {
             hasNextPage,
             pageNumbers,
             categories,
-            prevLink: hasPrevPage ? `http://localhost:8080/?page=${prevPage}&limit=${limit}&sort=${sort}&query=${query}&category=${category}&available=${available}` : null,
-            nextLink: hasNextPage ? `http://localhost:8080/?page=${nextPage}&limit=${limit}&sort=${sort}&query=${query}&category=${category}&available=${available}` : null,
+            prevLink: hasPrevPage ? `${configs.devHost}/?page=${prevPage}&limit=${limit}&sort=${sort}&query=${query}&category=${category}&available=${available}` : null,
+            nextLink: hasNextPage ? `${configs.devHost}/?page=${nextPage}&limit=${limit}&sort=${sort}&query=${query}&category=${category}&available=${available}` : null,
         });
     } catch (error) {
         console.error(error);
