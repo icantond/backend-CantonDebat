@@ -13,10 +13,10 @@ socket.on('updateProducts', (updatedProducts) => {
             <ul id="product-list">
                 ${updatedProducts.map((product) => `
                     <li class="product-list-item">
-                <h3 class="product-list-item-title">Producto: ${this.title}}</h3>
-                <p class="product-list-item-code" id="productId" >${this._id}}</p>
-                <img src="static/img/{{this.thumbnail}}" width="50px">
-                <input type="hidden" id="product-owner" value="${this.owner}}">
+                <h3 class="product-list-item-title">Producto: ${product.title}</h3>
+                <p class="product-list-item-code" id="productId" >${product._id}}</p>
+                <img src="static/img/${product.thumbnail}" width="50px">
+                <input type="hidden" id="product-owner" value="${product.owner}">
                 <button type="submit" class="delete-button">Eliminar Producto</button>
             </li>
                 `).join('')}
@@ -44,7 +44,7 @@ addProductForm.addEventListener('submit', (e) => {
                 stock: document.getElementById('stock').value,
                 code: document.getElementById('code').value,
                 category: document.getElementById('category').value,
-                thumbnail: thumbnail,
+                thumbnail: data.thumbnail,
                 owner: document.getElementById('owner').value
             };
             socket.emit('addProduct', productData);

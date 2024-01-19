@@ -12,17 +12,18 @@ import cartsRouter from './routes/carts.router.js';
 import viewsRouter from './routes/views.router.js';
 import sessionsRouter from './routes/sessions.router.js';
 import usersRouter from './routes/users.router.js';
-import messagesModel from './dao/mongo/models/messages.model.js';
+// import messagesModel from './dao/mongo/models/messages.model.js';
 import initializePassport from './config/passport.config.js';
 import passport from 'passport';
 import configs from './config/config.js';
-import { productsRepository } from './repositories/index.js';
+// import { productsRepository } from './repositories/index.js';
 import errorHandler from './middlewares/errors/index.js'
 import { addLogger } from './utils/logger.js';
 // import swaggerJsdoc from 'swagger-jsdoc';
 import swaggerUiExpress from 'swagger-ui-express';
 import swaggerFile from '../docs/swagger-output.json' assert { type: 'json' }
 // import { authMiddleware } from './middlewares/auth/auth.middlewares.js';
+import socketsConfig from './utils/sockets.js';
 
 const app = express();
 try {
@@ -36,21 +37,7 @@ const PORT = configs.port;
 const httpServer = app.listen(PORT, () => console.log(`Server successfuly running on PORT ${PORT}`));
 const socketServer = new Server(httpServer);
 
-// const swaggerOptions = {
-//     definition:{
-//         openapi:'3.0.1',
-//         info:{
-//             title:'Documentación Ecommerce de productos de Tecnología',
-//             description:'Proyecto final Curso Backend Coderhouse'
-//         }
-//     },
-//     apis: [`${__mainDirname}/docs/**/*.yaml`]
-// }
-// console.log(__mainDirname)
 
-
-// const specs = swaggerJsdoc(swaggerOptions);
-// app.use('/api/docs', swaggerUiExpress.serve, swaggerUiExpress.setup(specs));
 app.use('/api/docs', swaggerUiExpress.serve, swaggerUiExpress.setup(swaggerFile));
 
 app.use(cookieParser());
@@ -85,20 +72,24 @@ app.use(passport.session());
 // app.use(authMiddleware)
 app.use(addLogger);
 
-//rutas OK
+//RUTAS VISTAS
 app.use('/', viewsRouter);
 app.use('/realtimeproducts', viewsRouter);
-app.use('/carts', cartsRouter); 
 app.use('/chat', viewsRouter);
-app.use('/api/products', productsRouter);
-app.use('/api/carts', cartsRouter);
 app.use('/products', viewsRouter);
 app.use('/productdetail', viewsRouter);
 app.use('/forgot', viewsRouter);
-app.use('/api/users', usersRouter)
-app.use('/api/sessions', sessionsRouter);
 app.use('/profile', viewsRouter);
 app.use('/loggerTest', viewsRouter);
+//RUTAS PRODUCTS
+app.use('/api/products', productsRouter);
+//RUTAS CARTS
+app.use('/carts', cartsRouter); 
+app.use('/api/carts', cartsRouter);
+//RUTAS USERS
+app.use('/api/users', usersRouter)
+//RUTAS SESSIONS
+app.use('/api/sessions', sessionsRouter);
 app.use('/reset-password', sessionsRouter);
 app.use('/forgot-password', sessionsRouter);
     
@@ -124,56 +115,57 @@ app.use((req, res, next) => {
 
 
 //CONFIGURACION DE SOCKETS
-const io = socketServer;
+const io = new Server(httpServer);
+socketsConfig(io);
 
-socketServer.on('connection', socket => {
-    console.log("Nuevo cliente conectado");
+// socketServer.on('connection', socket => {
+//     console.log("Nuevo cliente conectado");
 
-    //Socket para agregar productos
-    socket.on('addProduct', async (newProduct) => {
-        try {
-            const updatedProducts = await productsRepository.getAll();
+//     //Socket para agregar productos
+//     socket.on('addProduct', async (newProduct) => {
+//         try {
+//             const updatedProducts = await productsRepository.getAll();
     
-            socket.emit('updateProducts', updatedProducts);
-            console.log('Producto agregado:', newProduct);
-        } catch (error) {
-            console.error('Error al agregar el producto:', error);
-        }
-    });
+//             socket.emit('updateProducts', updatedProducts);
+//             console.log('Producto agregado:', newProduct);
+//         } catch (error) {
+//             console.error('Error al agregar el producto:', error);
+//         }
+//     });
     
-    //Socket para eliminar productos
-    socket.on('eliminar_producto', async (data) => {
-        const productId = data.productId;
-        const userId = data.userId;
-        const userRole = data.userRole;
-        const productOwner = data.productOwner;
+//     //Socket para eliminar productos
+//     socket.on('eliminar_producto', async (data) => {
+//         const productId = data.productId;
+//         const userId = data.userId;
+//         const userRole = data.userRole;
+//         const productOwner = data.productOwner;
     
-        try {
-            if (!userId || !userRole || !productOwner) {
-                console.error('Datos incompletos recibidos para eliminar el producto');
-                return;
-            }
+//         try {
+//             if (!userId || !userRole || !productOwner) {
+//                 console.error('Datos incompletos recibidos para eliminar el producto');
+//                 return;
+//             }
     
-            if (userRole === 'premium' && productOwner !== userId) {
-                console.error('Usuarios premium solo pueden eliminar sus propios productos');
-                return;
-            }
+//             if (userRole === 'premium' && productOwner !== userId) {
+//                 console.error('Usuarios premium solo pueden eliminar sus propios productos');
+//                 return;
+//             }
     
-            await productsRepository.delete(productId);
-            io.emit('producto_eliminado', { productId });
+//             await productsRepository.delete(productId);
+//             io.emit('producto_eliminado', { productId });
     
-            const updatedProducts = await productsRepository.getAll();
-            io.emit('updateProducts', updatedProducts);
-        } catch (error) {
-            console.error('Error al eliminar el producto:', error);
-        }
-    });
-    //Socket para chat:
-    socket.on('chatMessage', (data) => {
-        const { user, message } = data;
-        const newMessage = new messagesModel({ user, message });
-        newMessage.save();
+//             const updatedProducts = await productsRepository.getAll();
+//             io.emit('updateProducts', updatedProducts);
+//         } catch (error) {
+//             console.error('Error al eliminar el producto:', error);
+//         }
+//     });
+//     //Socket para chat:
+//     socket.on('chatMessage', (data) => {
+//         const { user, message } = data;
+//         const newMessage = new messagesModel({ user, message });
+//         newMessage.save();
 
-        io.emit('message', data);
-    });
-});
+//         io.emit('message', data);
+//     });
+// });
