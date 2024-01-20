@@ -29,8 +29,8 @@ export default class Products {
         return await productsModel.findByIdAndUpdate(productId, { stock: newStock }, { new: true });
     };
 
-    async updateProduct(productId) {
-        return await productsModel.findByIdAndUpdate(productId, req.body, { new: true });
+    async updateProduct(productId, updatedFields) {
+        return await productsModel.findByIdAndUpdate(productId,updatedFields, { new: true });
     };
 
     async delete (id, product) {

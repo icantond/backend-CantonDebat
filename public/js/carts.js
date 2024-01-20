@@ -14,7 +14,7 @@ addToCartButtons.forEach((button) => {
         try {
 
             // const response = await fetch(`api/carts/6518b3030b4bb755731f2cd0/products/${pid}`, {
-                const response = await fetch(`api/carts/${cid}/products/${pid}`, {
+            const response = await fetch(`api/carts/${cid}/products/${pid}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -24,14 +24,14 @@ addToCartButtons.forEach((button) => {
 
             if (response.ok) {
                 const updatedCart = await response.json();
-                
+
                 Swal.fire({
                     title: 'Producto agregado al carrito',
                     icon: 'success',
                     toast: 'true',
                     position: 'top-end',
                     showConfirmButton: false,
-                    timer: 3500 
+                    timer: 3500
                 });
                 location.reload();
                 console.log('Producto agregado al carrito:', updatedCart);
@@ -114,16 +114,18 @@ if (purchaseCartButton) {
             if (response.ok) {
                 const result = await response.json();
 
-                if (result.success) {
+                if (result.status === "success") {
                     Swal.fire({
                         title: 'Compra completada',
+                        text: 'Recibiras el detalle por email y SMS',
                         icon: 'success',
                         toast: 'true',
                         position: 'top-end',
                         showConfirmButton: false,
                         timer: 3500
+                    }).then(() => {
+                        location.reload();
                     });
-                    location.reload();
                 } else {
                     Swal.fire({
                         title: 'Error en la compra',

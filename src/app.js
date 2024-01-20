@@ -12,17 +12,13 @@ import cartsRouter from './routes/carts.router.js';
 import viewsRouter from './routes/views.router.js';
 import sessionsRouter from './routes/sessions.router.js';
 import usersRouter from './routes/users.router.js';
-// import messagesModel from './dao/mongo/models/messages.model.js';
 import initializePassport from './config/passport.config.js';
 import passport from 'passport';
 import configs from './config/config.js';
-// import { productsRepository } from './repositories/index.js';
 import errorHandler from './middlewares/errors/index.js'
 import { addLogger } from './utils/logger.js';
-// import swaggerJsdoc from 'swagger-jsdoc';
 import swaggerUiExpress from 'swagger-ui-express';
 import swaggerFile from '../docs/swagger-output.json' assert { type: 'json' }
-// import { authMiddleware } from './middlewares/auth/auth.middlewares.js';
 import socketsConfig from './utils/sockets.js';
 
 const app = express();
@@ -93,7 +89,7 @@ app.use('/api/sessions', sessionsRouter);
 app.use('/reset-password', sessionsRouter);
 app.use('/forgot-password', sessionsRouter);
     
-// app.use('/api/mockingproducts', productsRouter)
+app.use('/api/mockingproducts', productsRouter)
 
 
 app.use((req, res, next) => {

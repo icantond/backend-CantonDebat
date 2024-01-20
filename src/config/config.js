@@ -15,7 +15,8 @@ const configs = {
     twilioSmsNumber: process.env.TWILIO_SMS_NUMBER,
     jwtKey: process.env.JWT_KEY,
     port: process.env.PORT,
-    devHost: process.env.DEV_HOST
+    devHost: process.env.DEV_HOST,
+    phoneNumber: process.env.PHONE_NUMBER
 };
 
 export default configs;

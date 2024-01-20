@@ -7,10 +7,10 @@ const router = express.Router();
 
 
 router.get('/', ProductsController.getAll);
-router.get('/:pid', ProductsController.getProductById);
+router.get('/:pid',  ProductsController.getProductById);
 router.post('/', upload.single('thumbnail'), ProductsController.addProduct);
 router.delete('/:pid', ProductsController.deleteProduct);
 router.put('/:pid', upload.array('thumbnail'), ProductsController.updateProduct);
-router.post('/mockingproducts', publicAccess, ProductsController.getMockProducts);
+router.post('/mockingproducts', publicAccess, ProductsController.getMockProducts);//Desde el frontend en la ruta /api/mockingproducts
 
 export default router;

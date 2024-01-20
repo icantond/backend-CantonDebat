@@ -28,8 +28,8 @@ export default class ProductsRepository {
         return await this.dao.count();
     };
 
-    async updateProduct(productId) {
-        return await this.dao.updateProduct(productId);
+    async updateProduct(productId, updatedFields) {
+        return await this.dao.updateProduct(productId, updatedFields);
     };
 
     async updateProductStock(productId, newStock) {
