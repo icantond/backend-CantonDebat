@@ -6,12 +6,16 @@ const publicAccess = (req, res, next) => {
 }
 
 const privateAccess = (req, res, next) => {
-    if (!req.session.user) return res.redirect('/login');
+    if (!req.session.user)  {
+        console.log('Login needed to access this view')
+        return res.redirect('/login');
+    } 
     next();
 }
 
 const adminAccess = (req, res, next) => {
     if (!req.session.user || (req.session.user.role !== 'admin' && req.session.user.role !== 'premium')) {
+        console.log('User role not authorized for this view')
         return res.redirect('/');
     }
     next();

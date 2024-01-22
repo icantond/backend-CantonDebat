@@ -1,11 +1,9 @@
-import productsModel from '../dao/mongo/models/products.model.js';
 import EErrors from '../middlewares/errors/enums.js';
-import { cartsRepository, productsRepository } from '../repositories/index.js';
+import * as viewsService from '../services/views.service.js';
+import * as productsService from '../services/products.service.js';
 import jwt from 'jsonwebtoken';
 import configs from '../config/config.js';
 import moment from 'moment';
-// import router from '../routes/views.router.js';
-
 
 async function getProductsQueries(req, res) {
     let page = parseInt(req.query.page) || 1;
@@ -15,14 +13,13 @@ async function getProductsQueries(req, res) {
     let category = req.query.category || '';
     let available = req.query.available || '';
 
-    const categories = await productsRepository.getCategories();
-
+    const categories = await productsService.getCategories();
     const skip = (page - 1) * limit;
 
     try {
         const sortOptions = {};
         if (sort === 'asc' || sort === 'desc') {
-            sortOptions.price = sort; // Ordenar por precio ascendente o descendente
+            sortOptions.price = sort; 
         }
 
         const queryObj = {};
@@ -36,14 +33,8 @@ async function getProductsQueries(req, res) {
             queryObj.available = available; ad
         }
 
-        const products = await productsModel
-            .find(queryObj)
-            .sort(sortOptions)
-            .skip(skip)
-            .limit(limit)
-            .lean();
-
-        const totalItems = await productsModel.countDocuments(queryObj);
+        const products = await productsService.getProductsByQuery(queryObj, sortOptions, skip, limit);
+        const totalItems = await productsService.countProducts(queryObj);
 
         const totalPages = Math.ceil(totalItems / limit);
 
@@ -80,60 +71,45 @@ async function getProductsQueries(req, res) {
     }
 };
 
-async function getAll(req, res) {
-    const owner = req.session.user.id;
+async function getAllCarts(req, res) {
+    const ownerId = req.session.user.id;
     const userRole = req.session.user.role;
-    console.log(owner)
+
     try {
-        const products = await productsRepository.getAll();
-        const productOwner = products.owner;
-        res.render('realTimeProducts', { products, owner, productOwner, userRole});
+        const data = await viewsService.getAllCarts(ownerId, userRole);
+        res.render('realTimeProducts', data);
     } catch (error) {
-        res.status(500).json({ error: 'Error al obtener productos en tiempo real' });
+        res.status(500).json({ error: error.message || 'Error al obtener productos en tiempo real' });
     }
 };
 
-async function getRealTimeProducts (req, res) {
-    const owner = req.session.user.id;
+async function getRealTimeProducts(req, res) {
+    const ownerId = req.session.user.id;
     const userRole = req.session.user.role;
-    console.log(owner)
+
     try {
-    
-        const products = await productsRepository.getAll();
-        res.render('realTimeProducts', { products, owner, userRole });
+        const data = await viewsService.getRealTimeProducts(ownerId, userRole);
+        res.render('realTimeProducts', data);
     } catch (error) {
-        res.status(500).json({ error: 'Error al obtener productos en tiempo real' });
+        res.status(500).json({ error: error.message || 'Error al obtener productos en tiempo real' });
     }
+};
 
-}
-
-async function postRealTimeProducts (req, res) {
+async function postRealTimeProducts(req, res) {
     const productData = req.body;
     const thumbnailFile = req.file;
 
     try {
-        if (thumbnailFile) {
-            productData.thumbnail = thumbnailFile.filename;
-        } else {
-
-            productData.thumbnail = '';
-        }
-
-        const newProduct = await productsRepository.addProduct(productData);
-
-        socket.emit('updateProducts', await productsRepository.getAll());
+        const newProduct = await viewsService.postRealTimeProducts(productData, thumbnailFile);
 
         res.status(201).send(newProduct);
     } catch (error) {
-        res.status(500).send({ error: 'Error al agregar el producto en tiempo real' });
+        res.status(500).send({ error: error.message || 'Error al agregar el producto en tiempo real' });
     }
 };
 
-async function deleteRealTimeProducts (req, res) {
+async function deleteRealTimeProducts(req, res) {
     const deleteProductId = parseInt(req.body.deleteProductId);
-    console.log('Producto a eliminar (ID) recibido en el servidor:', deleteProductId);
-    console.log(`ID is NaN: ${isNan(deleteProductId)}`)
-
 
     if (!deleteProductId || isNaN(deleteProductId)) {
         res.status(400).json({ error: 'ID de producto a eliminar inválido' });
@@ -141,72 +117,43 @@ async function deleteRealTimeProducts (req, res) {
     }
 
     try {
-        await productsRepository.delete(deleteProductId);
+        const result = await viewsService.deleteRealTimeProducts(deleteProductId);
 
-        io.emit('updateProducts', await productsRepository.getAll());
-
-        res.status(200).json({ message: 'Producto eliminado con éxito' });
-        console.log('Producto eliminado con éxito');
+        res.status(200).json(result);
     } catch (error) {
-        res.status(500).json({ error: 'Error al eliminar el producto' });
-        console.error('Error al eliminar el producto:', error);
-
+        res.status(500).json({ error: error.message || 'Error al eliminar el producto' });
     }
 };
 
-async function getAllProducts (req, res) {
+async function getAllProducts(req, res) {
     try {
-        const products = await productsRepository.getAll();
-        const user = req.session.user || {};
-        const userCartId = user.cart;
-        console.log('usuario: ', user, 'cartId:', userCartId)
-
-        res.render('products', { products, userCartId, user });
+        const user = req.session.user;
+        const data = await viewsService.getAllProducts(user);
+        res.render('products', data);
     } catch (error) {
         console.error(error);
-        res.status(500).json({ status: 'error', message: 'Error al obtener la lista de productos' });
+        res.status(500).json({ status: 'error', message: error.message || 'Error al obtener la lista de productos' });
     }
 };
 
-async function getProductById (req, res) {
+async function getProductById(req, res) {
+    const productId = req.params.pid;
+
     try {
-        const pid = await productsRepository.getProductById(req.params.pid);
-        const productData = {
-            title: pid.title,
-            category: pid.category,
-            price: pid.price,
-            _id: pid._id,
-            thumbnail: pid.thumbnail,
-        };
-        console.log('renderizando vista product id: ', productData);
-        res.render('productdetail', { productData });
+        const data = await viewsService.getProductById(productId);
+        res.render('productdetail', data);
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ status: 'error', message: 'Error al obtener el producto' });
+        res.status(500).json({ status: 'error', message: error.message || 'Error al obtener el producto' });
     }
 };
 
-async function getCartDetails (req, res) {
+async function getCartDetails(req, res) {
+    const cartId = req.session.user.cart;
     try {
-        const user = req.session.user || {};
-        const userCartId = user.cart;
-        console.log('usuario: ', user, 'cartId:', userCartId)
-        
-        const cartItems = await cartsRepository.getCartDetails(userCartId);
-        console.log(`trabajando con usuario ${user.email},  id ${user.id} en carrito ID ${userCartId}`);
-        
-
-        cartItems.products.forEach((item) => {
-            item.totalPrice = item.quantity * item.product.price;
-        });
-
-        cartItems.cartTotal = cartItems.products.reduce((total, item) => {
-            return total + item.totalPrice;
-        }, 0);
-
-        res.render('carts', { cartItems, userCartId });
+        const cart = await viewsService.getCartDetails(cartId);
+        res.render('carts', cart);
     } catch (error) {
-
+        res.status(500).json({ status: 'error', message: error.message || 'Error al obtener el carrito' });
     }
 };
 
@@ -277,7 +224,7 @@ const showResetPassword = async (req, res) => {
 };
 export {
     getProductsQueries,
-    getAll,
+    getAllCarts,
     getRealTimeProducts,
     postRealTimeProducts,
     deleteRealTimeProducts,

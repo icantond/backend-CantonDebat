@@ -89,6 +89,14 @@ async function getCategories() {
     return await productsRepository.getCategories();
 };
 
+async function getProductsByQuery(queryObj, sortOptions, skip, limit) {
+    return await productsRepository.getProductsByQuery(queryObj, sortOptions, skip, limit);
+};
+
+async function countProducts(queryObj) {
+    return await productsRepository.countProducts(queryObj);
+};
+
 export {
     getAllProducts,
     getProductById,
@@ -96,5 +104,7 @@ export {
     deleteProduct,
     updateProduct,
     generateMockProducts,
-    getCategories
+    getCategories, 
+    getProductsByQuery, 
+    countProducts
 };

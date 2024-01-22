@@ -7,7 +7,7 @@ import * as ViewsController from '../controllers/views.controller.js';
 const router = express.Router();
 
 router.get('/', privateAccess, ViewsController.getProductsQueries);
-router.get('/carts/:cid', adminAccess, ViewsController.getAll);
+// router.get('/carts/:cid', adminAccess, ViewsController.getAllCarts);
 router.get('/realtimeproducts', adminAccess, ViewsController.getRealTimeProducts);
 router.post('/realtimeproducts', upload.single('thumbnail'), ViewsController.postRealTimeProducts);
 router.delete('/realtimeproducts/:pid', ViewsController.deleteRealTimeProducts);

@@ -43,4 +43,12 @@ export default class ProductsRepository {
     async getCategories () {
         return await this.dao.getCategories();    
     };
+
+    async getProductsByQuery (queryObj, sortOptions, skip, limit) {
+        return await this.dao.getProductsByQuery(queryObj, sortOptions, skip, limit);
+    };
+
+    async countProducts(queryObj) {
+        return await this.dao.countProducts(queryObj);    
+    }
 }

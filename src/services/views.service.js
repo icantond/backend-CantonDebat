@@ -112,10 +112,9 @@ async function deleteRealTimeProducts(deleteProductId) {
     }
 }
 
-async function getAllProducts() {
+async function getAllProducts(user) {
     try {
         const products = await productsRepository.getAll();
-        const user = req.session.user || {};
         const userCartId = user.cart;
 
         return { products, userCartId, user };
@@ -140,11 +139,10 @@ async function getProductById(productId) {
     }
 }
 
-async function getCartDetails(userId) {
+async function getCartDetails(cartId) {
     try {
-        const userCartId = (await cartsRepository.getUserCart(userId))._id;
-
-        const cartItems = await cartsRepository.getCartDetails(userCartId);
+        // const userCartId = (await cartsRepository.getUserCart(userId))._id;
+        const cartItems = await cartsRepository.getCartDetails(cartId);
 
         cartItems.products.forEach((item) => {
             item.totalPrice = item.quantity * item.product.price;
@@ -154,7 +152,7 @@ async function getCartDetails(userId) {
             return total + item.totalPrice;
         }, 0);
 
-        return { cartItems, userCartId };
+        return { cartItems, cartId };
     } catch (error) {
         throw new Error('Error al obtener detalles del carrito');
     }
