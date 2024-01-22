@@ -28,8 +28,19 @@ async function uploadProfile(userId, documents) {
     }
 }
 
+async function getAllUsers() {
+        const users = await usersRepository.getAllUsers();
+        return users;
+};
+
+async function deleteInactiveUsers(inactiveUsers) {
+    await usersRepository.deleteInactiveUsers(inactiveUsers);
+};
+
 export {
     changeUserRole,
     uploadDocuments,
-    uploadProfile
+    uploadProfile, 
+    getAllUsers,
+    deleteInactiveUsers
 };

@@ -13,9 +13,6 @@ router.get('/github', passport.authenticate('github', { scope: ['user:email'] })
 router.get('/github-callback', passport.authenticate('github', { failureRedirect: '/login' }), SessionsController.handleGithubCallback);
 router.post('/forgot-password', addLogger, SessionsController.sendPasswordResetLink);
 router.post('/api/sessions/reset-password/:token', SessionsController.resetPassword);
-// router.get('/mostrar-cookie', (req, res) => {
-//     const valorCookie = req.cookies.userCookie;
-//     res.send(`El valor de la cookie es: ${valorCookie}`);
-// });
+
 
 export default router;

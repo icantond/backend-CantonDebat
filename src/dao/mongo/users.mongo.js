@@ -34,4 +34,24 @@ export default class Users {
             { new: true }
         );
     }
+
+    async getAllUsers() {
+        return await usersModel.find().lean();
+    };
+
+    async deleteInactiveUsers(inactiveUsers) {
+        await usersModel.deleteMany({ 
+            _id: {
+                $in: inactiveUsers.map(user => user._id) 
+            }
+        });
+    }
+
+    async updateLastConnection (userId) {
+        return await usersModel.findByIdAndUpdate(
+            userId,
+            { last_connection: new Date() },
+            { new: true }
+            );
+    }
 }   

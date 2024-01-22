@@ -44,7 +44,7 @@ async function loginUser(email, password) {
     if (!user || !isValidPassword(password, user.password)) {
         throw new Error('Nombre de usuario o contraseña incorrectos');
     }
-
+    const updatedUser = await usersRepository.updateLastConnection(user._id);
     return {
         user: {
             name: `${user.first_name} ${user.last_name}`,
@@ -52,7 +52,8 @@ async function loginUser(email, password) {
             age: user.age,
             role: user.role,
             cart: user.cart._id,
-            id: user._id
+            id: user._id, 
+            last_connection: updatedUser.last_connection
         },
         token: jwt.sign({
             name: `${user.first_name} ${user.last_name}`,
@@ -142,10 +143,16 @@ async function resetPassword(token, newPassword) {
     return user.email;
 };
 
+async function updateLastConnection(userId) {
+        const updatedUser = await usersRepository.updateLastConnection(userId);
+        return updatedUser;
+}
+
 export {
     registerUser,
     loginUser,
     handleGithubCallback,
     sendPasswordResetLink,
-    resetPassword
+    resetPassword,
+    updateLastConnection
 };

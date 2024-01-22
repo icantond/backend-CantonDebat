@@ -21,15 +21,6 @@ const adminAccess = (req, res, next) => {
     next();
 }
 
-// const authMiddleware = (req, res, next) => {
-//     console.log('req.session.user: ', req.session.user); // Agrega esta línea para imprimir el usuario en la consola
-//     if (req.isAuthenticated()) {
-//         return next();
-//     }
-//     return res.redirect('/login');
-// };
-
-
 const authMiddleware = (req, res, next) => {
     const token = req.cookies.userCookie;
     console.log(`token: ${token}`)

@@ -17,7 +17,7 @@ export default class UsersRepository {
     async getUserByEmail(email) {
         return await this.dao.getUserByEmail(email);
     }
-
+    
     async save (user) {
         return await this.dao.save(user);
     }
@@ -28,5 +28,18 @@ export default class UsersRepository {
     
     async uploadDocuments(userId, documents) {
         return await this.dao.uploadDocuments(userId, documents);
+    }
+
+    async getAllUsers() {
+        return await this.dao.getAllUsers();
+    }
+
+    async deleteInactiveUsers(inactiveUsers) {
+        return await this.dao.deleteInactiveUsers(inactiveUsers);
+    }
+
+    async updateLastConnection(userId){
+        const updatedUser = await this.dao.updateLastConnection(userId);
+        return updatedUser;
     }
 };
