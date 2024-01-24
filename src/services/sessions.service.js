@@ -148,11 +148,17 @@ async function updateLastConnection(userId) {
         return updatedUser;
 }
 
+async function getUserById(userId) {
+    const user = await usersRepository.getUserById(userId);
+    return user;
+}
+
 export {
     registerUser,
     loginUser,
     handleGithubCallback,
     sendPasswordResetLink,
     resetPassword,
-    updateLastConnection
+    updateLastConnection,
+    getUserById
 };

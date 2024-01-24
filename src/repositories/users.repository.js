@@ -9,7 +9,10 @@ export default class UsersRepository {
     async registerUser(user) {
         return await this.dao.registerUser(user);
     }
-
+    async getUserById(userId) {
+        return await this.dao.getUserById(userId);
+    }
+    
     async loginUser(email, password) {
         return await this.dao.loginUser(email, password);
     }

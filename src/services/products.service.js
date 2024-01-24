@@ -1,11 +1,13 @@
 
-import { productsRepository } from '../repositories/index.js';
+import { productsRepository, usersRepository } from '../repositories/index.js';
 import { generateMockProduct } from '../utils.js';
 import { generateProductErrorInfo } from '../middlewares/errors/info.js';
 import CustomError from '../middlewares/errors/CustomError.js';
 import EErrors from '../middlewares/errors/enums.js';
 import jwt from 'jsonwebtoken';
 import configs from '../config/config.js';
+import transport from '../config/nodemailer.config.js';
+
 
 async function getAllProducts(limit) {
     return await productsRepository.getAll(limit);
@@ -46,18 +48,50 @@ async function addProduct(productData, thumbnailFile, userCookie) {
     return await productsRepository.addProduct(productData);
 }
 
-async function deleteProduct(productId, userId, userRole) {
+async function deleteProduct(productId, userId, userRole, ownerRole, ownerId) {
     const product = await productsRepository.getProductById(productId);
 
     if (!product) {
-        return null;
+        return { error: 'Producto no encontrado' };
     }
 
     if (userRole === 'premium' && product.owner !== userId) {
-        return null;
+        return { error: 'No tienes permisos para eliminar este producto' };
     }
 
-    return await productsRepository.delete(productId);
+    const deletedProduct = await productsRepository.delete(productId); 
+    
+    if (ownerRole === 'premium') {
+        console.log('Sending product deletion email...');
+
+        await sendProductDeletionEmail(ownerId, product.title);
+    }
+
+    return deletedProduct;
+}
+
+async function sendProductDeletionEmail(ownerId, productName) {
+    console.log(`attempting to send deletion email to userID: ${ownerId}`)
+    const owner = await usersRepository.getUserById(ownerId);
+
+    if (!owner || owner.role !== 'premium') {
+        console.log('User not found or not premium. Skipping email.');
+        return; // Solo envía el correo si el owner es premium
+    }
+
+    const mailOptions = {
+        from: configs.nodemailerUser,
+        to: owner.email,
+        subject: 'Producto Eliminado',
+        text: `El producto "${productName}" ha sido eliminado de tu cuenta premium.`,
+    };
+
+    try {
+        await transport.sendMail(mailOptions);  
+        console.log(`Correo enviado a ${owner.email} sobre la eliminación del producto`);
+    } catch (error) {
+        console.error('Error al enviar el correo:', error);
+    }
 }
 
 async function updateProduct(productId, updatedFields, files) {
@@ -104,7 +138,7 @@ export {
     deleteProduct,
     updateProduct,
     generateMockProducts,
-    getCategories, 
-    getProductsByQuery, 
+    getCategories,
+    getProductsByQuery,
     countProducts
 };

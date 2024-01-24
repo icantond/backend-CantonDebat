@@ -5,7 +5,7 @@ async function changeUserRole(req, res) {
     const newRole = req.body.role;
 
     try {
-        if (req.session.user.role !== 'admin' || !['user', 'premium', 'admin'].includes(newRole)) {
+        if (req.session.user.role !== 'admin') {
             return res.status(403).send({ message: 'No tienes permisos para cambiar el rol de un usuario o el rol es inválido' });
         }
 

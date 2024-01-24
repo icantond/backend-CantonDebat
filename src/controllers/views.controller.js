@@ -1,6 +1,7 @@
 import EErrors from '../middlewares/errors/enums.js';
 import * as viewsService from '../services/views.service.js';
 import * as productsService from '../services/products.service.js';
+import * as usersService from '../services/users.service.js';
 import jwt from 'jsonwebtoken';
 import configs from '../config/config.js';
 import moment from 'moment';
@@ -222,6 +223,20 @@ const showResetPassword = async (req, res) => {
         res.status(500).send('Error interno del servidor');
     }
 };
+
+const getRoles = async (req, res) => {
+    const users = await usersService.getAllUsers();
+    const usersDetails = users.map(user => {
+        return {
+            name: user.first_name + ' ' + user.last_name,
+            id: user._id,
+            email: user.email,
+            role: user.role
+        };
+    })
+    res.render('roles', { usersDetails });
+}
+
 export {
     getProductsQueries,
     getAllCarts,
@@ -237,5 +252,6 @@ export {
     getProfile,
     loggerTest,
     showForgotPassword,
-    showResetPassword
+    showResetPassword, 
+    getRoles
 };

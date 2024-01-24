@@ -21,5 +21,6 @@ router.get('/profile', privateAccess, ViewsController.getProfile);
 router.get('/loggerTest', ViewsController.loggerTest);
 router.get('/forgot-password', publicAccess, ViewsController.showForgotPassword);
 router.get('/reset-password/:token', publicAccess, ViewsController.showResetPassword);
+router.get('/roles', adminAccess, ViewsController.getRoles);
 
 export default router;

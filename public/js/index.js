@@ -63,7 +63,7 @@ addProductForm.addEventListener('submit', (e) => {
             const productOwner = e.target.parentElement.querySelector('#product-owner').value;
             const userId = document.getElementById('owner').value;
             const userRole = document.getElementById('user-role').value;
-    
+            //FALTA CAMBIAR EL SOCKET PARA ENVIAR CORREO DE AVISO A USUARIOS PREMIUM
             console.log('Producto a eliminar:', productId);
             socket.emit('eliminar_producto', { productId, userId, userRole, productOwner });
         });
@@ -84,7 +84,7 @@ addProductForm.addEventListener('submit', (e) => {
             }
 
             // Realizar la solicitud POST al servidor
-            const response = await fetch(`api/carts/6518b3030b4bb755731f2cd0/products/${productId}`, {
+            const response = await fetch(`api/carts/${cartId}/products/${productId}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

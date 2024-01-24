@@ -18,6 +18,11 @@ export default class Users {
         return await usersModel.findOne({ email });
     }
 
+    async getUserById(id) {
+        console.log('Attempting to find user by id ', id, 'from users.mongo.js')
+        return await usersModel.findById(id);
+    }
+
     async save(user) {
         return await usersModel.findByIdAndUpdate(user._id, user, { new: true });
     }

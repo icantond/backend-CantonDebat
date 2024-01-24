@@ -1,0 +1,56 @@
+<body>
+    <h1>User Roles</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>New Role</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#each usersDetails}}
+            <tr>
+                <td>{{name}}</td>
+                <td>{{email}}</td>
+                <td>{{role}}</td>
+                <td>
+                    <select name="roleSelect" id="roleSelect_{{id}}">
+                        <option value="user">User</option>
+                        <option value="admin">Admin</option>
+                        <option value="premium">Premium</option>
+                    </select>
+                    <button onclick="changeUserRole('{{id}}')">Change Role</button>
+                </td>
+            </tr>
+            {{/each}}
+        </tbody>
+    </table>
+
+    <script>
+        function changeUserRole(userId) {
+            const selectedRole = document.getElementById(`roleSelect_${userId}`).value;
+            console.log(`Attempting to change user role to ${selectedRole} to user ID ${userId}`)
+            fetch(`http://localhost:8080/api/users/premium/${userId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ role: selectedRole }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+            }).then(() =>{
+                location.reload();
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+    </script>
+</body>
+</html>

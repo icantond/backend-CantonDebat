@@ -1,4 +1,5 @@
 import * as ProductsService from '../services/products.service.js';
+import * as SessionsService from '../services/sessions.service.js';
 
 async function getAll(req, res) {
     try {
@@ -63,9 +64,16 @@ async function addProduct(req, res) {
 
 async function deleteProduct(req, res) {
     const productId = req.params.pid;
+    const userId = req.session.user.id;
+    const userRole = req.session.user.role;
+
+    const getProductsDetail = await ProductsService.getProductById(productId);
+    const ownerId = getProductsDetail.owner;
+    const ownerDetails = await SessionsService.getUserById(ownerId);
+    const ownerRole = ownerDetails.role; 
 
     try {
-        const result = await ProductsService.deleteProduct(productId, req.session.user.id, req.session.user.role);
+        const result = await ProductsService.deleteProduct(productId, userId, userRole, ownerRole, ownerId);
 
         if (!result) {
             res.status(404).send({ message: 'Producto no encontrado' });
