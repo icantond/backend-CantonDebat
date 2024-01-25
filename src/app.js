@@ -33,7 +33,6 @@ const PORT = configs.port;
 const httpServer = app.listen(PORT, () => console.log(`Server successfuly running on PORT ${PORT}`));
 const socketServer = new Server(httpServer);
 
-
 app.use('/api/docs', swaggerUiExpress.serve, swaggerUiExpress.setup(swaggerFile));
 
 app.use(cookieParser());
@@ -47,9 +46,8 @@ app.use('/static', express.static(path.join(__dirname, '../public')))
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(errorHandler);
+
 //Persistir nuestra session en BDD
-
-
 app.use(session({
     store: MongoStore.create({
         client: mongoose.connection.getClient(),
@@ -102,14 +100,11 @@ app.use((req, res, next) => {
         return next();
     }
 
-    // Resto del middleware de autenticación
     if (req.isAuthenticated()) {
         return next();
     }
     return res.redirect('/login');
 });
-
-
 
 //CONFIGURACION DE SOCKETS
 const io = new Server(httpServer);

@@ -139,10 +139,10 @@ async function getProductById(productId) {
     }
 }
 
-async function getCartDetails(cartId) {
+async function getCartDetails(userCartId) {
     try {
         // const userCartId = (await cartsRepository.getUserCart(userId))._id;
-        const cartItems = await cartsRepository.getCartDetails(cartId);
+        const cartItems = await cartsRepository.getCartDetails(userCartId);
 
         cartItems.products.forEach((item) => {
             item.totalPrice = item.quantity * item.product.price;
@@ -152,7 +152,7 @@ async function getCartDetails(cartId) {
             return total + item.totalPrice;
         }, 0);
 
-        return { cartItems, cartId };
+        return { cartItems, userCartId };
     } catch (error) {
         throw new Error('Error al obtener detalles del carrito');
     }

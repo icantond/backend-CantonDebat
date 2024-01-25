@@ -76,7 +76,7 @@ async function sendProductDeletionEmail(ownerId, productName) {
 
     if (!owner || owner.role !== 'premium') {
         console.log('User not found or not premium. Skipping email.');
-        return; // Solo envía el correo si el owner es premium
+        return; 
     }
 
     const mailOptions = {

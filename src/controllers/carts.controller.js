@@ -2,7 +2,6 @@ import * as CartsService from '../services/carts.service.js';
 
 async function addProductToCart(req, res, next) {
     const productId = req.params.pid;
-
     try {
         const result = await CartsService.addProductToCart(req.session.user, productId);
         res.status(201).json(result);
@@ -85,6 +84,7 @@ async function emptyCart(req, res) {
 
 async function purchaseCart(req, res) {
     const cartId = req.params.cid;
+    console.log ('Attempting to purchase cart Id: ', cartId)
 
     try {
         const result = await CartsService.purchaseCart(cartId, req.session.user);

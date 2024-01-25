@@ -23,21 +23,9 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 
-// const documentsStorage = multer.diskStorage({
-//     destination: function (req, file, cb) {
-//         cb(null, path.join(__dirname, '..', 'public', 'img', 'documents'));
-//     },
-//     filename: function (req, file, cb) {
-//         const timestamp = Date.now();
-//         const uniqueFilename = `${timestamp}-${file.originalname}`;
-//         cb(null, uniqueFilename);
-//     },
-// });
-
-// const documentsUpload = multer({ storage: documentsStorage });
 const documentsStorage = multer.diskStorage({
     destination: function (req, file, cb) {
-        const type = req.body.type || 'document'; // Por defecto, si no se proporciona, será un documento.
+        const type = req.body.type || 'document';
         const destinationFolder = type === 'profile' ? 'profile' : 'documents';
 
         cb(null, path.join(__dirname, '..', 'public', 'img', destinationFolder));
@@ -108,7 +96,6 @@ const generateMockProduct = () => {
 export {
     __dirname,
     upload,
-    // documentsUpload,
     uploadDocuments,
     uploadProfile,
     __mainDirname,
