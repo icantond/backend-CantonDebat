@@ -155,22 +155,22 @@ async function getCartDetails(req, res) {
     const cartId = req.session.user.cart;
     try {
         const cart = await viewsService.getCartDetails(cartId);
-        res.render('carts', {cart, host});
+        res.render('carts', {...cart, host});
     } catch (error) {
         res.status(500).json({ status: 'error', message: error.message || 'Error al obtener el carrito' });
     }
 };
 
 async function getChat (req, res) {
-    res.render('chat', host);
+    res.render('chat', {host});
 };
 
 async function getRegister (req, res) {
-    res.render('register', host);
+    res.render('register', {host});
 };
 
 async function getLogin (req, res) {
-    res.render('login');
+    res.render('login', {host});
 };
 
 async function getProfile (req, res) {
