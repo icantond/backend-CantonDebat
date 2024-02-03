@@ -141,7 +141,6 @@ async function getProductById(productId) {
 
 async function getCartDetails(userCartId) {
     try {
-        // const userCartId = (await cartsRepository.getUserCart(userId))._id;
         const cartItems = await cartsRepository.getCartDetails(userCartId);
 
         cartItems.products.forEach((item) => {
