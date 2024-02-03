@@ -6,11 +6,13 @@
 </head>
 <nav class="navigation">
     <ul class="menu">
-        <li><a href="http://localhost:8080">Home</a></li>
-        <li><a href="http://localhost:8080/products">Products</a></li>
-        <li><a href="http://localhost:8080/realtimeproducts">RealTimeProducts</a></li>
-        <li><a href="http://localhost:8080/carts">Cart</a></li>
-        <li><a href="http://localhost:8080/chat">Chat</a></li>
+        <li><a href="{{host}}">Home</a></li>
+        <li><a href="{{host}}/products">Products</a></li>
+        <li><a href="{{host}}/realtimeproducts">RealTimeProducts</a></li>
+        <li><a href="{{host}}/carts">Cart</a></li>
+        <li><a href="{{host}}/chat">Chat</a></li>
+        <li><a href="{{host}}/roles">UserRoles</a></li>
+
 
 </nav>
 <div class="login-form-container">
@@ -25,8 +27,8 @@
 
         <div class="social">
             <a href="/api/sessions/github"><div class="gh"><i class="fab fa-github"></i> Ingresar con GitHub</div></a>
-            <a href="http://localhost:8080/register"><div class="rg"> Registrarse</div></a>
-            <a href="http://localhost:8080/forgot-password"><div class="rg"> ¿Olvidaste tu contraseña?</div></a>
+            <a href="{{host}}/register"><div class="rg"> Registrarse</div></a>
+            <a href="{{host}}/forgot-password"><div class="rg"> ¿Olvidaste tu contraseña?</div></a>
         </div>
     </form>
 </div>

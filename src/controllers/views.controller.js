@@ -81,7 +81,7 @@ async function getAllCarts(req, res) {
 
     try {
         const data = await viewsService.getAllCarts(ownerId, userRole);
-        res.render('realTimeProducts', {data, host});
+        res.render('realTimeProducts', {...data, host});
     } catch (error) {
         res.status(500).json({ error: error.message || 'Error al obtener productos en tiempo real' });
     }
@@ -93,7 +93,7 @@ async function getRealTimeProducts(req, res) {
 
     try {
         const data = await viewsService.getRealTimeProducts(ownerId, userRole);
-        res.render('realTimeProducts', {data, host});
+        res.render('realTimeProducts', {...data, host});
     } catch (error) {
         res.status(500).json({ error: error.message || 'Error al obtener productos en tiempo real' });
     }
@@ -133,7 +133,7 @@ async function getAllProducts(req, res) {
     try {
         const user = req.session.user;
         const data = await viewsService.getAllProducts(user);
-        res.render('products', {data, host});
+        res.render('products', {...data, host});
     } catch (error) {
         console.error(error);
         res.status(500).json({ status: 'error', message: error.message || 'Error al obtener la lista de productos' });
@@ -145,7 +145,7 @@ async function getProductById(req, res) {
 
     try {
         const data = await viewsService.getProductById(productId);
-        res.render('productdetail', {data, host});
+        res.render('productdetail', {data});
     } catch (error) {
         res.status(500).json({ status: 'error', message: error.message || 'Error al obtener el producto' });
     }
@@ -162,11 +162,11 @@ async function getCartDetails(req, res) {
 };
 
 async function getChat (req, res) {
-    res.render('chat');
+    res.render('chat', host);
 };
 
 async function getRegister (req, res) {
-    res.render('register');
+    res.render('register', host);
 };
 
 async function getLogin (req, res) {
@@ -175,7 +175,8 @@ async function getLogin (req, res) {
 
 async function getProfile (req, res) {
     res.render('profile', {
-        user: req.session.user
+        user: req.session.user,
+        host
     });
 };
 
@@ -201,7 +202,7 @@ async function loggerTest(req, res) {
 }
 
 const showForgotPassword = (req, res) => {
-    res.render('forgot');
+    res.render('forgot', host);
 };
 
 const showResetPassword = async (req, res) => {
@@ -215,7 +216,7 @@ const showResetPassword = async (req, res) => {
             return res.redirect('/forgot-password');
         }
 
-        res.render('reset', { token });
+        res.render('reset', { token , host});
     } catch (error) {
         if (error.name === 'TokenExpiredError') {
             console.log('Token expirado');
@@ -237,7 +238,7 @@ const getRoles = async (req, res) => {
             role: user.role
         };
     })
-    res.render('roles', { usersDetails });
+    res.render('roles', { usersDetails, host });
 }
 
 export {

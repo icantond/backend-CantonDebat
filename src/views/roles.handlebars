@@ -34,7 +34,7 @@
         function changeUserRole(userId) {
             const selectedRole = document.getElementById(`roleSelect_${userId}`).value;
             console.log(`Attempting to change user role to ${selectedRole} to user ID ${userId}`)
-            fetch(`http://localhost:8080/api/users/premium/${userId}`, {
+            fetch(`{{host}}/api/users/premium/${userId}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
