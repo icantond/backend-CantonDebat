@@ -6,6 +6,8 @@ import jwt from 'jsonwebtoken';
 import configs from '../config/config.js';
 import moment from 'moment';
 
+const host = configs.devHost;
+
 async function getProductsQueries(req, res) {
     let page = parseInt(req.query.page) || 1;
     let limit = parseInt(req.query.limit) || 15;
@@ -65,6 +67,7 @@ async function getProductsQueries(req, res) {
             categories,
             prevLink: hasPrevPage ? `${configs.devHost}/?page=${prevPage}&limit=${limit}&sort=${sort}&query=${query}&category=${category}&available=${available}` : null,
             nextLink: hasNextPage ? `${configs.devHost}/?page=${nextPage}&limit=${limit}&sort=${sort}&query=${query}&category=${category}&available=${available}` : null,
+            host
         });
     } catch (error) {
         console.error(error);
@@ -78,7 +81,7 @@ async function getAllCarts(req, res) {
 
     try {
         const data = await viewsService.getAllCarts(ownerId, userRole);
-        res.render('realTimeProducts', data);
+        res.render('realTimeProducts', {data, host});
     } catch (error) {
         res.status(500).json({ error: error.message || 'Error al obtener productos en tiempo real' });
     }
@@ -90,7 +93,7 @@ async function getRealTimeProducts(req, res) {
 
     try {
         const data = await viewsService.getRealTimeProducts(ownerId, userRole);
-        res.render('realTimeProducts', data);
+        res.render('realTimeProducts', {data, host});
     } catch (error) {
         res.status(500).json({ error: error.message || 'Error al obtener productos en tiempo real' });
     }
@@ -130,7 +133,7 @@ async function getAllProducts(req, res) {
     try {
         const user = req.session.user;
         const data = await viewsService.getAllProducts(user);
-        res.render('products', data);
+        res.render('products', {data, host});
     } catch (error) {
         console.error(error);
         res.status(500).json({ status: 'error', message: error.message || 'Error al obtener la lista de productos' });
@@ -142,7 +145,7 @@ async function getProductById(req, res) {
 
     try {
         const data = await viewsService.getProductById(productId);
-        res.render('productdetail', data);
+        res.render('productdetail', {data, host});
     } catch (error) {
         res.status(500).json({ status: 'error', message: error.message || 'Error al obtener el producto' });
     }
@@ -152,7 +155,7 @@ async function getCartDetails(req, res) {
     const cartId = req.session.user.cart;
     try {
         const cart = await viewsService.getCartDetails(cartId);
-        res.render('carts', cart);
+        res.render('carts', {cart, host});
     } catch (error) {
         res.status(500).json({ status: 'error', message: error.message || 'Error al obtener el carrito' });
     }
