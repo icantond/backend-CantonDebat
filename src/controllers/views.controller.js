@@ -145,7 +145,7 @@ async function getProductById(req, res) {
 
     try {
         const data = await viewsService.getProductById(productId);
-        res.render('productdetail', {...data, host});
+        res.render('productDetail', {...data, host});
     } catch (error) {
         res.status(500).json({ status: 'error', message: error.message || 'Error al obtener el producto' });
     }
