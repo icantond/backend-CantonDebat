@@ -23,6 +23,15 @@ export default (error, req, res, next) => {
             });
             break;
 
+        case 'UserRolesError':
+            res.status(403).send({
+                status: 'error',
+                error: 'UserRolesError',
+                description: 'User roles error',
+                userRoles: error.userRoles,
+            });
+            break;
+
         case EErrors.DATABASE_ERROR:
             res.status(500).send({
                 status: 'error',

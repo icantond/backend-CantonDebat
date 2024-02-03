@@ -3,7 +3,6 @@ import configs from "../config/config.js";
 import transport from "../config/nodemailer.config.js";
 import { smsNumber, client } from '../config/twilio.config.js';
 
-
 async function addProductToCart(userId, productId) {
     try {
         const cartId = userId.cart;
@@ -12,16 +11,16 @@ async function addProductToCart(userId, productId) {
         const existingProductIndex = cart.products.findIndex(item => item.product.equals(productId));
 
         const currentUser = userId;
-
-        if (currentUser.role === 'premium') {
-            const productBelongsToUser = cart.products.some(item => item.product.equals(productId) && item.product.owner.toString() === currentUser.id.toString());
-
+        const productDetail = await productsRepository.getProductById(productId);
+        const productOwner = productDetail.owner;
+        if (currentUser.role === 'premium' && productOwner!= undefined) {
+            const productBelongsToUser = productOwner.equals(currentUser.id);
             if (productBelongsToUser) {
-                throw {
+                throw{
                     status: 400,
-                    error: 'PremiumUserError',
+                    error: 'ValidationError',
                     description: 'Un usuario premium no puede agregar su propio producto al carrito',
-                };
+                }
             }
         }
 
@@ -35,15 +34,17 @@ async function addProductToCart(userId, productId) {
         return { status: 'success', message: 'Producto agregado al carrito', data: updatedCart };
     } catch (error) {
         if (error.status) {
+            console.error('Error:', error);
             throw error;
         }
-
+    
         if (error.name === 'ValidationError') {
             const validationErrors = Object.values(error.errors).map(err => ({
                 field: err.path,
                 message: err.message,
             }));
-
+    
+            console.error('Validation Error:', validationErrors);
             throw {
                 status: 400,
                 error: 'ValidationError',
@@ -51,6 +52,7 @@ async function addProductToCart(userId, productId) {
                 validationErrors,
             };
         } else {
+            console.error('Database Error:', error);
             throw {
                 status: 500,
                 error: 'DatabaseError',
@@ -58,7 +60,7 @@ async function addProductToCart(userId, productId) {
             };
         }
     }
-}
+    }    
 
 async function getCartDetails(cartId) {
     try {
